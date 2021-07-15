@@ -9,8 +9,8 @@ end
 local CurrentVersion = '2.3.5'
 local GithubResourceName = 'EngineToggle'
 
-PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/master/' .. GithubResourceName .. '/VERSION', function(Error, NewestVersion, Header)
-	PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/master/' .. GithubResourceName .. '/CHANGES', function(Error, Changes, Header)
+PerformHttpRequest('https://github.com/Musiker15/EngineToggle/master/' .. GithubResourceName .. '/VERSION', function(Error, NewestVersion, Header)
+	PerformHttpRequest('https://github.com/Musiker15/EngineToggle/master/' .. GithubResourceName .. '/CHANGES', function(Error, Changes, Header)
 		print('\n')
 		print('##############')
 		print('## ' .. GetCurrentResourceName())
