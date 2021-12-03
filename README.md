@@ -9,7 +9,7 @@ Activate Notifications in config.lua to true if you want. If both set to false t
 If you set Config.VehicleKeyChain to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
 
 
-## **Config:**
+## Config
 ```
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 OnAtEnter = false
