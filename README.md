@@ -18,8 +18,7 @@ OnAtEnter = false
 UseKey = true
 
 if UseKey then
-	-- Change this to change the key to toggle the engine (Other Keys at wiki.fivem.net/wiki/Controls)
-	ToggleKey = 244 -- 244 = M
+    ToggleKey = 244 -- 244 = M (https://docs.fivem.net/docs/game-references/controls/)
 end
 
 Config = {}
