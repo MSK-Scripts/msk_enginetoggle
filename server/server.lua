@@ -16,18 +16,9 @@ PerformHttpRequest('https://github.com/Musiker15/EngineToggle/master/' .. Github
 		print('## ' .. GetCurrentResourceName())
 		print('##')
 		print('## Current Version: ' .. CurrentVersion)
-		print('## Newest Version: ' .. NewestVersion)
 		print('##')
-		if CurrentVersion ~= NewestVersion then
-			print('## Outdated')
-			print('## Check the Topic')
-			print('## For the newest Version!')
-			print('##############')
-			print('CHANGES: ' .. Changes)
-		else
-			print('## Up to date!')
-			print('##############')
-		end
+		--print('## Up to date!')
+		print('##############')
 		print('\n')
 	end)
 end)

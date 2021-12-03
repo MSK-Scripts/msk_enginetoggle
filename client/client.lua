@@ -48,13 +48,57 @@ AddEventHandler('EngineToggle:Engine', function()
 		end
 	end
 	Citizen.Wait(0)
-	if IsPedInAnyVehicle(GetPlayerPed(-1), false) then 
+	if Config.VehicleKeyChain then
+		local isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(veh)
+		if IsPedInAnyVehicle(GetPlayerPed(-1), false) then and isVehicleOrKeyOwner then 
+			if (GetPedInVehicleSeat(veh, -1) == GetPlayerPed(-1)) then
+				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
+				if vehicles[StateIndex][2] then
+					if Config.Notifications then
+						TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Dein Fahrzeug wurde gestartet")
+					elseif Config.OkokNotify then
+						exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#47cf73'>gestartet</span>.", 5000, 'info')
+					else
+						TriggerClientEvent('esx:showNotification', source, 'Dein ~b~Fahrzeug~s~ wurde ~g~gestartet')
+					end
+				else
+					if Config.Notifications then
+						TriggerEvent('notifications', "#FF0000", "Dein Fahrzeug", "Dein Fahrzeug wurde gestoppt")
+					elseif Config.OkokNotify then
+						exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#FF0000'>ausgeschalten</span>.", 5000, 'info')
+					else
+						TriggerClientEvent('esx:showNotification', source, 'Dein ~b~Fahrzeug~s~ wurde ~g~gestoppt')
+					end
+				end
+			end 
+		elseif (not isVehicleOrKeyOwner) then
+			if Config.Notifications then
+				TriggerEvent('notifications', "#FF0000", "Schlüssel", "Du besitzt keinen Schlüssel für dieses Fahrzeug")
+			elseif Config.OkokNotify then
+				exports['okokNotify']:Alert("Fahrzeug", "Du besitzt keinen <span style='color:#FF0000'>Schlüssel</span> für dieses Fahrzeug.", 5000, 'error')
+			else
+				TriggerClientEvent('esx:showNotification', source, 'Du besitzt keinen Schlüssel für dieses Fahrzeug')
+			end
+    	end 
+	else IsPedInAnyVehicle(GetPlayerPed(-1), false) then 
 		if (GetPedInVehicleSeat(veh, -1) == GetPlayerPed(-1)) then
 			vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 			if vehicles[StateIndex][2] then
-				TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Fahrzeug wurde gestartet")
+				if Config.Notifications then
+					TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Dein Fahrzeug wurde gestartet")
+				elseif Config.OkokNotify then
+					exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#47cf73'>gestartet</span>.", 5000, 'info')
+				else
+					TriggerClientEvent('esx:showNotification', source, 'Dein ~b~Fahrzeug~s~ wurde ~g~gestartet')
+				end
 			else
-				TriggerEvent('notifications', "#FF0000", "Dein Fahrzeug", "Fahrzeug wurde gestoppt")
+				if Config.Notifications then
+					TriggerEvent('notifications', "#FF0000", "Dein Fahrzeug", "Dein Fahrzeug wurde gestoppt")
+				elseif Config.OkokNotify then
+					exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#FF0000'>ausgeschalten</span>.", 5000, 'info')
+				else
+					TriggerClientEvent('esx:showNotification', source, 'Dein ~b~Fahrzeug~s~ wurde ~g~gestoppt')
+				end
 			end
 		end 
     end 
@@ -73,7 +117,13 @@ if OnAtEnter then
 					if vehicle[1] == GetVehiclePedIsTryingToEnter(GetPlayerPed(-1)) and not vehicle[2] then
 						Citizen.Wait(0)
 						vehicle[2] = true
-						TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Fahrzeug ist bereits eingeschalten")
+						if Config.Notifications then
+							TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Der Motor ist bereits eingeschalten")
+						elseif Config.OkokNotify then
+							exports['okokNotify']:Alert("Fahrzeug", "Der Motor ist bereits eingeschaltet", 5000, 'warning')
+						else
+							TriggerClientEvent('esx:showNotification', source, 'Der ~b~Motor~s~ ist bereits ~g~eingeschalten')
+						end
 					end
 				end
 			end
