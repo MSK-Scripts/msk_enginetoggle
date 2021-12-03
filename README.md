@@ -4,8 +4,9 @@
 ## Description
 With Key "M" you can toggle your vehicle Engine on or off
 
-Activate Notifications in config.lua to true if you want. If both set to false then Default ESX Notification is active.
-If you set VehicleKeyChain to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
+Activate Notifications in config.lua to true if you want. If both set to false then Default ESX Notification is active. 
+
+If you set Config.VehicleKeyChain to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
 
 ## Requirements
 * ESX 1.2
