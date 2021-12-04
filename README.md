@@ -34,3 +34,6 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 * Notification (https://forum.cfx.re/t/release-standalone-notification-script/1464244)
 * okokNotify (https://okok.tebex.io/package/4724993)
 * VehicleKeyChain (https://kiminazes-script-gems.tebex.io/package/4524211)
+
+## License
+You can use and edit this Script but please do not reupload this without my permission
