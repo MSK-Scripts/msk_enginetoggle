@@ -80,7 +80,7 @@ AddEventHandler('EngineToggle:Engine', function()
 				TriggerClientEvent('esx:showNotification', source, 'Du besitzt keinen Schlüssel für dieses Fahrzeug')
 			end
     	end 
-	else IsPedInAnyVehicle(GetPlayerPed(-1), false) then 
+	elseif IsPedInAnyVehicle(GetPlayerPed(-1), false) then 
 		if (GetPedInVehicleSeat(veh, -1) == GetPlayerPed(-1)) then
 			vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 			if vehicles[StateIndex][2] then
