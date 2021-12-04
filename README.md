@@ -36,4 +36,4 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 * VehicleKeyChain (https://kiminazes-script-gems.tebex.io/package/4524211)
 
 ## License
-You can use and edit this Script but please do not reupload this without my permission
+You can use and edit this Script but please do not reupload this without tagging me
