@@ -1,5 +1,5 @@
 # EngineToggle
- FiveM Script - Vehicle Engine Toggle On/Off
+FiveM Script - Vehicle Engine Toggle On/Off
 
 ## Description
 With Key "M" you can toggle your vehicle Engine on or off.
@@ -15,10 +15,10 @@ Config = {}
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 Config.OnAtEnter = false
 
--- Change 'false' to 'true' to use a key instead of a button
+-- Change 'false' to 'true' to use a key instead of the command
 Config.UseKey = true
-
-Config.ToggleKey = 244 -- M (https://docs.fivem.net/docs/game-references/controls/)
+    Config.ToggleKey = 244 -- M (https://docs.fivem.net/docs/game-references/controls/)
+Config.Commad = 'engine' -- If Config.UseKey = false then you can use the command instead
 
 -- If both false then Default ESX Notification is active!
 Config.Notifications = false -- https://forum.cfx.re/t/release-standalone-notification-script/1464244
