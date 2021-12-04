@@ -6,8 +6,8 @@ local vehicles = {}; RPWorking = true
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		if UseKey and ToggleKey then
-			if IsControlJustReleased(1, ToggleKey) then
+		if Config.UseKey and Config.ToggleKey then
+			if IsControlJustReleased(1, Config.ToggleKey) then
 				TriggerEvent('EngineToggle:Engine')
 			end
 		end
@@ -108,7 +108,7 @@ AddEventHandler('EngineToggle:RPDamage', function(State)
 	RPWorking = State
 end)
 
-if OnAtEnter then
+if Config.OnAtEnter then
 	Citizen.CreateThread(function()
 		while true do
 			Citizen.Wait(0)

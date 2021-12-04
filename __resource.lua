@@ -2,7 +2,7 @@ resource_manifest_version '44febabe-d386-4d18-afbe-5e627f4af937'
 
 description 'ESX Engine Toggle On/Off'
 Author 'Musiker15'
-version '2.4.2'
+version '2.4.3'
 
 server_script { 
 	'config.lua',

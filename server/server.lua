@@ -1,4 +1,4 @@
-if not UseKey then
+if not Config.UseKey then
 	RegisterCommand("engine", function(Source, Arguments, RawCommand)
 		if #Arguments == 0 then
 			TriggerClientEvent('EngineToggle:Engine', Source)
@@ -6,7 +6,7 @@ if not UseKey then
 	end, false)
 end
 
-local CurrentVersion = '2.3.5'
+local CurrentVersion = '2.4.3'
 local GithubResourceName = 'EngineToggle'
 
 PerformHttpRequest('https://github.com/Musiker15/EngineToggle/master/' .. GithubResourceName .. '/VERSION', function(Error, NewestVersion, Header)
