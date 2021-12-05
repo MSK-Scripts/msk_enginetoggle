@@ -6,7 +6,7 @@ if not Config.UseKey then
 	end, false)
 end
 
-local CurrentVersion = '2.4.4'
+local CurrentVersion = '2.4'
 local GithubResourceName = 'EngineToggle'
 
 print('\n')
