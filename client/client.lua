@@ -1,6 +1,3 @@
-RegisterNetEvent('EngineToggle:Engine')
-RegisterNetEvent('EngineToggle:RPDamage')
-
 local vehicles = {}; RPWorking = true
 
 Citizen.CreateThread(function()
@@ -38,6 +35,7 @@ Citizen.CreateThread(function()
 	end
 end)
 
+RegisterNetEvent('EngineToggle:Engine')
 AddEventHandler('EngineToggle:Engine', function()
 	local veh
 	local StateIndex
@@ -104,6 +102,7 @@ AddEventHandler('EngineToggle:Engine', function()
     end 
 end)
 
+RegisterNetEvent('EngineToggle:RPDamage')
 AddEventHandler('EngineToggle:RPDamage', function(State)
 	RPWorking = State
 end)
