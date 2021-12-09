@@ -5,15 +5,3 @@ if not Config.UseKey then
 		end
 	end, false)
 end
-
-local CurrentVersion = '2.4'
-local GithubResourceName = 'EngineToggle'
-
-print('\n')
-print('##############')
-print('## ' .. GithubResourceName)
-print('##')
-print('## Current Version: ' .. CurrentVersion)
-print('##')
-print('##############')
-print('\n')
