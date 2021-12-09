@@ -22,9 +22,9 @@ Config.Commad = 'engine' -- If Config.UseKey = false then you can use the comman
 
 -- If both false then Default ESX Notification is active!
 Config.Notifications = false -- https://forum.cfx.re/t/release-standalone-notification-script/1464244
-Config.OkokNotify = true -- https://okok.tebex.io/package/4724993
+Config.OkokNotify = false -- https://okok.tebex.io/package/4724993
 
--- Vehicle Key System
+-- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package/4524211
 ```
 
