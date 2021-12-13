@@ -7,7 +7,6 @@ The engine keeps running if you leave the vehicle without turning the engine off
 
 If you set Config.VehicleKeyChain to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
 
-
 ## Config
 ```
 Config = {}
@@ -15,10 +14,10 @@ Config = {}
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 Config.OnAtEnter = false
 
--- Change 'false' to 'true' to use a key instead of the command
 Config.UseKey = true
     Config.ToggleKey = 244 -- M (https://docs.fivem.net/docs/game-references/controls/)
-Config.Commad = 'engine' -- If Config.UseKey = false then you can use the command instead
+Config.UseCommand = true
+    Config.Commad = 'engine' -- If Config.UseKey = false then you can use the command instead
 
 -- If both false then Default ESX Notification is active!
 Config.Notifications = false -- https://forum.cfx.re/t/release-standalone-notification-script/1464244
