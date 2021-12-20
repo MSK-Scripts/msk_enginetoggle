@@ -6,7 +6,7 @@ if Config.UseCommand then
 	end, false)
 end
 
-local CurrentVersion = '2.5'
+local CurrentVersion = '2.6'
 local GithubResourceName = 'EngineToggle'
 
 PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/main/VERSION', function(Error, NewestVersion, Header)
@@ -15,12 +15,9 @@ PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/mai
 	print('')
 	print('## Current Version: ' .. CurrentVersion)
 	print('## Newest Version: ' .. NewestVersion)
-	if CurrentVersion < NewestVersion then
-		print('## Outdated')
-		print('## Download here: https://github.com/Musiker15/EngineToggle/releases')
-		print("###############################\n")
-	elseif CurrentVersion == NewestVersion then
-		print('## Up to date!')
+	if CurrentVersion ~= NewestVersion then
+		print('## If Outdated')
+		print('## Download Newest Version here: https://github.com/Musiker15/EngineToggle/releases')
 		print("###############################\n")
 	end
 end)
