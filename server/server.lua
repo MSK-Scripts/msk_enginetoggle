@@ -15,9 +15,13 @@ PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/mai
 	print('')
 	print('## Current Version: ' .. CurrentVersion)
 	print('## Newest Version: ' .. NewestVersion)
+	print('')
 	if CurrentVersion ~= NewestVersion then
 		print('## If Outdated')
 		print('## Download Newest Version here: https://github.com/Musiker15/EngineToggle/releases')
+		print("###############################\n")
+	elseif CurrentVersion == NewestVersion then
+		print('## Up to Date')
 		print("###############################\n")
 	end
 end)
