@@ -2,9 +2,11 @@
 FiveM Script - Vehicle Engine Toggle On/Off
 
 ## Description
-* With Key `M` you can toggle your vehicle Engine on or off.
-* The engine keeps running if you leave the vehicle without turning the engine off
-* If you set Config.VehicleKeyChain to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
+* The engine keeps running if you leave the vehicle without turning the engine off.
+* You can set that the engine starts automatically when entering a vehicle.
+* You can choose if you use a Hotkey or a Command.
+* You can choose between 3 diffrent Notifications.
+* If you set `Config.VehicleKeyChain` to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
 
 ## Config
 ```
