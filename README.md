@@ -31,7 +31,7 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 ```
 
 ## Requirements
-* ESX 1.2 (https://github.com/esx-framework/es_extended/releases/tag/v1-final)
+* Any Framework
 ### Optional
 * Notification (https://forum.cfx.re/t/release-standalone-notification-script/1464244)
 * okokNotify (https://okok.tebex.io/package/4724993)
