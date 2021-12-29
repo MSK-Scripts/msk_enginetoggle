@@ -20,11 +20,11 @@ PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/mai
 	print('')
 	if Config.VehicleKeyChain then
 		if (GetResourceState("VehicleKeyChain") == "started") then
-			print('## [READY] Das Script "VehicleKeyChain" wurde erfolgreich gefunden!')
+			print('## [READY] Script "VehicleKeyChain" found!')
 			print('')
 		elseif (GetResourceState("VehicleKeyChain") == "stopped") then
-			print('## [ERROR] Das Script "VehicleKeyChain" wurde nicht gefunden!')
-			print('## Stelle bitte sicher, dass das Script beim Server Start gestartet wird.')
+			print('## [ERROR] Script "VehicleKeyChain" not found!')
+			print('## Please be sure, that VehicleKeyChain is started.')
 			print('')
 		end
 	end
