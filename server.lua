@@ -6,7 +6,9 @@ if Config.UseCommand then
 	end, false)
 end
 
-local CurrentVersion = '2.6.2'
+---- Github Updater ----
+
+local CurrentVersion = '2.6.5'
 local GithubResourceName = 'EngineToggle'
 
 PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/main/VERSION', function(Error, NewestVersion, Header)
@@ -16,6 +18,16 @@ PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/mai
 	print('## Current Version: ' .. CurrentVersion)
 	print('## Newest Version: ' .. NewestVersion)
 	print('')
+	if Config.VehicleKeyChain then
+		if (GetResourceState("VehicleKeyChain") == "started") then
+			print('## [READY] Das Script "VehicleKeyChain" wurde erfolgreich gefunden!')
+			print('')
+		elseif (GetResourceState("VehicleKeyChain") == "stopped") then
+			print('## [ERROR] Das Script "VehicleKeyChain" wurde nicht gefunden!')
+			print('## Stelle bitte sicher, dass das Script beim Server Start gestartet wird.')
+			print('')
+		end
+	end
 	if CurrentVersion ~= NewestVersion then
 		print('## Outdated')
 		print('## Download Newest Version here: https://github.com/Musiker15/EngineToggle/releases')
