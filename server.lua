@@ -9,11 +9,11 @@ end
 ---- Github Updater ----
 
 local CurrentVersion = '2.6.5'
-local GithubResourceName = 'EngineToggle'
+local resourceName = "\x1b[32m["..GetCurrentResourceName().."]\x1b[0m"
 
 PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/main/VERSION', function(Error, NewestVersion, Header)
 	print("\n###############################")
-	print('## ' .. GetCurrentResourceName())
+	print('## ' .. resourceName)
 	print('')
 	print('## Current Version: ' .. CurrentVersion)
 	print('## Newest Version: ' .. NewestVersion)
