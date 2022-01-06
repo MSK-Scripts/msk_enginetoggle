@@ -1,11 +1,12 @@
 Config = {}
+Config.Locale = 'en'
 
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 Config.OnAtEnter = false
 
 Config.UseKey = true
     Config.ToggleKey = 244 -- M (https://docs.fivem.net/docs/game-references/controls/)
-Config.UseCommand = true
+Config.UseCommand = false
     Config.Commad = 'engine'
 
 -- If both false then Default ESX Notification is active!

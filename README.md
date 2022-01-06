@@ -13,6 +13,7 @@ FiveM Script - Vehicle Engine Toggle On/Off
 ## Config
 ```
 Config = {}
+Config.Locale = 'en'
 
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 Config.OnAtEnter = false
@@ -31,7 +32,7 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 ```
 
 ## Requirements
-* Any Framework
+* ESX Framework **only** for `ESX.ShowNotification`
 ### Optional
 * Notification (https://forum.cfx.re/t/release-standalone-notification-script/1464244)
 * okokNotify (https://okok.tebex.io/package/4724993)

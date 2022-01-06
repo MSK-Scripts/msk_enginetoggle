@@ -53,29 +53,29 @@ AddEventHandler('EngineToggle:Engine', function()
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
 					if Config.Notifications then
-						TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Dein Fahrzeug wurde gestartet")
+						TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_start'))
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#47cf73'>gestartet</span>.", 5000, 'info')
+						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_start'), 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', 'Der Motor wurde ~g~gestartet')
+						TriggerEvent('esx:showNotification', _U('engine_start'))
 					end
 				else
 					if Config.Notifications then
-						TriggerEvent('notifications', "#FF0000", "Dein Fahrzeug", "Dein Fahrzeug wurde gestoppt")
+						TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_engine_stop'))
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#FF0000'>ausgeschalten</span>.", 5000, 'info')
+						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_stop'), 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', 'Der Motor wurde ~r~gestoppt')
+						TriggerEvent('esx:showNotification', _U('engine_stop'))
 					end
 				end
 			end 
 		elseif (not isVehicleOrKeyOwner) then
 			if Config.Notifications then
-				TriggerEvent('notifications', "#FF0000", "Schlüssel", "Du besitzt keinen Schlüssel für dieses Fahrzeug")
+				TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_key_noey'))
 			elseif Config.OkokNotify then
-				exports['okokNotify']:Alert("Fahrzeug", "Du besitzt keinen <span style='color:#FF0000'>Schlüssel</span> für dieses Fahrzeug.", 5000, 'error')
+				exports['okokNotify']:Alert(_U('notification_header'), _U('okok_key_noey'), 5000, 'error')
 			else
-				TriggerEvent('esx:showNotification', 'Du besitzt keinen Schlüssel für dieses Fahrzeug')
+				TriggerEvent('esx:showNotification', _U('key_noey'))
 			end
     	end 
 	elseif IsPedInAnyVehicle(GetPlayerPed(-1), false) then 
@@ -83,19 +83,19 @@ AddEventHandler('EngineToggle:Engine', function()
 			vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 			if vehicles[StateIndex][2] then
 				if Config.Notifications then
-					TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Dein Fahrzeug wurde gestartet")
+					TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_start'))
 				elseif Config.OkokNotify then
-					exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#47cf73'>gestartet</span>.", 5000, 'info')
+					exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_start'), 5000, 'info')
 				else
-					TriggerEvent('esx:showNotification', 'Der Motor wurde ~g~gestartet')
+					TriggerEvent('esx:showNotification', _U('engine_start'))
 				end
 			else
 				if Config.Notifications then
-					TriggerEvent('notifications', "#FF0000", "Dein Fahrzeug", "Dein Fahrzeug wurde gestoppt")
+					TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_engine_stop'))
 				elseif Config.OkokNotify then
-					exports['okokNotify']:Alert("Fahrzeug", "Der Motor wurde <span style='color:#FF0000'>ausgeschalten</span>.", 5000, 'info')
+					exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_stop'), 5000, 'info')
 				else
-					TriggerEvent('esx:showNotification', 'Der Motor wurde ~r~gestoppt')
+					TriggerEvent('esx:showNotification', _U('engine_stop'))
 				end
 			end
 		end 
@@ -117,11 +117,11 @@ if Config.OnAtEnter then
 						Citizen.Wait(0)
 						vehicle[2] = true
 						if Config.Notifications then
-							TriggerEvent('notifications', "#00EE00", "Dein Fahrzeug", "Der Motor ist bereits eingeschalten")
+							TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_onatenter'))
 						elseif Config.OkokNotify then
-							exports['okokNotify']:Alert("Fahrzeug", "Der Motor ist bereits eingeschaltet", 5000, 'warning')
+							exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_onatenter'), 5000, 'warning')
 						else
-							TriggerEvent('esx:showNotification', 'Der ~b~Motor~s~ ist bereits ~g~eingeschalten')
+							TriggerEvent('esx:showNotification', _U('engine_onatenter'))
 						end
 					end
 				end
