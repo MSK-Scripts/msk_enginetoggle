@@ -15,7 +15,7 @@ local VehicleKeyChain = "\x1b[32m[VehicleKeyChain]\x1b[0m"
 PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/main/VERSION', function(Error, NewestVersion, Header)
 	print("\n###############################")
     if CurrentVersion == NewestVersion then
-	    print(resourceName .. 'Resource is Up to Date')
+	    print(resourceName .. ' Resource is Up to Date')
 	    print('## Current Version: ' .. CurrentVersion)
 		print('')
 		if Config.VehicleKeyChain then
@@ -26,7 +26,7 @@ PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/EngineToggle/mai
 			end
 		end
     elseif CurrentVersion ~= NewestVersion then
-        print(resourceName .. 'Resource Outdated. Please Update!')
+        print(resourceName .. ' Resource Outdated. Please Update!')
 		print('## Current Version: ' .. CurrentVersion)
 	    print('## Newest Version: ' .. NewestVersion)
         print('## Download Newest Version here: https://github.com/Musiker15/EngineToggle/releases')
