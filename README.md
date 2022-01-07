@@ -35,8 +35,8 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 * ESX Framework **only** for `ESX.ShowNotification`
 ### Optional
 * Notification (https://forum.cfx.re/t/release-standalone-notification-script/1464244)
-* okokNotify (https://okok.tebex.io/package/4724993)
-* VehicleKeyChain (https://kiminazes-script-gems.tebex.io/package/4524211)
+* okokNotify (https://forum.cfx.re/t/okoknotify-standalone-paid/3907758)
+* VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 
 ## License
 **GNU General Public License v3.0**

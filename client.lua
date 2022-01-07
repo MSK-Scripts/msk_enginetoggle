@@ -1,4 +1,5 @@
 local vehicles = {}; RPWorking = true
+local playerPed = PlayerPedId()
 
 Citizen.CreateThread(function()
 	while true do
@@ -8,18 +9,18 @@ Citizen.CreateThread(function()
 				TriggerEvent('EngineToggle:Engine')
 			end
 		end
-		if GetSeatPedIsTryingToEnter(GetPlayerPed(-1)) == -1 and not table.contains(vehicles, GetVehiclePedIsTryingToEnter(GetPlayerPed(-1))) then
-			table.insert(vehicles, {GetVehiclePedIsTryingToEnter(GetPlayerPed(-1)), IsVehicleEngineOn(GetVehiclePedIsTryingToEnter(GetPlayerPed(-1)))})
-		elseif IsPedInAnyVehicle(GetPlayerPed(-1), false) and not table.contains(vehicles, GetVehiclePedIsIn(GetPlayerPed(-1), false)) then
-			table.insert(vehicles, {GetVehiclePedIsIn(GetPlayerPed(-1), false), IsVehicleEngineOn(GetVehiclePedIsIn(GetPlayerPed(-1), false))})
+		if GetSeatPedIsTryingToEnter(playerPed) == -1 and not table.contains(vehicles, GetVehiclePedIsTryingToEnter(playerPed)) then
+			table.insert(vehicles, {GetVehiclePedIsTryingToEnter(playerPed), IsVehicleEngineOn(GetVehiclePedIsTryingToEnter(playerPed))})
+		elseif IsPedInAnyVehicle(playerPed, false) and not table.contains(vehicles, GetVehiclePedIsIn(playerPed, false)) then
+			table.insert(vehicles, {GetVehiclePedIsIn(playerPed, false), IsVehicleEngineOn(GetVehiclePedIsIn(playerPed, false))})
 		end
 		for i, vehicle in ipairs(vehicles) do
 			if DoesEntityExist(vehicle[1]) then
-				if (GetPedInVehicleSeat(vehicle[1], -1) == GetPlayerPed(-1)) or IsVehicleSeatFree(vehicle[1], -1) then
+				if (GetPedInVehicleSeat(vehicle[1], -1) == playerPed) or IsVehicleSeatFree(vehicle[1], -1) then
 					if RPWorking then
 						SetVehicleEngineOn(vehicle[1], vehicle[2], true, false)
 						SetVehicleJetEngineOn(vehicle[1], vehicle[2])
-						if not IsPedInAnyVehicle(GetPlayerPed(-1), false) or (IsPedInAnyVehicle(GetPlayerPed(-1), false) and vehicle[1]~= GetVehiclePedIsIn(GetPlayerPed(-1), false)) then
+						if not IsPedInAnyVehicle(playerPed, false) or (IsPedInAnyVehicle(playerPed, false) and vehicle[1]~= GetVehiclePedIsIn(playerPed, false)) then
 							if IsThisModelAHeli(GetEntityModel(vehicle[1])) or IsThisModelAPlane(GetEntityModel(vehicle[1])) then
 								if vehicle[2] then
 									SetHeliBladesFullSpeed(vehicle[1])
@@ -40,7 +41,7 @@ AddEventHandler('EngineToggle:Engine', function()
 	local veh
 	local StateIndex
 	for i, vehicle in ipairs(vehicles) do
-		if vehicle[1] == GetVehiclePedIsIn(GetPlayerPed(-1), false) then
+		if vehicle[1] == GetVehiclePedIsIn(playerPed, false) then
 			veh = vehicle[1]
 			StateIndex = i
 		end
@@ -48,8 +49,8 @@ AddEventHandler('EngineToggle:Engine', function()
 	Citizen.Wait(0)
 	if Config.VehicleKeyChain then
 		local isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(veh)
-		if IsPedInAnyVehicle(GetPlayerPed(-1), false) and isVehicleOrKeyOwner then 
-			if (GetPedInVehicleSeat(veh, -1) == GetPlayerPed(-1)) then
+		if IsPedInAnyVehicle(playerPed, false) and isVehicleOrKeyOwner then 
+			if (GetPedInVehicleSeat(veh, -1) == playerPed) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
 					if Config.Notifications then
@@ -69,17 +70,17 @@ AddEventHandler('EngineToggle:Engine', function()
 					end
 				end
 			end 
-		elseif (not isVehicleOrKeyOwner) then
+		elseif IsPedInAnyVehicle(playerPed, false) and (not isVehicleOrKeyOwner) then
 			if Config.Notifications then
-				TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_key_noey'))
+				TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_key_nokey'))
 			elseif Config.OkokNotify then
-				exports['okokNotify']:Alert(_U('notification_header'), _U('okok_key_noey'), 5000, 'error')
+				exports['okokNotify']:Alert(_U('notification_header'), _U('okok_key_nokey'), 5000, 'error')
 			else
-				TriggerEvent('esx:showNotification', _U('key_noey'))
+				TriggerEvent('esx:showNotification', _U('key_nokey'))
 			end
     	end 
-	elseif IsPedInAnyVehicle(GetPlayerPed(-1), false) then 
-		if (GetPedInVehicleSeat(veh, -1) == GetPlayerPed(-1)) then
+	elseif IsPedInAnyVehicle(playerPed, false) then 
+		if (GetPedInVehicleSeat(veh, -1) == playerPed) then
 			vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 			if vehicles[StateIndex][2] then
 				if Config.Notifications then
@@ -111,9 +112,9 @@ if Config.OnAtEnter then
 	Citizen.CreateThread(function()
 		while true do
 			Citizen.Wait(0)
-			if GetSeatPedIsTryingToEnter(GetPlayerPed(-1)) == -1 then
+			if GetSeatPedIsTryingToEnter(playerPed) == -1 then
 				for i, vehicle in ipairs(vehicles) do
-					if vehicle[1] == GetVehiclePedIsTryingToEnter(GetPlayerPed(-1)) and not vehicle[2] then
+					if vehicle[1] == GetVehiclePedIsTryingToEnter(playerPed) and not vehicle[2] then
 						Citizen.Wait(0)
 						vehicle[2] = true
 						if Config.Notifications then

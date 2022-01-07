@@ -8,9 +8,9 @@ Locales ['en'] = {
 	['engine_start'] = 'The Engine ~g~started',
 	['engine_stop'] = 'The Engine ~r~stopped',
 
-	['n_key_noey'] = 'You do not have a Key for this Vehicle',
-	['okok_key_noey'] = 'You do not have a <span style="color:#FF0000">Key</span> for this Vehicle',
-	['key_noey'] = 'You do ~r~not~s~ have a Key for this Vehicle',
+	['n_key_nokey'] = 'You do not have a Key for this Vehicle',
+	['okok_key_nokey'] = 'You do not have a <span style="color:#FF0000">Key</span> for this Vehicle',
+	['key_nokey'] = 'You do ~r~not~s~ have a Key for this Vehicle',
 
 	['n_engine_onatenter'] = 'The Engine is running',
 	['okok_engine_onatenter'] = 'The Engine is running',
