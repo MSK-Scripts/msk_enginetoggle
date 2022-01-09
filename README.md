@@ -39,7 +39,7 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 * RealisticVehicleDamage (https://forum.cfx.re/t/release-realistic-vehicle-failure/57801)
 
-If you use RealisticVehicleDamage, then add following Code in `client.lua` on Line 333:
+If you use RealisticVehicleDamage, then replace following Code in `client.lua` on Line 333:
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle,false)
