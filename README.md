@@ -37,6 +37,7 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 * Notification (https://forum.cfx.re/t/release-standalone-notification-script/1464244)
 * okokNotify (https://forum.cfx.re/t/okoknotify-standalone-paid/3907758)
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
+* RealisticVehicleDamage (https://forum.cfx.re/t/release-realistic-vehicle-failure/57801)
 #### VehicleKeyChain
 Make sure to add the following in every Script that spawns a Vehicle
 ```lua
@@ -45,6 +46,19 @@ SetVehicleNumberPlateText(vehicle, 'PLATE_TEXT')
 exports["kimi_callbacks"]:Trigger("VKC:createNewKey", 'PLATE_TEXT', 1, true)
 -- Remove the Key from the Player
 exports["kimi_callbacks"]:Trigger("VKC:removeKey", 'PLATE_TEXT', 1)
+```
+#### RealisticVehicleDamage
+If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
+```lua
+if healthEngineCurrent > cfg.engineSafeGuard+1 then
+    SetVehicleUndriveable(vehicle,false)
+    TriggerEvent('EngineToggle:RPDamage', true)
+end
+
+if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
+    SetVehicleUndriveable(vehicle,true)
+    TriggerEvent('EngineToggle:RPDamage', false)
+end
 ```
 
 ## License
