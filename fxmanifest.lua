@@ -1,24 +1,20 @@
 fx_version 'adamant'
-games { 'gta5' }
+game 'gta5'
 
 author 'Musiker15'
 description 'ESX Better Engine Toggle'
 version '2.9'
 
+shared_scripts {
+	'@es_extended/locale.lua',
+	'locales/*.lua',
+	'config.lua'
+}
+
 client_scripts {
-    '@es_extended/locale.lua',
-	'locales/en.lua',
-	'locales/de.lua',
-    'config.lua',
-	'client.lua',
+	'client.lua'
 }
 
 server_scripts {
-    '@es_extended/locale.lua',
-	'locales/en.lua',
-	'locales/de.lua',
-    'config.lua',
-	'server.lua',
+	'server.lua'
 }
-
-client_script '@gsync/xDxDxDxDxD.lua'
