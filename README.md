@@ -42,6 +42,14 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 Make sure to add the following in every Script that spawns a Vehicle
 ```lua
 -- Give a Key to the Player
+local numberPlate = GetVehicleNumberPlateText(vehicle)
+exports["kimi_callbacks"]:Trigger("VKC:createNewKey", numberPlate, 1, true)
+-- Remove the Key from the Player
+exports["kimi_callbacks"]:Trigger("VKC:removeKey", numberPlate, 1)
+```
+or this
+```lua
+-- Give a Key to the Player
 SetVehicleNumberPlateText(vehicle, 'PLATE_TEXT')
 exports["kimi_callbacks"]:Trigger("VKC:createNewKey", 'PLATE_TEXT', 1, true)
 -- Remove the Key from the Player
