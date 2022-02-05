@@ -5,20 +5,16 @@ author 'Musiker15'
 description 'ESX Better Engine Toggle'
 version '2.9'
 
-client_scripts {
-    '@es_extended/locale.lua',
-	'locales/en.lua',
-	'locales/de.lua',
+shared_scripts {
+	'@es_extended/locale.lua',
+	'locales/*.lua',
     'config.lua',
-	'client.lua',
+}
+
+client_scripts {
+	'client.lua'
 }
 
 server_scripts {
-    '@es_extended/locale.lua',
-	'locales/en.lua',
-	'locales/de.lua',
-    'config.lua',
-	'server.lua',
+	'server.lua'
 }
-
-client_script '@gsync/xDxDxDxDxD.lua'
