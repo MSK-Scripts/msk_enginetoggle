@@ -1,9 +1,7 @@
 if Config.UseCommand then
-	RegisterCommand(Config.Commad, function(source, Arguments, RawCommand)
-		if #Arguments == 0 then
-			TriggerClientEvent('EngineToggle:Engine', source)
-		end
-	end, false)
+	RegisterCommand(Config.Commad, function(source)
+		TriggerClientEvent('EngineToggle:Engine', source)
+	end)
 end
 
 ---- Github Updater ----

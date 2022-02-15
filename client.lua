@@ -3,16 +3,18 @@ local vehicles = {}; RPWorking = true
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		if Config.UseKey and Config.ToggleKey then
+		if Config.UseKey and Config.ToggleKey and IsPedInAnyVehicle(PlayerPedId()) and (GetVehiclePedIsIn(PlayerPedId() == PlayerPedId())) then
 			if IsControlJustReleased(1, Config.ToggleKey) then
 				TriggerEvent('EngineToggle:Engine')
 			end
 		end
+
 		if GetSeatPedIsTryingToEnter(PlayerPedId()) == -1 and not table.contains(vehicles, GetVehiclePedIsTryingToEnter(PlayerPedId())) then
 			table.insert(vehicles, {GetVehiclePedIsTryingToEnter(PlayerPedId()), IsVehicleEngineOn(GetVehiclePedIsTryingToEnter(PlayerPedId()))})
 		elseif IsPedInAnyVehicle(PlayerPedId(), false) and not table.contains(vehicles, GetVehiclePedIsIn(PlayerPedId(), false)) then
 			table.insert(vehicles, {GetVehiclePedIsIn(PlayerPedId(), false), IsVehicleEngineOn(GetVehiclePedIsIn(PlayerPedId(), false))})
 		end
+		
 		for i, vehicle in ipairs(vehicles) do
 			if DoesEntityExist(vehicle[1]) then
 				if (GetPedInVehicleSeat(vehicle[1], -1) == PlayerPedId()) or IsVehicleSeatFree(vehicle[1], -1) then
@@ -39,6 +41,7 @@ RegisterNetEvent('EngineToggle:Engine')
 AddEventHandler('EngineToggle:Engine', function()
 	local veh
 	local StateIndex
+
 	for i, vehicle in ipairs(vehicles) do
 		if vehicle[1] == GetVehiclePedIsIn(PlayerPedId(), false) then
 			veh = vehicle[1]
@@ -46,8 +49,10 @@ AddEventHandler('EngineToggle:Engine', function()
 		end
 	end
 	Citizen.Wait(0)
+
 	if Config.VehicleKeyChain then
 		local isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(veh)
+
 		if IsPedInAnyVehicle(PlayerPedId(), false) and isVehicleOrKeyOwner then 
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
@@ -78,27 +83,29 @@ AddEventHandler('EngineToggle:Engine', function()
 				TriggerEvent('esx:showNotification', _U('key_nokey'))
 			end
     	end 
-	elseif IsPedInAnyVehicle(PlayerPedId(), false) then 
-		if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
-			vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
-			if vehicles[StateIndex][2] then
-				if Config.Notifications then
-					TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_start'))
-				elseif Config.OkokNotify then
-					exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_start'), 5000, 'info')
+	else
+		if IsPedInAnyVehicle(PlayerPedId(), false) then 
+			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
+				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
+				if vehicles[StateIndex][2] then
+					if Config.Notifications then
+						TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_start'))
+					elseif Config.OkokNotify then
+						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_start'), 5000, 'info')
+					else
+						TriggerEvent('esx:showNotification', _U('engine_start'))
+					end
 				else
-					TriggerEvent('esx:showNotification', _U('engine_start'))
-				end
-			else
-				if Config.Notifications then
-					TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_engine_stop'))
-				elseif Config.OkokNotify then
-					exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_stop'), 5000, 'info')
-				else
-					TriggerEvent('esx:showNotification', _U('engine_stop'))
+					if Config.Notifications then
+						TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_engine_stop'))
+					elseif Config.OkokNotify then
+						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_stop'), 5000, 'info')
+					else
+						TriggerEvent('esx:showNotification', _U('engine_stop'))
+					end
 				end
 			end
-		end 
+		end
     end 
 end)
 
@@ -131,10 +138,10 @@ if Config.OnAtEnter then
 end
 
 function table.contains(table, element)
-  for _, value in pairs(table) do
-    if value[1] == element then
-      return true
-    end
-  end
-  return false
+	for _, value in pairs(table) do
+		if value[1] == element then
+			return true
+		end
+	end
+	return false
 end
