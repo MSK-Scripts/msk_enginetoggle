@@ -3,7 +3,7 @@ local vehicles = {}; RPWorking = true
 Citizen.CreateThread(function()
 	while true do
 		Citizen.Wait(0)
-		if Config.UseKey and Config.ToggleKey and IsPedInAnyVehicle(PlayerPedId()) and (GetVehiclePedIsIn(PlayerPedId() == PlayerPedId())) then
+		if Config.UseKey and Config.ToggleKey and IsPedInAnyVehicle(PlayerPedId()) and (GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) == PlayerPedId()) then
 			if IsControlJustReleased(1, Config.ToggleKey) then
 				TriggerEvent('EngineToggle:Engine')
 			end
