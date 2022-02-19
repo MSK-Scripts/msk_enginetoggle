@@ -3,6 +3,8 @@ FiveM Script - Vehicle Engine Toggle On/Off
 
 **Forum:** https://forum.cfx.re/t/re-release-enginetoggle/4793840
 
+**Discord Support:** https://discord.gg/5hHSBRHvJE
+
 ## Description
 * The engine keeps running if you leave the vehicle without turning the engine off.
 * You can set that the engine starts automatically when entering a vehicle.
