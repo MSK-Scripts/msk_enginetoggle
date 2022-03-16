@@ -13,7 +13,7 @@ FiveM Script - Vehicle Engine Toggle On/Off
 * If you set `Config.VehicleKeyChain` to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
 
 ## Config
-```
+```lua
 Config = {}
 ----------------------------------------------------------------
 Config.Locale = 'de'
