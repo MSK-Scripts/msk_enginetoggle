@@ -1,3 +1,11 @@
+ESX = nil
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+	end
+end)
+
 local vehicles = {}; RPWorking = true
 
 Citizen.CreateThread(function()
@@ -137,6 +145,119 @@ if Config.OnAtEnter then
 	end)
 end
 
+if Config.LockpickKey.enable then
+	Citizen.CreateThread(function()
+		while true do
+			Citizen.Wait(0)
+			if IsControlJustReleased(1, Config.LockpickKey.key) then
+				TriggerServerEvent('EngineToggle:hasItem')
+			end
+		end
+	end)
+end
+
+RegisterNetEvent('EngineToggle:hotwire')
+AddEventHandler('EngineToggle:hotwire', function()
+	local playerPed = PlayerPedId()
+	local coords = GetEntityCoords(playerPed)
+	local animTime = Config.ProgessBar.time * 1000
+	
+	if IsAnyVehicleNearPoint(coords.x, coords.y, coords.z, 5.0) then
+		local vehicle
+		local animation
+		local chance = math.random(100)
+		local alarm = math.random(100)
+
+		if IsPedInAnyVehicle(playerPed, false) then
+			vehicle = GetVehiclePedIsIn(playerPed, false)
+			animation = {dict = Config.Animation.insideVehicle.dict, anim = Config.Animation.insideVehicle.anim}
+		else
+			vehicle = GetClosestVehicle(coords.x, coords.y, coords.z, 2.0, 0, 71)
+			animation = {dict = Config.Animation.outsideVehicle.dict, anim = Config.Animation.outsideVehicle.anim}
+		end
+
+		if DoesEntityExist(vehicle) then
+			if alarm <= Config.Probability.alarm then
+				SetVehicleAlarm(vehicle, true)
+				StartVehicleAlarm(vehicle)
+			end
+
+			if not Config.Animation.InsideOutsideAnimation then
+				TaskStartScenarioInPlace(playerPed, Config.Animation.InsideOutsideAnimation, 0, true)
+				FreezeEntityPosition(PlayerPedId(), true)
+			elseif Config.Animation.InsideOutsideAnimation then
+				loadAnimDict(animation.dict)
+				TaskPlayAnim(playerPed, animation.dict, animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
+				FreezeEntityPosition(playerPed, true)
+			end
+
+			Citizen.CreateThread(function()
+				if Config.ProgessBar.enable then
+					exports['pogressBar']:drawBar(animTime, _U('hotwiring'))
+				end
+				Citizen.Wait(animTime)
+
+				if chance <= Config.Probability.lockpick then
+					SetVehicleDoorsLocked(vehicle, 1)
+					SetVehicleDoorsLockedForAllPlayers(vehicle, false)
+					FreezeEntityPosition(playerPed, false)
+					ClearPedTasksImmediately(playerPed)
+
+					if Config.Notifications then
+						TriggerEvent('notifications', "#FF0000", _U('header'), _U('vehicle_unlocked'))
+					elseif Config.OkokNotify then
+						exports['okokNotify']:Alert(_U('header'), _U('vehicle_unlocked'), 5000, 'info')
+					else
+						TriggerEvent('esx:showNotification', _U('vehicle_unlocked'))
+					end
+				else
+					TriggerServerEvent('EngineToggle:delhotwire')
+					FreezeEntityPosition(playerPed, false)
+					ClearPedTasksImmediately(playerPed)
+
+					if Config.Notifications then
+						TriggerEvent('notifications', "#FF0000", _U('header'), _U('hotwiring_failed'))
+					elseif Config.OkokNotify then
+						exports['okokNotify']:Alert(_U('header'), _U('hotwiring_failed'), 5000, 'info')
+					else
+						TriggerEvent('esx:showNotification', _U('hotwiring_failed'))
+					end
+				end
+
+				Citizen.Wait(500)
+
+				if GetVehicleDoorLockStatus(vehicle) == 1 then
+					SetVehicleNeedsToBeHotwired(vehicle, true)
+				else
+					IsVehicleNeedsToBeHotwired(vehicle)
+				end
+
+				TaskEnterVehicle(playerPed, vehicle, 10.0, -1, 1.0, 1, 0)
+				Citizen.Wait(5000)
+
+				if Config.VehicleKeyChain then
+					local vehicle2 = GetVehiclePedIsIn(playerPed, false)
+					local plate = GetVehicleNumberPlateText(vehicle2)
+
+					if Config.Notifications then
+						TriggerEvent('notifications', "#FF0000", _U('header'), _U('hotwiring_foundkey'))
+					elseif Config.OkokNotify then
+						exports['okokNotify']:Alert(_U('header'), _U('hotwiring_foundkey'), 5000, 'info')
+					else
+						TriggerEvent('esx:showNotification', _U('hotwiring_foundkey'))
+					end
+
+					TriggerServerEvent('EngineToggle:addcarkeys', playerPed, plate)
+					Citizen.Wait(200)
+					TriggerEvent('EngineToggle:Engine')
+				else
+					TriggerEvent('EngineToggle:Engine')
+				end
+			end)
+		end
+	end
+end)
+
 function table.contains(table, element)
 	for _, value in pairs(table) do
 		if value[1] == element then
@@ -144,4 +265,11 @@ function table.contains(table, element)
 		end
 	end
 	return false
+end
+
+function loadAnimDict(dict)
+    while (not HasAnimDictLoaded(dict)) do
+        RequestAnimDict(dict)
+        Citizen.Wait(5)
+    end
 end
