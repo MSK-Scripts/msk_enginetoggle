@@ -40,6 +40,7 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 * okokNotify (https://forum.cfx.re/t/okoknotify-standalone-paid/3907758)
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 * RealisticVehicleDamage (https://forum.cfx.re/t/release-realistic-vehicle-failure/57801)
+
 #### VehicleKeyChain
 Make sure to add the following in every Script that spawns a Vehicle
 ```lua
