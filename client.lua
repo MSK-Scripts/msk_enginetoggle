@@ -247,7 +247,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 						TriggerEvent('esx:showNotification', _U('hotwiring_foundkey'))
 					end
 
-					TriggerServerEvent('EngineToggle:addcarkeys', playerPed, plate)
+					TriggerServerEvent('EngineToggle:addcarkeys', plate)
 					Citizen.Wait(200)
 					TriggerEvent('EngineToggle:Engine')
 				else

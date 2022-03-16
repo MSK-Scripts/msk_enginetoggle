@@ -41,10 +41,8 @@ AddEventHandler('EngineToggle:hasItem', function()
 end)
 
 RegisterNetEvent('EngineToggle:addcarkeys')
-AddEventHandler('EngineToggle:addcarkeys', function(source, plate)
-	local xPlayer = ESX.GetPlayerFromId(source)
-
-	exports["VehicleKeyChain"]:AddTempKey(xPlayer, plate)
+AddEventHandler('EngineToggle:addcarkeys', function(plate)
+    exports["VehicleKeyChain"]:AddTempKey(source, plate)
 end)
 
 ---- Github Updater ----
