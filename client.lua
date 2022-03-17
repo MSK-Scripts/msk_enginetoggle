@@ -166,7 +166,6 @@ AddEventHandler('EngineToggle:hotwire', function()
 		local vehicle
 		local animation
 		local chance = math.random(100)
-		local alarm = math.random(100)
 
 		if IsPedInAnyVehicle(playerPed, false) then
 			vehicle = GetVehiclePedIsIn(playerPed, false)
@@ -177,7 +176,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 		end
 
 		if DoesEntityExist(vehicle) then
-			if alarm <= Config.Probability.alarm then
+			if chance <= Config.Probability.alarm then
 				SetVehicleAlarm(vehicle, true)
 				StartVehicleAlarm(vehicle)
 			end
@@ -239,19 +238,16 @@ AddEventHandler('EngineToggle:hotwire', function()
 					local vehicle2 = GetVehiclePedIsIn(playerPed, false)
 					local plate = GetVehicleNumberPlateText(vehicle2)
 
-					if Config.Notifications then
-						TriggerEvent('notifications', "#FF0000", _U('header'), _U('hotwiring_foundkey'))
-					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert(_U('header'), _U('hotwiring_foundkey'), 5000, 'info')
-					else
-						TriggerEvent('esx:showNotification', _U('hotwiring_foundkey'))
-					end
-
 					TriggerServerEvent('EngineToggle:addcarkeys', plate)
 					Citizen.Wait(200)
-					TriggerEvent('EngineToggle:Engine')
+
+					if Config.startEngine then
+						TriggerEvent('EngineToggle:Engine')
+					end
 				else
-					TriggerEvent('EngineToggle:Engine')
+					if Config.startEngine then
+						TriggerEvent('EngineToggle:Engine')
+					end
 				end
 			end)
 		end

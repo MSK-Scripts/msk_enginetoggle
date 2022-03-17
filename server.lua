@@ -43,6 +43,14 @@ end)
 RegisterNetEvent('EngineToggle:addcarkeys')
 AddEventHandler('EngineToggle:addcarkeys', function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
+
+	if Config.Notifications then
+		TriggerEvent('notifications', source,"#FF0000", _U('header'), _U('hotwiring_foundkey'))
+	elseif Config.OkokNotify then
+		TriggerClientEvent('okokNotify:Alert', source, _U('header'), _U('hotwiring_foundkey'), 5000, 'info')
+	else
+		TriggerEvent('esx:showNotification', source, _U('hotwiring_foundkey'))
+	end
 end)
 
 ---- Github Updater ----
@@ -84,4 +92,3 @@ else
 	print(resourceName .. '^2 ✓ Resource loaded^0')
 	print("###############################")
 end
----- Github Updater ----

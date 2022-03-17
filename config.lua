@@ -20,6 +20,7 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 ----------------------------------------------------------------
 Config.RemoveLockpickItem = true -- Set true if you like to remove item after failing lockpicking
 Config.LockpickItem = 'lockpick' -- Set the itemname what you want to use
+Config.startEngine = true -- Set true if you want to start the engine after successfull lockpicking
 Config.Probability = {
     lockpick = 66, -- default: 66%
     alarm = 33, -- default: 33%
