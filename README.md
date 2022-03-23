@@ -11,7 +11,7 @@ FiveM Script - Vehicle Engine Toggle On/Off
 * You can choose if you use a Hotkey or a Command.
 * You can choose between 3 diffrent Notifications.
 * If you set `Config.VehicleKeyChain` to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
-* * Hotwire Function in compatibility with VKC
+* Hotwire Function in compatibility with VKC
 
 ## Config
 ```lua
