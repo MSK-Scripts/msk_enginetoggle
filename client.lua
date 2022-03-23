@@ -238,7 +238,22 @@ AddEventHandler('EngineToggle:hotwire', function()
 					local vehicle2 = GetVehiclePedIsIn(playerPed, false)
 					local plate = GetVehicleNumberPlateText(vehicle2)
 
-					TriggerServerEvent('EngineToggle:addcarkeys', plate)
+					if Config.Probability.enableSearchKey then
+						if chance <= Config.Probability.searchKey then
+							TriggerServerEvent('EngineToggle:addcarkeys', plate)
+						else
+							if Config.Notifications then
+								TriggerEvent('notifications', "#FF0000", _U('header'), _U('hotwiring_notfoundkey'))
+							elseif Config.OkokNotify then
+								exports['okokNotify']:Alert(_U('header'), _U('hotwiring_notfoundkey'), 5000, 'info')
+							else
+								TriggerEvent('esx:showNotification', _U('hotwiring_notfoundkey'))
+							end
+						end
+					else
+						TriggerServerEvent('EngineToggle:addcarkeys', plate)
+					end
+
 					Citizen.Wait(200)
 
 					if Config.startEngine then

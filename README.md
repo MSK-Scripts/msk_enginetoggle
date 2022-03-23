@@ -40,6 +40,7 @@ Config.startEngine = true -- Set true if you want to start the engine after succ
 Config.Probability = {
     lockpick = 66, -- default: 66%
     alarm = 33, -- default: 33%
+    enableSearchKey = true, -- Set false if you dont want this
     searchKey = 66 -- default: 66%
 }
 Config.LockpickKey = {
