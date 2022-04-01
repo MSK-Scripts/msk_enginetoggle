@@ -98,13 +98,13 @@ exports["kimi_callbacks"]:Trigger("VKC:removeKey", 'PLATE_TEXT', 1)
 If you only want a temporary key that will be deleted after restart use that
 ```lua
 -- serverside --
-RegisterNetEvent("gibkey")
-AddEventHandler("gibkey", function(plate)
+RegisterNetEvent("VKC:giveKey")
+AddEventHandler("VKC:giveKey", function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
 end)
 
 -- clientside --
-TriggerServerEvent("gibkey", "XXXXXX")
+TriggerServerEvent("VKC:giveKey", "PLATE")
 ```
 #### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
