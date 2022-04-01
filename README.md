@@ -76,7 +76,7 @@ Config.Animation = {
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 * ProgessBar (https://forum.cfx.re/t/release-pogress-bar-progress-bar-standalone-smooth-animation/838951)
 
-#### VehicleKeyChain
+### VehicleKeyChain
 If you want to add a permanent key:
 ```lua
 -- clientside --
@@ -95,7 +95,7 @@ exports["kimi_callbacks"]:Trigger("VKC:createNewKey", 'PLATE_TEXT', 1, true)
 -- Remove the Key from the Player
 exports["kimi_callbacks"]:Trigger("VKC:removeKey", 'PLATE_TEXT', 1)
 ```
-If you only want a temporary key that will be deleted after restart use that
+If you only want a temporary key that will be deleted after restart use this:
 ```lua
 -- serverside --
 RegisterNetEvent("VKC:giveTempKey")
@@ -106,7 +106,7 @@ end)
 -- clientside --
 TriggerServerEvent("VKC:giveTempKey", "PLATE")
 ```
-#### RealisticVehicleDamage
+### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
