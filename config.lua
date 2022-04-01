@@ -44,7 +44,7 @@ Config.Animation = {
         anim = 'machinic_loop_mechandplayer'
     },
     outsideVehicle = { -- Animation outside Vehicle
-    dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
-    anim = 'machinic_loop_mechandplayer'
+        dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
+        anim = 'machinic_loop_mechandplayer'
     }
 }
