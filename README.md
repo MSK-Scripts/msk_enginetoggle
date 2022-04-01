@@ -77,7 +77,9 @@ Config.Animation = {
 * ProgessBar (https://forum.cfx.re/t/release-pogress-bar-progress-bar-standalone-smooth-animation/838951)
 
 #### VehicleKeyChain
-Make sure to add the following in every Script that spawns a Vehicle
+**Make sure to add the following in every Script that spawns a Vehicle**
+
+If you want to add a permanent key:
 ```lua
 local numberPlate = GetVehicleNumberPlateText(vehicle)
 -- Give a Key to the Player
@@ -92,6 +94,17 @@ SetVehicleNumberPlateText(vehicle, 'PLATE_TEXT')
 exports["kimi_callbacks"]:Trigger("VKC:createNewKey", 'PLATE_TEXT', 1, true)
 -- Remove the Key from the Player
 exports["kimi_callbacks"]:Trigger("VKC:removeKey", 'PLATE_TEXT', 1)
+```
+If you only want a temporary key that will be deleted after restart use that
+```lua
+-- serverside --
+RegisterNetEvent("gibkey")
+AddEventHandler("gibkey", function(plate)
+    exports["VehicleKeyChain"]:AddTempKey(source, plate)
+end)
+
+-- clientside --
+TriggerServerEvent("gibkey", "XXXXXX")
 ```
 #### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
