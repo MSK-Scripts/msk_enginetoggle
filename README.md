@@ -77,8 +77,6 @@ Config.Animation = {
 * ProgessBar (https://forum.cfx.re/t/release-pogress-bar-progress-bar-standalone-smooth-animation/838951)
 
 #### VehicleKeyChain
-**Make sure to add the following in every Script that spawns a Vehicle**
-
 If you want to add a permanent key:
 ```lua
 local numberPlate = GetVehicleNumberPlateText(vehicle)
