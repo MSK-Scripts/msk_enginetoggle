@@ -183,7 +183,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 
 			if not Config.Animation.InsideOutsideAnimation then
 				TaskStartScenarioInPlace(playerPed, Config.Animation.InsideOutsideAnimation, 0, true)
-				FreezeEntityPosition(PlayerPedId(), true)
+				FreezeEntityPosition(playerPed, true)
 			elseif Config.Animation.InsideOutsideAnimation then
 				loadAnimDict(animation.dict)
 				TaskPlayAnim(playerPed, animation.dict, animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
@@ -233,6 +233,10 @@ AddEventHandler('EngineToggle:hotwire', function()
 
 				TaskEnterVehicle(playerPed, vehicle, 10.0, -1, 1.0, 1, 0)
 				Citizen.Wait(5000)
+
+				if (not DoesEntityExist(vehicle)) then
+					return
+				end
 
 				if Config.VehicleKeyChain then
 					local vehicle2 = GetVehiclePedIsIn(playerPed, false)
