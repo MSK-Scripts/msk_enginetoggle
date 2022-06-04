@@ -31,11 +31,11 @@ AddEventHandler('EngineToggle:hasItem', function()
 		TriggerClientEvent('EngineToggle:hotwire', source)
 	else
 		if Config.Notifications then
-			TriggerClientEvent('notifications', source, "#FF0000", _U('header'), _U('hasno_lockpick'))
+			TriggerClientEvent('notifications', source, "#FF0000", Translation[Config.Locale]['header'], Translation[Config.Locale]['hasno_lockpick'])
 		elseif Config.OkokNotify then
-			TriggerClientEvent('okokNotify:Alert', source, _U('header'), _U('hasno_lockpick'), 5000, 'info')
+			TriggerClientEvent('okokNotify:Alert', source, Translation[Config.Locale]['header'], Translation[Config.Locale]['hasno_lockpick'], 5000, 'info')
 		else
-			TriggerEvent('esx:showNotification', source, _U('hasno_lockpick'))
+			TriggerEvent('esx:showNotification', source, Translation[Config.Locale]['hasno_lockpick'])
 		end
 	end
 end)
@@ -45,11 +45,11 @@ AddEventHandler('EngineToggle:addcarkeys', function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
 
 	if Config.Notifications then
-		TriggerEvent('notifications', source,"#FF0000", _U('header'), _U('hotwiring_foundkey'))
+		TriggerEvent('notifications', source,"#FF0000", Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_foundkey'])
 	elseif Config.OkokNotify then
-		TriggerClientEvent('okokNotify:Alert', source, _U('header'), _U('hotwiring_foundkey'), 5000, 'info')
+		TriggerClientEvent('okokNotify:Alert', source, Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_foundkey'], 5000, 'info')
 	else
-		TriggerEvent('esx:showNotification', source, _U('hotwiring_foundkey'))
+		TriggerEvent('esx:showNotification', source, Translation[Config.Locale]['hotwiring_foundkey'])
 	end
 end)
 

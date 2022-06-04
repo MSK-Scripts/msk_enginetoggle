@@ -58,6 +58,14 @@ AddEventHandler('EngineToggle:Engine', function()
 	end
 	Citizen.Wait(0)
 
+	local netTime = 15
+    NetworkRequestControlOfEntity(veh)
+    while not NetworkHasControlOfEntity(veh) and netTime > 0 do 
+        NetworkRequestControlOfEntity(veh)
+        Citizen.Wait(1)
+        netTime = netTime -1
+    end
+
 	if Config.VehicleKeyChain then
 		local isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(veh)
 
@@ -66,29 +74,29 @@ AddEventHandler('EngineToggle:Engine', function()
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
 					if Config.Notifications then
-						TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_start'))
+						TriggerEvent('notifications', "#00EE00", Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['n_engine_start'])
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_start'), 5000, 'info')
+						exports['okokNotify']:Alert(Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['okok_engine_start'], 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', _U('engine_start'))
+						TriggerEvent('esx:showNotification', Translation[Config.Locale]['engine_start'])
 					end
 				else
 					if Config.Notifications then
-						TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_engine_stop'))
+						TriggerEvent('notifications', "#FF0000", Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['n_engine_stop'])
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_stop'), 5000, 'info')
+						exports['okokNotify']:Alert(Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['okok_engine_stop'], 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', _U('engine_stop'))
+						TriggerEvent('esx:showNotification', Translation[Config.Locale]['engine_stop'])
 					end
 				end
 			end 
 		elseif IsPedInAnyVehicle(PlayerPedId(), false) and (not isVehicleOrKeyOwner) then
 			if Config.Notifications then
-				TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_key_nokey'))
+				TriggerEvent('notifications', "#FF0000", Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['n_key_nokey'])
 			elseif Config.OkokNotify then
-				exports['okokNotify']:Alert(_U('notification_header'), _U('okok_key_nokey'), 5000, 'error')
+				exports['okokNotify']:Alert(Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['okok_key_nokey'], 5000, 'error')
 			else
-				TriggerEvent('esx:showNotification', _U('key_nokey'))
+				TriggerEvent('esx:showNotification', Translation[Config.Locale]['key_nokey'])
 			end
     	end 
 	else
@@ -97,19 +105,19 @@ AddEventHandler('EngineToggle:Engine', function()
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
 					if Config.Notifications then
-						TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_start'))
+						TriggerEvent('notifications', "#00EE00", Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['n_engine_start'])
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_start'), 5000, 'info')
+						exports['okokNotify']:Alert(Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['okok_engine_start'], 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', _U('engine_start'))
+						TriggerEvent('esx:showNotification', Translation[Config.Locale]['engine_start'])
 					end
 				else
 					if Config.Notifications then
-						TriggerEvent('notifications', "#FF0000", _U('notification_header'), _U('n_engine_stop'))
+						TriggerEvent('notifications', "#FF0000", Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['n_engine_stop'])
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_stop'), 5000, 'info')
+						exports['okokNotify']:Alert(Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['okok_engine_stop'], 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', _U('engine_stop'))
+						TriggerEvent('esx:showNotification', Translation[Config.Locale]['engine_stop'])
 					end
 				end
 			end
@@ -132,11 +140,11 @@ if Config.OnAtEnter then
 						Citizen.Wait(0)
 						vehicle[2] = true
 						if Config.Notifications then
-							TriggerEvent('notifications', "#00EE00", _U('notification_header'), _U('n_engine_onatenter'))
+							TriggerEvent('notifications', "#00EE00", Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['n_engine_onatenter'])
 						elseif Config.OkokNotify then
-							exports['okokNotify']:Alert(_U('notification_header'), _U('okok_engine_onatenter'), 5000, 'warning')
+							exports['okokNotify']:Alert(Translation[Config.Locale]['notification_header'], Translation[Config.Locale]['okok_engine_onatenter'], 5000, 'warning')
 						else
-							TriggerEvent('esx:showNotification', _U('engine_onatenter'))
+							TriggerEvent('esx:showNotification', Translation[Config.Locale]['engine_onatenter'])
 						end
 					end
 				end
@@ -192,7 +200,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 
 			Citizen.CreateThread(function()
 				if Config.ProgessBar.enable then
-					exports['pogressBar']:drawBar(animTime, _U('hotwiring'))
+					exports['pogressBar']:drawBar(animTime, Translation[Config.Locale]['hotwiring'])
 				end
 				Citizen.Wait(animTime)
 
@@ -203,11 +211,11 @@ AddEventHandler('EngineToggle:hotwire', function()
 					ClearPedTasksImmediately(playerPed)
 
 					if Config.Notifications then
-						TriggerEvent('notifications', "#FF0000", _U('header'), _U('vehicle_unlocked'))
+						TriggerEvent('notifications', "#FF0000", Translation[Config.Locale]['header'], Translation[Config.Locale]['vehicle_unlocked'])
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert(_U('header'), _U('vehicle_unlocked'), 5000, 'info')
+						exports['okokNotify']:Alert(Translation[Config.Locale]['header'], Translation[Config.Locale]['vehicle_unlocked'], 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', _U('vehicle_unlocked'))
+						TriggerEvent('esx:showNotification', Translation[Config.Locale]['vehicle_unlocked'])
 					end
 				else
 					TriggerServerEvent('EngineToggle:delhotwire')
@@ -215,11 +223,11 @@ AddEventHandler('EngineToggle:hotwire', function()
 					ClearPedTasksImmediately(playerPed)
 
 					if Config.Notifications then
-						TriggerEvent('notifications', "#FF0000", _U('header'), _U('hotwiring_failed'))
+						TriggerEvent('notifications', "#FF0000", Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_failed'])
 					elseif Config.OkokNotify then
-						exports['okokNotify']:Alert(_U('header'), _U('hotwiring_failed'), 5000, 'info')
+						exports['okokNotify']:Alert(Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_failed'], 5000, 'info')
 					else
-						TriggerEvent('esx:showNotification', _U('hotwiring_failed'))
+						TriggerEvent('esx:showNotification', Translation[Config.Locale]['hotwiring_failed'])
 					end
 				end
 
@@ -247,11 +255,11 @@ AddEventHandler('EngineToggle:hotwire', function()
 							TriggerServerEvent('EngineToggle:addcarkeys', plate)
 						else
 							if Config.Notifications then
-								TriggerEvent('notifications', "#FF0000", _U('header'), _U('hotwiring_notfoundkey'))
+								TriggerEvent('notifications', "#FF0000", Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_notfoundkey'])
 							elseif Config.OkokNotify then
-								exports['okokNotify']:Alert(_U('header'), _U('hotwiring_notfoundkey'), 5000, 'info')
+								exports['okokNotify']:Alert(Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_notfoundkey'], 5000, 'info')
 							else
-								TriggerEvent('esx:showNotification', _U('hotwiring_notfoundkey'))
+								TriggerEvent('esx:showNotification', Translation[Config.Locale]['hotwiring_notfoundkey'])
 							end
 						end
 					else

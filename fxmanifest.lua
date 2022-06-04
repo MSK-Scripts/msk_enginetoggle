@@ -1,14 +1,15 @@
 fx_version 'adamant'
 games { 'gta5' }
 
-author 'Musiker15'
-description 'ESX Better Engine Toggle'
-version '3.1.4'
+author 'Musiker15 - MSK Scripts'
+description 'ESX EngineToggle'
+version '3.2'
+
+lua54 'yes'
 
 shared_script {
-	'@es_extended/locale.lua',
-	'locales/*.lua',
     'config.lua',
+	'translation.lua'
 }
 
 client_scripts {
