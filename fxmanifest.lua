@@ -2,8 +2,9 @@ fx_version 'adamant'
 games { 'gta5' }
 
 author 'Musiker15 - MSK Scripts'
-description 'ESX EngineToggle'
-version '3.2'
+name 'msk_enginetoggle'
+description 'EngineToggle for Vehicles'
+version '3.3'
 
 lua54 'yes'
 
