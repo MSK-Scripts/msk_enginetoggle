@@ -69,7 +69,7 @@ AddEventHandler('EngineToggle:Engine', function()
 	if Config.VehicleKeyChain then
 		local isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(veh)
 
-		if IsPedInAnyVehicle(PlayerPedId(), false) and isVehicleOrKeyOwner then 
+		if IsPedInAnyVehicle(PlayerPedId(), false) and isVehicleOrKeyOwner then
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
