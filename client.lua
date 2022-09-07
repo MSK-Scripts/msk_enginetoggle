@@ -27,7 +27,7 @@ Citizen.CreateThread(function()
 			if DoesEntityExist(vehicle[1]) then
 				if (GetPedInVehicleSeat(vehicle[1], -1) == PlayerPedId()) or IsVehicleSeatFree(vehicle[1], -1) then
 					if RPWorking then
-						SetVehicleEngineOn(vehicle[1], vehicle[2], true, false)
+						SetVehicleEngineOn(vehicle[1], vehicle[2], false, false)
 						SetVehicleJetEngineOn(vehicle[1], vehicle[2])
 						if not IsPedInAnyVehicle(PlayerPedId(), false) or (IsPedInAnyVehicle(PlayerPedId(), false) and vehicle[1]~= GetVehiclePedIsIn(PlayerPedId(), false)) then
 							if IsThisModelAHeli(GetEntityModel(vehicle[1])) or IsThisModelAPlane(GetEntityModel(vehicle[1])) then
