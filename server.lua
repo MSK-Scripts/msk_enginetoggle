@@ -1,5 +1,5 @@
 local ESX = nil
-TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+TriggerEvent(Config.getSharedObject, function(obj) ESX = obj end)
 
 if Config.UseCommand then
 	RegisterCommand(Config.Commad, function(source)
@@ -30,27 +30,14 @@ AddEventHandler('EngineToggle:hasItem', function()
 	if hasItem > 0 then
 		TriggerClientEvent('EngineToggle:hotwire', source)
 	else
-		if Config.Notifications then
-			TriggerClientEvent('notifications', source, "#FF0000", Translation[Config.Locale]['header'], Translation[Config.Locale]['hasno_lockpick'])
-		elseif Config.OkokNotify then
-			TriggerClientEvent('okokNotify:Alert', source, Translation[Config.Locale]['header'], Translation[Config.Locale]['hasno_lockpick'], 5000, 'info')
-		else
-			TriggerEvent('esx:showNotification', source, Translation[Config.Locale]['hasno_lockpick'])
-		end
+		Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hasno_lockpick'])
 	end
 end)
 
 RegisterNetEvent('EngineToggle:addcarkeys')
 AddEventHandler('EngineToggle:addcarkeys', function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
-
-	if Config.Notifications then
-		TriggerEvent('notifications', source,"#FF0000", Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_foundkey'])
-	elseif Config.OkokNotify then
-		TriggerClientEvent('okokNotify:Alert', source, Translation[Config.Locale]['header'], Translation[Config.Locale]['hotwiring_foundkey'], 5000, 'info')
-	else
-		TriggerEvent('esx:showNotification', source, Translation[Config.Locale]['hotwiring_foundkey'])
-	end
+	Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hotwiring_foundkey'])
 end)
 
 ---- Github Updater ----

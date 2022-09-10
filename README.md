@@ -19,6 +19,7 @@ Config = {}
 ----------------------------------------------------------------
 Config.Locale = 'de'
 Config.VersionChecker = true
+Config.getSharedObject = 'esx:getSharedObject'
 ----------------------------------------------------------------
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 Config.OnAtEnter = false
@@ -28,12 +29,22 @@ Config.UseKey = true -- Set true if you want to use a Hotkey
 Config.UseCommand = false -- Set true if you want to use a Command
     Config.Commad = 'engine'
 ----------------------------------------------------------------
--- If both false then Default ESX Notification is active!
-Config.Notifications = false -- https://forum.cfx.re/t/release-standalone-notification-script/1464244
-Config.OkokNotify = true -- https://forum.cfx.re/t/okoknotify-standalone-paid/3907758
-----------------------------------------------------------------
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package/4524211
+----------------------------------------------------------------
+-- !!! This function is clientside AND serverside !!!
+-- Look for type == 'client' and type == 'server'
+Config.Notification = function(src, type, xPlayer, message) -- xPlayer = ESX.GetPlayerFromId(src)
+    if type == 'client' then -- clientside
+        ESX.ShowNotification(message) -- replace this with your Notify // example: exports['okokNotify']:Alert('Crafting', message, 5000, 'info')
+    elseif type == 'server' then -- serverside
+        xPlayer.showNotification(message) -- replace this with your Notify // example: TriggerClientEvent('okokNotify:Alert', src, 'Crafting', message, 5000, 'info')
+    end
+end
+----------------------------------------------------------------
+Config.progressBar = function(time, message)
+    exports['pogressBar']:drawBar(time, message)
+end
 ----------------------------------------------------------------
 Config.RemoveLockpickItem = true -- Set true if you like to remove item after failing lockpicking
 Config.LockpickItem = 'lockpick' -- Set the itemname what you want to use
