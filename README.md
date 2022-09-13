@@ -91,9 +91,9 @@ If you want to add a permanent key:
 -- clientside --
 local plate = GetVehicleNumberPlateText(vehicle)
 -- Give a Key to the Player
-exports["VehicleKeyChain"]:AddKey(PlayerId(), plate, 1)
+TriggerServerEvent('VKC:setKey', true, plate, 1)
 -- Remove the Key from the Player
-exports["VehicleKeyChain"]:RemoveKey(PlayerId(), plate, 1)
+TriggerServerEvent('VKC:setKey', false, plate, 1)
 
 -- or this one
 
@@ -102,20 +102,30 @@ exports["VehicleKeyChain"]:RemoveKey(PlayerId(), plate, 1)
 local plate = 'ABC 123'
 SetVehicleNumberPlateText(vehicle, plate) -- Only if you don't use AdvancedParking
 exports["AdvancedParking"]:UpdatePlate(vehicle, plate) -- Only if you use AdvancedParking
-exports["VehicleKeyChain"]:AddKey(PlayerId(), plate, 1)
+TriggerServerEvent('VKC:setKey', true, plate, 1)
 -- Remove the Key from the Player
-exports["VehicleKeyChain"]:RemoveKey(PlayerId(), plate, 1)
+TriggerServerEvent('VKC:setKey', false, plate, 1)
+
+-- serverside --
+RegisterServerEvent('VKC:setKey')
+AddEventHandler('VKC:setKey', function(set, plate, count)
+    if set then -- Add Key
+        exports["VehicleKeyChain"]:AddKey(source, plate, count)
+    else -- Remove Key
+        exports["VehicleKeyChain"]:RemoveKey(source, plate, count)
+    end
+end)
 ```
 If you only want a temporary key that will be deleted after restart use this:
 ```lua
+-- clientside --
+TriggerServerEvent("VKC:giveTempKey", "PLATE")
+
 -- serverside --
 RegisterNetEvent("VKC:giveTempKey")
 AddEventHandler("VKC:giveTempKey", function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
 end)
-
--- clientside --
-TriggerServerEvent("VKC:giveTempKey", "PLATE")
 ```
 ### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
