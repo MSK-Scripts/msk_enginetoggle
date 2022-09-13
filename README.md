@@ -119,12 +119,17 @@ end)
 If you only want a temporary key that will be deleted after restart use this:
 ```lua
 -- clientside --
-TriggerServerEvent("VKC:giveTempKey", "PLATE")
+TriggerServerEvent("VKC:giveTempKey", true, "PLATE") -- Add Temp Key
+TriggerServerEvent("VKC:giveTempKey", false, "PLATE") -- Remove Temp Key
 
 -- serverside --
 RegisterNetEvent("VKC:giveTempKey")
-AddEventHandler("VKC:giveTempKey", function(plate)
-    exports["VehicleKeyChain"]:AddTempKey(source, plate)
+AddEventHandler("VKC:giveTempKey", function(set, plate)
+    if set then -- Add Temp Key
+        exports["VehicleKeyChain"]:AddTempKey(source, plate)
+    else -- Remove Temp Key
+        exports["VehicleKeyChain"]:RemoveTempKey(source, plate)
+    end
 end)
 ```
 ### RealisticVehicleDamage
