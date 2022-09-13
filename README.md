@@ -82,8 +82,6 @@ Config.Animation = {
 * Standalone
 * ESX Framework **only** for `ESX.ShowNotification`
 ### Optional
-* Notification (https://forum.cfx.re/t/release-standalone-notification-script/1464244)
-* okokNotify (https://forum.cfx.re/t/okoknotify-standalone-paid/3907758)
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 * ProgessBar (https://forum.cfx.re/t/release-pogress-bar-progress-bar-standalone-smooth-animation/838951)
 
