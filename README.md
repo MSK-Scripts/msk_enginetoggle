@@ -91,18 +91,18 @@ If you want to add a permanent key:
 -- clientside --
 local numberPlate = GetVehicleNumberPlateText(vehicle)
 -- Give a Key to the Player
-exports["kimi_callbacks"]:Trigger("VKC:createNewKey", numberPlate, 1, true)
+exports["VehicleKeyChain"]:AddKey(PlayerId(), numberPlate, 1)
 -- Remove the Key from the Player
-exports["kimi_callbacks"]:Trigger("VKC:removeKey", numberPlate, 1)
+exports["VehicleKeyChain"]:RemoveKey(PlayerId(), numberPlate, 1)
 
 -- or this one
 
 -- clientside --
 -- Give a Key to the Player
 SetVehicleNumberPlateText(vehicle, 'PLATE_TEXT')
-exports["kimi_callbacks"]:Trigger("VKC:createNewKey", 'PLATE_TEXT', 1, true)
+exports["VehicleKeyChain"]:AddKey(PlayerId(), 'PLATE_TEXT', 1)
 -- Remove the Key from the Player
-exports["kimi_callbacks"]:Trigger("VKC:removeKey", 'PLATE_TEXT', 1)
+exports["VehicleKeyChain"]:RemoveKey(PlayerId(), 'PLATE_TEXT', 1)
 ```
 If you only want a temporary key that will be deleted after restart use this:
 ```lua
