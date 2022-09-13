@@ -80,7 +80,7 @@ Config.Animation = {
 
 ## Requirements
 * Standalone
-* ESX Framework **only** for `ESX.ShowNotification`
+* ESX Framework **only** for `Hotwire Function`
 ### Optional
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 * ProgessBar (https://forum.cfx.re/t/release-pogress-bar-progress-bar-standalone-smooth-animation/838951)
