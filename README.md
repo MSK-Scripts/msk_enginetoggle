@@ -89,20 +89,22 @@ Config.Animation = {
 If you want to add a permanent key:
 ```lua
 -- clientside --
-local numberPlate = GetVehicleNumberPlateText(vehicle)
+local plate = GetVehicleNumberPlateText(vehicle)
 -- Give a Key to the Player
-exports["VehicleKeyChain"]:AddKey(PlayerId(), numberPlate, 1)
+exports["VehicleKeyChain"]:AddKey(PlayerId(), plate, 1)
 -- Remove the Key from the Player
-exports["VehicleKeyChain"]:RemoveKey(PlayerId(), numberPlate, 1)
+exports["VehicleKeyChain"]:RemoveKey(PlayerId(), plate, 1)
 
 -- or this one
 
 -- clientside --
 -- Give a Key to the Player
-SetVehicleNumberPlateText(vehicle, 'PLATE_TEXT')
-exports["VehicleKeyChain"]:AddKey(PlayerId(), 'PLATE_TEXT', 1)
+local plate = 'ABC 123'
+SetVehicleNumberPlateText(vehicle, plate) -- Only if you don't use AdvancedParking
+exports["AdvancedParking"]:UpdatePlate(vehicle, plate) -- Only if you use AdvancedParking
+exports["VehicleKeyChain"]:AddKey(PlayerId(), plate, 1)
 -- Remove the Key from the Player
-exports["VehicleKeyChain"]:RemoveKey(PlayerId(), 'PLATE_TEXT', 1)
+exports["VehicleKeyChain"]:RemoveKey(PlayerId(), plate, 1)
 ```
 If you only want a temporary key that will be deleted after restart use this:
 ```lua
