@@ -90,10 +90,8 @@ If you want to add a permanent key:
 ```lua
 -- clientside --
 local plate = GetVehicleNumberPlateText(vehicle)
--- Give a Key to the Player
-TriggerServerEvent('VKC:setKey', true, plate, 1)
--- Remove the Key from the Player
-TriggerServerEvent('VKC:setKey', false, plate, 1)
+TriggerServerEvent('VKC:setKey', true, plate, 1) -- Give a Key to the Player
+TriggerServerEvent('VKC:setKey', false, plate, 1) -- Remove the Key from the Player
 
 -- or this one
 
