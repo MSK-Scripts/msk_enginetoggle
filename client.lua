@@ -1,10 +1,14 @@
 ESX = nil
-Citizen.CreateThread(function()
-	while ESX == nil do
-		TriggerEvent(Config.getSharedObject, function(obj) ESX = obj end)
-		Citizen.Wait(0)
-	end
-end)
+if Config.ESX.version:match('1.2') then
+    Citizen.CreateThread(function()
+        while ESX == nil do
+            TriggerEvent(Config.ESX.getSharedObject, function(obj) ESX = obj end)
+            Citizen.Wait(0)
+        end
+    end)
+elseif Config.ESX.version:match('legacy') then
+    ESX = exports["es_extended"]:getSharedObject()
+end
 
 local vehicles = {}; RPWorking = true
 

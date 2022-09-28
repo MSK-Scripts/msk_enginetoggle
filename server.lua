@@ -1,5 +1,9 @@
-local ESX = nil
-TriggerEvent(Config.getSharedObject, function(obj) ESX = obj end)
+ESX = nil
+if Config.ESX.version:match('1.2') then
+	TriggerEvent(Config.ESX.getSharedObject, function(obj) ESX = obj end)
+elseif Config.ESX.version:match('legacy') then
+    ESX = exports["es_extended"]:getSharedObject()
+end
 
 if Config.UseCommand then
 	RegisterCommand(Config.Commad, function(source)

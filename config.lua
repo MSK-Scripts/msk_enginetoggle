@@ -2,7 +2,10 @@ Config = {}
 ----------------------------------------------------------------
 Config.Locale = 'de'
 Config.VersionChecker = true
-Config.getSharedObject = 'esx:getSharedObject'
+Config.ESX = {
+    version = 'legacy', -- Set '1.2' or 'legacy'
+    getSharedObject = 'esx:getSharedObject' -- Only needed if version set to '1.2'
+}
 ----------------------------------------------------------------
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 Config.OnAtEnter = false
