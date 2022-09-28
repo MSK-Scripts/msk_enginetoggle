@@ -1,9 +1,9 @@
 ESX = nil
 if Config.ESX.version:match('1.2') then
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while ESX == nil do
             TriggerEvent(Config.ESX.getSharedObject, function(obj) ESX = obj end)
-            Citizen.Wait(0)
+            Wait(0)
         end
     end)
 elseif Config.ESX.version:match('legacy') then
@@ -12,9 +12,9 @@ end
 
 local vehicles = {}; RPWorking = true
 
-Citizen.CreateThread(function()
+CreateThread(function()
 	while true do
-		Citizen.Wait(0)
+		Wait(0)
 		if Config.UseKey and Config.ToggleKey and IsPedInAnyVehicle(PlayerPedId()) and (GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) == PlayerPedId()) then
 			if IsControlJustReleased(1, Config.ToggleKey) then
 				TriggerEvent('EngineToggle:Engine')
@@ -60,13 +60,13 @@ AddEventHandler('EngineToggle:Engine', function()
 			StateIndex = i
 		end
 	end
-	Citizen.Wait(0)
+	Wait(0)
 
 	local netTime = 15
     NetworkRequestControlOfEntity(veh)
     while not NetworkHasControlOfEntity(veh) and netTime > 0 do 
         NetworkRequestControlOfEntity(veh)
-        Citizen.Wait(1)
+        Wait(1)
         netTime = netTime -1
     end
 
@@ -105,13 +105,13 @@ AddEventHandler('EngineToggle:RPDamage', function(State)
 end)
 
 if Config.OnAtEnter then
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while true do
-			Citizen.Wait(0)
+			Wait(0)
 			if GetSeatPedIsTryingToEnter(PlayerPedId()) == -1 then
 				for i, vehicle in ipairs(vehicles) do
 					if vehicle[1] == GetVehiclePedIsTryingToEnter(PlayerPedId()) and not vehicle[2] then
-						Citizen.Wait(0)
+						Wait(0)
 						vehicle[2] = true
 						Config.Notification(source, 'client', nil, Translation[Config.Locale]['engine_onatenter'])
 					end
@@ -122,9 +122,9 @@ if Config.OnAtEnter then
 end
 
 if Config.LockpickKey.enable then
-	Citizen.CreateThread(function()
+	CreateThread(function()
 		while true do
-			Citizen.Wait(0)
+			Wait(0)
 			if IsControlJustReleased(1, Config.LockpickKey.key) then
 				TriggerServerEvent('EngineToggle:hasItem')
 			end
@@ -166,11 +166,11 @@ AddEventHandler('EngineToggle:hotwire', function()
 				FreezeEntityPosition(playerPed, true)
 			end
 
-			Citizen.CreateThread(function()
+			CreateThread(function()
 				if Config.ProgessBar.enable then
 					Config.progressBar(animTime, Translation[Config.Locale]['hotwiring'])
 				end
-				Citizen.Wait(animTime)
+				Wait(animTime)
 
 				if chance <= Config.Probability.lockpick then
 					SetVehicleDoorsLocked(vehicle, 1)
@@ -186,7 +186,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 					return
 				end
 
-				Citizen.Wait(500)
+				Wait(500)
 
 				if GetVehicleDoorLockStatus(vehicle) == 1 then
 					SetVehicleNeedsToBeHotwired(vehicle, true)
@@ -195,7 +195,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 				end
 
 				TaskEnterVehicle(playerPed, vehicle, 10.0, -1, 1.0, 1, 0)
-				Citizen.Wait(5000)
+				Wait(5000)
 
 				if (not DoesEntityExist(vehicle)) then
 					return
@@ -215,7 +215,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 						TriggerServerEvent('EngineToggle:addcarkeys', plate)
 					end
 
-					Citizen.Wait(200)
+					Wait(200)
 
 					if Config.startEngine then
 						TriggerEvent('EngineToggle:Engine')
@@ -242,6 +242,6 @@ end
 function loadAnimDict(dict)
     while (not HasAnimDictLoaded(dict)) do
         RequestAnimDict(dict)
-        Citizen.Wait(5)
+        Wait(5)
     end
 end
