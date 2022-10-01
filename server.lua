@@ -1,5 +1,4 @@
-local ESX = nil
-TriggerEvent(Config.getSharedObject, function(obj) ESX = obj end)
+ESX = exports["es_extended"]:getSharedObject()
 
 if Config.UseCommand then
 	RegisterCommand(Config.Commad, function(source)
