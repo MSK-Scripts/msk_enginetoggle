@@ -4,7 +4,7 @@ games { 'gta5' }
 author 'Musiker15 - MSK Scripts'
 name 'msk_enginetoggle'
 description 'EngineToggle for Vehicles'
-version '3.4'
+version '3.5'
 
 lua54 'yes'
 
