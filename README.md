@@ -1,6 +1,8 @@
 # EngineToggle
 FiveM Script - Vehicle Engine Toggle On/Off
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Musiker15/msk_enginetoggle?color=gree&label=Update)
+
 **Forum:** https://forum.cfx.re/t/re-release-enginetoggle/4793840
 
 **Discord Support:** https://discord.gg/5hHSBRHvJE
