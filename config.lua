@@ -14,6 +14,19 @@ Config.UseCommand = false -- Set true if you want to use a Command
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package/4524211
 ----------------------------------------------------------------
+-- With this feature you can set vehicles and plates for which you don't need a key to start the engine
+-- either exact plates or just a string that should be in the vehicles plate e.g. "ESX" will ignore te plate "ESX1234" too
+Config.Whitelist = {
+    vehicles = {
+        -- "nero2",
+        -- "zentorno",
+    },
+    plates = {
+        -- "ESX",
+        -- "ZOOM",
+    },
+}
+----------------------------------------------------------------
 -- !!! This function is clientside AND serverside !!!
 -- Look for type == 'client' and type == 'server'
 Config.Notification = function(src, type, xPlayer, message) -- xPlayer = ESX.GetPlayerFromId(src)

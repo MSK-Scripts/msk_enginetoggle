@@ -7,7 +7,7 @@ CreateThread(function()
 		Wait(0)
 		if Config.UseKey and Config.ToggleKey and IsPedInAnyVehicle(PlayerPedId()) and (GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) == PlayerPedId()) then
 			if IsControlJustReleased(1, Config.ToggleKey) then
-				TriggerEvent('EngineToggle:Engine')
+				TriggerEvent('msk_enginetoggle:Engine')
 			end
 		end
 
@@ -39,8 +39,8 @@ CreateThread(function()
 	end
 end)
 
-RegisterNetEvent('EngineToggle:Engine')
-AddEventHandler('EngineToggle:Engine', function()
+RegisterNetEvent('msk_enginetoggle:Engine')
+AddEventHandler('msk_enginetoggle:Engine', function()
 	local veh
 	local StateIndex
 
@@ -61,9 +61,21 @@ AddEventHandler('EngineToggle:Engine', function()
     end
 
 	if Config.VehicleKeyChain and (GetResourceState("VehicleKeyChain") == "started") then
+		local isVehicle, isPlate = false, false
 		local isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(veh)
 
-		if IsPedInAnyVehicle(PlayerPedId(), false) and isVehicleOrKeyOwner then
+		for k, v in pairs(Config.Whitelist.vehicles) do 
+			if GetHashKey(v) == GetEntityModel(veh) then
+				isVehicle = true
+			end
+		end
+		for k, v in pairs(Config.Whitelist.plates) do 
+			if string.find(trim(tostring(GetVehicleNumberPlateText(veh))), v) then 
+				isPlate = true
+			end
+		end
+
+		if IsPedInAnyVehicle(PlayerPedId(), false) and (isVehicleOrKeyOwner or isVehicle or isPlate) then
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
@@ -72,7 +84,7 @@ AddEventHandler('EngineToggle:Engine', function()
 					Config.Notification(source, 'client', nil, Translation[Config.Locale]['engine_stop'])
 				end
 			end 
-		elseif IsPedInAnyVehicle(PlayerPedId(), false) and (not isVehicleOrKeyOwner) then
+		elseif IsPedInAnyVehicle(PlayerPedId(), false) and (not isVehicleOrKeyOwner or not isVehicle or not isPlate) then
 			Config.Notification(source, 'client', nil, Translation[Config.Locale]['key_nokey'])
     	end 
 	else
@@ -89,8 +101,8 @@ AddEventHandler('EngineToggle:Engine', function()
     end 
 end)
 
-RegisterNetEvent('EngineToggle:RPDamage')
-AddEventHandler('EngineToggle:RPDamage', function(State)
+RegisterNetEvent('msk_enginetoggle:RPDamage')
+AddEventHandler('msk_enginetoggle:RPDamage', function(State)
 	RPWorking = State
 end)
 
@@ -116,14 +128,14 @@ if Config.LockpickKey.enable then
 		while true do
 			Wait(0)
 			if IsControlJustReleased(1, Config.LockpickKey.key) then
-				TriggerServerEvent('EngineToggle:hasItem')
+				TriggerServerEvent('msk_enginetoggle:hasItem')
 			end
 		end
 	end)
 end
 
-RegisterNetEvent('EngineToggle:hotwire')
-AddEventHandler('EngineToggle:hotwire', function()
+RegisterNetEvent('msk_enginetoggle:hotwire')
+AddEventHandler('msk_enginetoggle:hotwire', function()
 	local playerPed = PlayerPedId()
 	local coords = GetEntityCoords(playerPed)
 	local animTime = Config.ProgessBar.time * 1000
@@ -169,7 +181,7 @@ AddEventHandler('EngineToggle:hotwire', function()
 					ClearPedTasksImmediately(playerPed)
 					Config.Notification(source, 'client', nil, Translation[Config.Locale]['vehicle_unlocked'])
 				else
-					TriggerServerEvent('EngineToggle:delhotwire')
+					TriggerServerEvent('msk_enginetoggle:delhotwire')
 					FreezeEntityPosition(playerPed, false)
 					ClearPedTasksImmediately(playerPed)
 					Config.Notification(source, 'client', nil, Translation[Config.Locale]['hotwiring_failed'])
@@ -197,22 +209,22 @@ AddEventHandler('EngineToggle:hotwire', function()
 
 					if Config.Probability.enableSearchKey then
 						if chance <= Config.Probability.searchKey then
-							TriggerServerEvent('EngineToggle:addcarkeys', plate)
+							TriggerServerEvent('msk_enginetoggle:addcarkeys', plate)
 						else
 							Config.Notification(source, 'client', nil, Translation[Config.Locale]['hotwiring_notfoundkey'])
 						end
 					else
-						TriggerServerEvent('EngineToggle:addcarkeys', plate)
+						TriggerServerEvent('msk_enginetoggle:addcarkeys', plate)
 					end
 
 					Wait(200)
 
 					if Config.startEngine then
-						TriggerEvent('EngineToggle:Engine')
+						TriggerEvent('msk_enginetoggle:Engine')
 					end
 				else
 					if Config.startEngine then
-						TriggerEvent('EngineToggle:Engine')
+						TriggerEvent('msk_enginetoggle:Engine')
 					end
 				end
 			end)
@@ -235,3 +247,7 @@ function loadAnimDict(dict)
         Wait(5)
     end
 end
+
+function trim(str)
+	return string.gsub(str, "%s+", "")
+ end

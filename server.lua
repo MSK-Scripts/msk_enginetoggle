@@ -2,18 +2,18 @@ ESX = exports["es_extended"]:getSharedObject()
 
 if Config.UseCommand then
 	RegisterCommand(Config.Commad, function(source)
-		TriggerClientEvent('EngineToggle:Engine', source)
+		TriggerClientEvent('msk_enginetoggle:Engine', source)
 	end)
 end
 
 ESX.RegisterUsableItem(Config.LockpickItem, function(source)
 	local xPlayer = ESX.GetPlayerFromId(source)
 
-	TriggerClientEvent('EngineToggle:hotwire', source)
+	TriggerClientEvent('msk_enginetoggle:hotwire', source)
 end)
 
-RegisterNetEvent('EngineToggle:delhotwire')
-AddEventHandler('EngineToggle:delhotwire', function()
+RegisterNetEvent('msk_enginetoggle:delhotwire')
+AddEventHandler('msk_enginetoggle:delhotwire', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
 
 	if Config.RemoveLockpickItem then
@@ -21,22 +21,27 @@ AddEventHandler('EngineToggle:delhotwire', function()
 	end
 end)
 
-RegisterNetEvent('EngineToggle:hasItem')
-AddEventHandler('EngineToggle:hasItem', function()
+RegisterNetEvent('msk_enginetoggle:hasItem')
+AddEventHandler('msk_enginetoggle:hasItem', function()
 	local xPlayer = ESX.GetPlayerFromId(source)
 	local hasItem = xPlayer.getInventoryItem(Config.LockpickItem).count
 
 	if hasItem > 0 then
-		TriggerClientEvent('EngineToggle:hotwire', source)
+		TriggerClientEvent('msk_enginetoggle:hotwire', source)
 	else
 		Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hasno_lockpick'])
 	end
 end)
 
-RegisterNetEvent('EngineToggle:addcarkeys')
-AddEventHandler('EngineToggle:addcarkeys', function(plate)
+RegisterNetEvent('msk_enginetoggle:addcarkeys')
+AddEventHandler('msk_enginetoggle:addcarkeys', function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
 	Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hotwiring_foundkey'])
+end)
+
+ESX.RegisterServerCallback('msk_enginetoggle:getGroup', function(source, cb)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	cb(xPlayer.group)
 end)
 
 ---- Github Updater ----
