@@ -1,4 +1,6 @@
-ESX = exports["es_extended"]:getSharedObject()
+if Config.Framework:match('ESX') then
+	ESX = exports["es_extended"]:getSharedObject()
+end
 
 local vehicles = {}; RPWorking = true
 
@@ -46,12 +48,15 @@ AddEventHandler('msk_enginetoggle:Engine', function()
 
 	for i, vehicle in ipairs(vehicles) do
 		if vehicle[1] == GetVehiclePedIsIn(PlayerPedId(), false) then
+			-- sets the veh variable as the vehicle you're currently in
 			veh = vehicle[1]
 			StateIndex = i
+			-- sets the state index = 1
 		end
 	end
 	Wait(0)
 
+	-- The below is simply to generate a timer for requesting control of entity
 	local netTime = 15
     NetworkRequestControlOfEntity(veh)
     while not NetworkHasControlOfEntity(veh) and netTime > 0 do 
@@ -79,22 +84,22 @@ AddEventHandler('msk_enginetoggle:Engine', function()
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
-					Config.Notification(source, 'client', nil, Translation[Config.Locale]['engine_start'])
+					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_start'])
 				else
-					Config.Notification(source, 'client', nil, Translation[Config.Locale]['engine_stop'])
+					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_stop'])
 				end
 			end 
 		elseif IsPedInAnyVehicle(PlayerPedId(), false) and (not isVehicleOrKeyOwner or not isVehicle or not isPlate) then
-			Config.Notification(source, 'client', nil, Translation[Config.Locale]['key_nokey'])
+			Config.Notification(nil, 'client', nil, Translation[Config.Locale]['key_nokey'])
     	end 
 	else
 		if IsPedInAnyVehicle(PlayerPedId(), false) then 
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
-					Config.Notification(source, 'client', nil, Translation[Config.Locale]['engine_start'])
+					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_start'])
 				else
-					Config.Notification(source, 'client', nil, Translation[Config.Locale]['engine_stop'])
+					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_stop'])
 				end
 			end
 		end
@@ -115,7 +120,7 @@ if Config.OnAtEnter then
 					if vehicle[1] == GetVehiclePedIsTryingToEnter(PlayerPedId()) and not vehicle[2] then
 						Wait(0)
 						vehicle[2] = true
-						Config.Notification(source, 'client', nil, Translation[Config.Locale]['engine_onatenter'])
+						Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_onatenter'])
 					end
 				end
 			end
@@ -123,7 +128,7 @@ if Config.OnAtEnter then
 	end)
 end
 
-if Config.LockpickKey.enable then
+if Config.enableLockpick and Config.LockpickKey.enable then
 	CreateThread(function()
 		while true do
 			Wait(0)
@@ -179,12 +184,12 @@ AddEventHandler('msk_enginetoggle:hotwire', function()
 					SetVehicleDoorsLockedForAllPlayers(vehicle, false)
 					FreezeEntityPosition(playerPed, false)
 					ClearPedTasksImmediately(playerPed)
-					Config.Notification(source, 'client', nil, Translation[Config.Locale]['vehicle_unlocked'])
+					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['vehicle_unlocked'])
 				else
 					TriggerServerEvent('msk_enginetoggle:delhotwire')
 					FreezeEntityPosition(playerPed, false)
 					ClearPedTasksImmediately(playerPed)
-					Config.Notification(source, 'client', nil, Translation[Config.Locale]['hotwiring_failed'])
+					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['hotwiring_failed'])
 					return
 				end
 
@@ -211,7 +216,7 @@ AddEventHandler('msk_enginetoggle:hotwire', function()
 						if chance <= Config.Probability.searchKey then
 							TriggerServerEvent('msk_enginetoggle:addcarkeys', plate)
 						else
-							Config.Notification(source, 'client', nil, Translation[Config.Locale]['hotwiring_notfoundkey'])
+							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['hotwiring_notfoundkey'])
 						end
 					else
 						TriggerServerEvent('msk_enginetoggle:addcarkeys', plate)

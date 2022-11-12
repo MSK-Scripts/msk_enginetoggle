@@ -1,4 +1,6 @@
-ESX = exports["es_extended"]:getSharedObject()
+if Config.Framework:match('ESX') then
+	ESX = exports["es_extended"]:getSharedObject()
+end
 
 if Config.UseCommand then
 	RegisterCommand(Config.Commad, function(source)
@@ -6,43 +8,45 @@ if Config.UseCommand then
 	end)
 end
 
-ESX.RegisterUsableItem(Config.LockpickItem, function(source)
-	local xPlayer = ESX.GetPlayerFromId(source)
-
-	TriggerClientEvent('msk_enginetoggle:hotwire', source)
-end)
-
-RegisterNetEvent('msk_enginetoggle:delhotwire')
-AddEventHandler('msk_enginetoggle:delhotwire', function()
-	local xPlayer = ESX.GetPlayerFromId(source)
-
-	if Config.RemoveLockpickItem then
-		xPlayer.removeInventoryItem(Config.LockpickItem, 1)
-	end
-end)
-
-RegisterNetEvent('msk_enginetoggle:hasItem')
-AddEventHandler('msk_enginetoggle:hasItem', function()
-	local xPlayer = ESX.GetPlayerFromId(source)
-	local hasItem = xPlayer.getInventoryItem(Config.LockpickItem).count
-
-	if hasItem > 0 then
-		TriggerClientEvent('msk_enginetoggle:hotwire', source)
-	else
-		Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hasno_lockpick'])
-	end
-end)
-
 RegisterNetEvent('msk_enginetoggle:addcarkeys')
 AddEventHandler('msk_enginetoggle:addcarkeys', function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
 	Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hotwiring_foundkey'])
 end)
 
-ESX.RegisterServerCallback('msk_enginetoggle:getGroup', function(source, cb)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	cb(xPlayer.group)
-end)
+if Config.enableLockpick and Config.Framework:match('ESX') then
+	ESX.RegisterUsableItem(Config.LockpickItem, function(source)
+		local xPlayer = ESX.GetPlayerFromId(source)
+
+		TriggerClientEvent('msk_enginetoggle:hotwire', source)
+	end)
+
+	ESX.RegisterServerCallback('msk_enginetoggle:getGroup', function(source, cb)
+		local xPlayer = ESX.GetPlayerFromId(source)
+		cb(xPlayer.group)
+	end)
+
+	RegisterNetEvent('msk_enginetoggle:delhotwire')
+	AddEventHandler('msk_enginetoggle:delhotwire', function()
+		local xPlayer = ESX.GetPlayerFromId(source)
+
+		if Config.RemoveLockpickItem then
+			xPlayer.removeInventoryItem(Config.LockpickItem, 1)
+		end
+	end)
+
+	RegisterNetEvent('msk_enginetoggle:hasItem')
+	AddEventHandler('msk_enginetoggle:hasItem', function()
+		local xPlayer = ESX.GetPlayerFromId(source)
+		local hasItem = xPlayer.getInventoryItem(Config.LockpickItem).count
+
+		if hasItem > 0 then
+			TriggerClientEvent('msk_enginetoggle:hotwire', source)
+		else
+			Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hasno_lockpick'])
+		end
+	end)
+end
 
 ---- Github Updater ----
 function GetCurrentVersion()

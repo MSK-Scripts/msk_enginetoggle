@@ -3,6 +3,9 @@ Config = {}
 Config.Locale = 'de'
 Config.VersionChecker = true
 ----------------------------------------------------------------
+-- If Standalone then you have to change the Notification
+Config.Framework = 'ESX' -- 'ESX' or 'Standalone'
+----------------------------------------------------------------
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 Config.OnAtEnter = false
 ----------------------------------------------------------------
@@ -41,6 +44,9 @@ Config.progressBar = function(time, message)
     exports['pogressBar']:drawBar(time, message)
 end
 ----------------------------------------------------------------
+-- Only possible with ESX Framework
+Config.enableLockpick = true -- Set false if you want to deactivate this feature
+
 Config.RemoveLockpickItem = true -- Set true if you like to remove item after failing lockpicking
 Config.LockpickItem = 'lockpick' -- Set the itemname what you want to use
 Config.startEngine = true -- Set true if you want to start the engine after successfull lockpicking
