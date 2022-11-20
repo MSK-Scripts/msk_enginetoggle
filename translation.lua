@@ -14,6 +14,10 @@ Translation = {
         ['hotwiring_foundkey'] = 'Fahrzeugschlüssel gefunden',
         ['hotwiring_notfoundkey'] = 'Fahrzeugschlüssel nicht gefunden',
         ['hotwire_searchkey'] = 'Drücke ~r~E~s~ um den Fahrzeugschlüssel zu suchen',
+
+        ['neonlights_on'] = 'Du hast die Unterbodenbeleuchtung eingeschaltet',
+        ['neonlights_off'] = 'Du hast die Unterbodenbeleuchtung ausgeschaltet',
+        ['neonlights_not_installed'] = 'Du hast keine Unterbodenbeleuchtung',
     },
     ['en'] = {
         ['engine_start'] = 'The Engine ~g~started',
@@ -28,5 +32,9 @@ Translation = {
         ['hotwiring_foundkey'] = 'Fahrzeugschlüssel gefunden',
         ['hotwiring_notfoundkey'] = 'Fahrzeugschlüssel nicht gefunden',
         ['hotwire_searchkey'] = 'Drücke ~r~E~s~ um den Fahrzeugschlüssel zu suchen',
+
+        ['neonlights_on'] = 'You turned on the neon lights',
+        ['neonlights_off'] = 'You turned off the neon lights',
+        ['neonlights_not_installed'] = 'You do not have neon lights installed',
     },
 }

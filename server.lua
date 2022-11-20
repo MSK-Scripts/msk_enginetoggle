@@ -48,6 +48,39 @@ if Config.enableLockpick and Config.Framework:match('ESX') then
 	end)
 end
 
+if Config.SaveSteeringAngle then
+	savedAngles = {}
+
+	RegisterServerEvent("msk_enginetoggle:async")
+	AddEventHandler("msk_enginetoggle:async", function(vehicle, angle)
+		savedAngles[vehicle] = angle
+		TriggerClientEvent("msk_enginetoggle:syncanglesave", -1, vehicle, savedAngles[vehicle])
+	end)
+
+	RegisterServerEvent("msk_enginetoggle:angledelete")
+	AddEventHandler("msk_enginetoggle:angledelete", function(vehicle)
+		savedAngles[vehicle] = nil
+	end)
+
+	CreateThread(function()
+		while true do
+			Wait(Config.RefreshTime * 1000)
+
+			for i, data in pairs(savedAngles) do
+				if savedAngles[i] ~= nil then
+					local vehicle = NetworkGetEntityFromNetworkId(i)
+
+					if DoesEntityExist(vehicle) then
+						TriggerClientEvent("msk_enginetoggle:syncanglesave", -1, i, savedAngles[i])
+					else
+						savedAngles[i] = nil
+					end
+				end
+			end
+		end
+	end)
+end
+
 ---- Github Updater ----
 function GetCurrentVersion()
 	return GetResourceMetadata( GetCurrentResourceName(), "version" )

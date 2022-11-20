@@ -17,6 +17,16 @@ Config.UseCommand = false -- Set true if you want to use a Command
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package/4524211
 ----------------------------------------------------------------
+Config.SaveSteeringAngle = true
+Config.NeonToggle = false
+
+Config.SaveAngleOnExit = 49 -- default: F - 49
+Config.PerformanceVersion = false -- true = no sync but more performance
+Config.RefreshTime = 5 -- in seconds // Refreshing SteeringAngle all 5 seconds
+
+Config.NeonToggleHolding = 132 -- default: STRG - 132
+Config.NeonToggleJustPressed = 249 -- default: N - 249
+----------------------------------------------------------------
 -- With this feature you can set vehicles and plates for which you don't need a key to start the engine
 -- either exact plates or just a string that should be in the vehicles plate e.g. "ESX" will ignore te plate "ESX1234" too
 Config.Whitelist = {

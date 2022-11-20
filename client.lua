@@ -237,6 +237,116 @@ AddEventHandler('msk_enginetoggle:hotwire', function()
 	end
 end)
 
+if Config.NeonToggle then
+	local neonoff = false
+	
+	CreateThread(function()
+		while true do
+			Wait(10)
+			local playerPed = PlayerPedId()
+			local vehicle = GetVehiclePedIsIn(playerPed, false)
+		  	local driver = GetPedInVehicleSeat(vehicle, -1)
+			local neonon = IsVehicleNeonLightEnabled(vehicle, 1)
+			
+			if IsPedInVehicle(playerPed, vehicle, true) and driver == playerPed then
+				if IsControlPressed(1, Config.NeonToggleHolding) and IsControlJustPressed(1, Config.NeonToggleJustPressed) then
+					if neonon then
+						if neonoff == false then
+							neonoff = true
+							DisableVehicleNeonLights(vehicle, true)
+							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_on'])
+							Wait(2000)
+						elseif neonoff == true then
+							neonoff = false
+							DisableVehicleNeonLights(vehicle, false)
+							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_off'])
+							Wait(2000)
+						end
+					else
+						Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_not_installed'])
+						Wait(2000)
+					end
+				end
+			else
+				Wait(1000)
+			end
+		end
+	end)
+end
+
+if Config.SaveSteeringAngle then
+	local pressed = 1 * 1000
+	local steeringAngle
+	
+	function PedDriving()
+		local playerPed = PlayerPedId()
+
+		if IsPedSittingInAnyVehicle(playerPed) then
+			local vehicle = GetVehiclePedIsIn(playerPed, false)
+
+			if GetPedInVehicleSeat(vehicle, -1) == playerPed then
+				return true
+			end
+		end
+
+		return false
+	end
+	
+	CreateThread(function()
+		while true do
+		   Wait(0)
+
+			if PedDriving() and IsControlJustPressed(1, Config.SaveAngleOnExit) then
+				steeringAngle = GetVehicleSteeringAngle(vehicle)
+				pressed = 500
+
+				while not IsControlJustReleased(1, Config.SaveAngleOnExit) do
+					Wait(10)
+
+					if Config.PerformanceVersion then 
+						SetVehicleSteeringAngle(vehicle, steeringAngle)
+					else
+						TriggerServerEvent('msk_enginetoggle:async', NetworkGetNetworkIdFromEntity(vehicle), steeringAngle)
+					end
+
+					break
+				end
+			end
+		end
+	end)
+	
+	RegisterNetEvent("msk_enginetoggle:syncanglesave")
+	AddEventHandler("msk_enginetoggle:syncanglesave", function(vehicleNetID, steeringAngle)
+		local vehicle = NetworkGetEntityFromNetworkId(vehicleNetID)
+
+		if DoesEntityExist(vehicle) then
+			SetVehicleSteeringAngle(vehicle, steeringAngle)
+		end
+	end)
+	
+	CreateThread(function()
+		if not Config.PerformanceVersion then
+			local playerPed = PlayerPedId()
+			local justDeleted  
+
+			while true do
+				Wait(500)
+
+				if IsPedInAnyVehicle(playerPed, false) then
+					local vehicle = GetVehiclePedIsIn(playerPed, false)
+
+					if GetPedInVehicleSeat(vehicle, -1) == playerPed and not justDeleted and GetIsVehicleEngineRunning(vehicle) then
+						TriggerServerEvent("msk_enginetoggle:angledelete", NetworkGetNetworkIdFromEntity(vehicle))
+						justDeleted = true
+					end
+				else
+					justDeleted = false
+				end
+			end
+		end
+	end)
+end
+
 function table.contains(table, element)
 	for _, value in pairs(table) do
 		if value[1] == element then
