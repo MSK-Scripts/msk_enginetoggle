@@ -72,12 +72,12 @@ If you use `RealisticVehicleDamage`, then replace following Code in `client.lua`
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle,false)
-    TriggerEvent('EngineToggle:RPDamage', true)
+    TriggerEvent('msk_enginetoggle:RPDamage', true)
 end
 
 if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     SetVehicleUndriveable(vehicle,true)
-    TriggerEvent('EngineToggle:RPDamage', false)
+    TriggerEvent('msk_enginetoggle:RPDamage', false)
 end
 ```
 ### QB-Vehiclefailure
