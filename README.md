@@ -80,7 +80,7 @@ if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     TriggerEvent('EngineToggle:RPDamage', false)
 end
 ```
-## QB-Vehiclefailure
+### QB-Vehiclefailure
 IF you use `qb-vehiclefailure`, then replace the following Code in `client.lua` on Line 530 in qb-vehiclefailure:
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
