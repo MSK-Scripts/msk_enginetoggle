@@ -80,6 +80,21 @@ if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     TriggerEvent('EngineToggle:RPDamage', false)
 end
 ```
+## QB-Vehiclefailure
+IF you use `qb-vehiclefailure`, then replace the following Code in `client.lua` on Line 530 in qb-vehiclefailure:
+```lua
+if healthEngineCurrent > cfg.engineSafeGuard+1 then
+    SetVehicleUndriveable(vehicle, false)
+    TriggerEvent('msk_enginetoggle:RPDamage', true)
+end
+
+if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
+    local vehpos = GetEntityCoords(vehicle)
+    StartParticleFxLoopedAtCoord("ent_ray_heli_aprtmnt_l_fire", vehpos.x, vehpos.y, vehpos.z-0.7, 0.0, 0.0, 0.0, 1.0, false, false, false, false)
+    SetVehicleUndriveable(vehicle, true)
+    TriggerEvent('msk_enginetoggle:RPDamage', false)
+end
+```
 
 ## My other Scripts
 #### PAID
