@@ -64,10 +64,10 @@ if Config.SaveSteeringAngle then
 
 	CreateThread(function()
 		while true do
-			Wait(Config.RefreshTime * 1000)
+			local sleep = Config.RefreshTime * 1000
 
 			for i, data in pairs(savedAngles) do
-				if savedAngles[i] ~= nil then
+				if savedAngles[i] then
 					local vehicle = NetworkGetEntityFromNetworkId(i)
 
 					if DoesEntityExist(vehicle) then
@@ -77,6 +77,8 @@ if Config.SaveSteeringAngle then
 					end
 				end
 			end
+
+			Wait(sleep)
 		end
 	end)
 end

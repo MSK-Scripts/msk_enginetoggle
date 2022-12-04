@@ -6,9 +6,18 @@ local vehicles = {}; RPWorking = true
 
 CreateThread(function()
 	while true do
-		Wait(0)
+		local sleep = 200
+
+		if Config.enableLockpick and Config.LockpickKey.enable then
+			sleep = 0
+			if IsControlJustReleased(0, Config.LockpickKey.key) then
+				TriggerServerEvent('msk_enginetoggle:hasItem')
+			end
+		end
+
 		if Config.UseKey and Config.ToggleKey and IsPedInAnyVehicle(PlayerPedId()) and (GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) == PlayerPedId()) then
-			if IsControlJustReleased(1, Config.ToggleKey) then
+			sleep = 0
+			if IsControlJustReleased(0, Config.ToggleKey) then
 				TriggerEvent('msk_enginetoggle:Engine')
 			end
 		end
@@ -38,6 +47,8 @@ CreateThread(function()
 				table.remove(vehicles, i)
 			end
 		end
+
+		Wait(sleep)
 	end
 end)
 
@@ -114,7 +125,8 @@ end)
 if Config.OnAtEnter then
 	CreateThread(function()
 		while true do
-			Wait(0)
+			local sleep = 200
+
 			if GetSeatPedIsTryingToEnter(PlayerPedId()) == -1 then
 				for i, vehicle in ipairs(vehicles) do
 					if vehicle[1] == GetVehiclePedIsTryingToEnter(PlayerPedId()) and not vehicle[2] then
@@ -124,17 +136,8 @@ if Config.OnAtEnter then
 					end
 				end
 			end
-		end
-	end)
-end
 
-if Config.enableLockpick and Config.LockpickKey.enable then
-	CreateThread(function()
-		while true do
-			Wait(0)
-			if IsControlJustReleased(1, Config.LockpickKey.key) then
-				TriggerServerEvent('msk_enginetoggle:hasItem')
-			end
+			Wait(sleep)
 		end
 	end)
 end
@@ -242,46 +245,42 @@ if Config.NeonToggle then
 	
 	CreateThread(function()
 		while true do
-			Wait(10)
+			local sleep = 200
 			local playerPed = PlayerPedId()
 			local vehicle = GetVehiclePedIsIn(playerPed, false)
 		  	local driver = GetPedInVehicleSeat(vehicle, -1)
 			local neonon = IsVehicleNeonLightEnabled(vehicle, 1)
 			
 			if IsPedInVehicle(playerPed, vehicle, true) and driver == playerPed then
-				if IsControlPressed(1, Config.NeonToggleHolding) and IsControlJustPressed(1, Config.NeonToggleJustPressed) then
+				if IsControlPressed(0, Config.NeonToggleHolding) and IsControlJustPressed(0, Config.NeonToggleJustPressed) then
 					if neonon then
 						if neonoff == false then
 							neonoff = true
 							DisableVehicleNeonLights(vehicle, true)
 							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_on'])
-							Wait(2000)
 						elseif neonoff == true then
 							neonoff = false
 							DisableVehicleNeonLights(vehicle, false)
 							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_off'])
-							Wait(2000)
 						end
 					else
 						Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_not_installed'])
-						Wait(2000)
 					end
 				end
-			else
-				Wait(1000)
 			end
+
+			Wait(sleep)
 		end
 	end)
 end
 
 if Config.SaveSteeringAngle then
 	local pressed = 1 * 1000
-	local steeringAngle
 	
-	function PedDriving()
+	function isPedDriving()
 		local playerPed = PlayerPedId()
 
-		if IsPedSittingInAnyVehicle(playerPed) then
+		if IsPedInAnyVehicle(playerPed) then
 			local vehicle = GetVehiclePedIsIn(playerPed, false)
 
 			if GetPedInVehicleSeat(vehicle, -1) == playerPed then
@@ -294,24 +293,29 @@ if Config.SaveSteeringAngle then
 	
 	CreateThread(function()
 		while true do
-		   Wait(0)
+			local sleep = 200
 
-			if PedDriving() and IsControlJustPressed(1, Config.SaveAngleOnExit) then
-				steeringAngle = GetVehicleSteeringAngle(vehicle)
-				pressed = 500
+			if isPedDriving() then 
+				sleep = 0
 
-				while not IsControlJustReleased(1, Config.SaveAngleOnExit) do
-					Wait(10)
+				if IsControlJustPressed(0, Config.SaveAngleOnExit) then
+					local vehicle = GetVehiclePedIsIn(playerPed, true)
+					local steeringAngle = GetVehicleSteeringAngle(vehicle)
+					pressed = 500
 
-					if Config.PerformanceVersion then 
-						SetVehicleSteeringAngle(vehicle, steeringAngle)
-					else
-						TriggerServerEvent('msk_enginetoggle:async', NetworkGetNetworkIdFromEntity(vehicle), steeringAngle)
+					while not IsControlJustReleased(0, Config.SaveAngleOnExit) do
+						if Config.PerformanceVersion then 
+							SetVehicleSteeringAngle(vehicle, steeringAngle)
+						else
+							TriggerServerEvent('msk_enginetoggle:async', NetworkGetNetworkIdFromEntity(vehicle), steeringAngle)
+						end
+
+						break
 					end
-
-					break
 				end
 			end
+
+			Wait(sleep)
 		end
 	end)
 	
@@ -333,7 +337,7 @@ if Config.SaveSteeringAngle then
 				Wait(500)
 
 				if IsPedInAnyVehicle(playerPed, false) then
-					local vehicle = GetVehiclePedIsIn(playerPed, false)
+					local vehicle = GetVehiclePedIsIn(playerPed, true)
 
 					if GetPedInVehicleSeat(vehicle, -1) == playerPed and not justDeleted and GetIsVehicleEngineRunning(vehicle) then
 						TriggerServerEvent("msk_enginetoggle:angledelete", NetworkGetNetworkIdFromEntity(vehicle))

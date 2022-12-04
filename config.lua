@@ -20,7 +20,7 @@ Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package
 Config.SaveSteeringAngle = true
 Config.NeonToggle = false
 
-Config.SaveAngleOnExit = 49 -- default: F - 49
+Config.SaveAngleOnExit = 75 -- default: F - 75 (Exit Vehicle)
 Config.PerformanceVersion = false -- true = no sync but more performance
 Config.RefreshTime = 5 -- in seconds // Refreshing SteeringAngle all 5 seconds
 
