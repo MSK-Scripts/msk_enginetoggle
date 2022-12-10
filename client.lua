@@ -294,6 +294,7 @@ if Config.SaveSteeringAngle then
 	CreateThread(function()
 		while true do
 			local sleep = 200
+			local playerPed = PlayerPedId()
 
 			if isPedDriving() then 
 				sleep = 0
