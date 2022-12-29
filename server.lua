@@ -1,3 +1,11 @@
+AddEventHandler('onResourceStart', function(resource)
+    if GetCurrentResourceName() ~= 'msk_enginetoggle' then
+        print('^1Please rename the Script to^3 msk_enginetoggle^0!')
+        print('^1Server will be shutdown^0!')
+        os.exit()
+    end
+end)
+
 if Config.Framework:match('ESX') then
 	ESX = exports["es_extended"]:getSharedObject()
 end
