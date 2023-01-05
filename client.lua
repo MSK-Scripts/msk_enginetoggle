@@ -370,4 +370,4 @@ end
 
 function trim(str)
 	return string.gsub(str, "%s+", "")
- end
+end
