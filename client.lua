@@ -240,40 +240,6 @@ AddEventHandler('msk_enginetoggle:hotwire', function()
 	end
 end)
 
-if Config.NeonToggle then
-	local neonoff = false
-	
-	CreateThread(function()
-		while true do
-			local sleep = 200
-			local playerPed = PlayerPedId()
-			local vehicle = GetVehiclePedIsIn(playerPed, false)
-		  	local driver = GetPedInVehicleSeat(vehicle, -1)
-			local neonon = IsVehicleNeonLightEnabled(vehicle, 1)
-			
-			if IsPedInVehicle(playerPed, vehicle, true) and driver == playerPed then
-				if IsControlPressed(0, Config.NeonToggleHolding) and IsControlJustPressed(0, Config.NeonToggleJustPressed) then
-					if neonon then
-						if neonoff == false then
-							neonoff = true
-							DisableVehicleNeonLights(vehicle, true)
-							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_on'])
-						elseif neonoff == true then
-							neonoff = false
-							DisableVehicleNeonLights(vehicle, false)
-							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_off'])
-						end
-					else
-						Config.Notification(nil, 'client', nil, Translation[Config.Locale]['neonlights_not_installed'])
-					end
-				end
-			end
-
-			Wait(sleep)
-		end
-	end)
-end
-
 if Config.SaveSteeringAngle then
 	local pressed = 1 * 1000
 	

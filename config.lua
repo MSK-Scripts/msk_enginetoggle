@@ -18,14 +18,9 @@ Config.UseCommand = false -- Set true if you want to use a Command
 Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package/4524211
 ----------------------------------------------------------------
 Config.SaveSteeringAngle = true
-Config.NeonToggle = false
-
 Config.SaveAngleOnExit = 75 -- default: F - 75 (Exit Vehicle)
 Config.PerformanceVersion = false -- true = no sync but more performance
 Config.RefreshTime = 5 -- in seconds // Refreshing SteeringAngle all 5 seconds
-
-Config.NeonToggleHolding = 132 -- default: STRG - 132
-Config.NeonToggleJustPressed = 249 -- default: N - 249
 ----------------------------------------------------------------
 -- With this feature you can set vehicles and plates for which you don't need a key to start the engine
 -- either exact plates or just a string that should be in the vehicles plate e.g. "ESX" will ignore te plate "ESX1234" too
@@ -42,10 +37,10 @@ Config.Whitelist = {
 ----------------------------------------------------------------
 -- !!! This function is clientside AND serverside !!!
 -- Look for type == 'client' and type == 'server'
-Config.Notification = function(src, type, xPlayer, message) -- xPlayer = ESX.GetPlayerFromId(src)
-    if type == 'client' then -- clientside
+Config.Notification = function(src, action, xPlayer, message) -- xPlayer = ESX.GetPlayerFromId(src)
+    if action == 'client' then -- clientside
         ESX.ShowNotification(message) -- replace this with your Notify // example: exports['okokNotify']:Alert('Crafting', message, 5000, 'info')
-    elseif type == 'server' then -- serverside
+    elseif action == 'server' then -- serverside
         xPlayer.showNotification(message) -- replace this with your Notify // example: TriggerClientEvent('okokNotify:Alert', src, 'Crafting', message, 5000, 'info')
     end
 end
