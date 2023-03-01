@@ -274,7 +274,12 @@ if Config.SaveSteeringAngle then
 						if Config.PerformanceVersion then 
 							SetVehicleSteeringAngle(vehicle, steeringAngle)
 						else
-							TriggerServerEvent('msk_enginetoggle:async', NetworkGetNetworkIdFromEntity(vehicle), steeringAngle)
+							local vehNetId = VehToNet(vehicle)
+
+							if vehNetId then
+								SetNetworkIdExistsOnAllMachines(vehNetId, true)
+								TriggerServerEvent('msk_enginetoggle:async', vehNetId, steeringAngle)
+							end
 						end
 
 						break
@@ -287,8 +292,8 @@ if Config.SaveSteeringAngle then
 	end)
 	
 	RegisterNetEvent("msk_enginetoggle:syncanglesave")
-	AddEventHandler("msk_enginetoggle:syncanglesave", function(vehicleNetID, steeringAngle)
-		local vehicle = NetworkGetEntityFromNetworkId(vehicleNetID)
+	AddEventHandler("msk_enginetoggle:syncanglesave", function(vehNetId, steeringAngle)
+		local vehicle = NetToVeh(vehNetId)
 
 		if DoesEntityExist(vehicle) then
 			SetVehicleSteeringAngle(vehicle, steeringAngle)
@@ -305,9 +310,10 @@ if Config.SaveSteeringAngle then
 
 				if IsPedInAnyVehicle(playerPed, false) then
 					local vehicle = GetVehiclePedIsIn(playerPed, true)
+					local vehNetId = VehToNet(vehicle)
 
-					if GetPedInVehicleSeat(vehicle, -1) == playerPed and not justDeleted and GetIsVehicleEngineRunning(vehicle) then
-						TriggerServerEvent("msk_enginetoggle:angledelete", NetworkGetNetworkIdFromEntity(vehicle))
+					if GetPedInVehicleSeat(vehicle, -1) == playerPed and not justDeleted and GetIsVehicleEngineRunning(vehicle) and vehNetId then
+						TriggerServerEvent("msk_enginetoggle:angledelete", vehNetId)
 						justDeleted = true
 					end
 				else

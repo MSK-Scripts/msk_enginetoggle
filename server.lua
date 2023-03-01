@@ -60,14 +60,14 @@ if Config.SaveSteeringAngle then
 	savedAngles = {}
 
 	RegisterServerEvent("msk_enginetoggle:async")
-	AddEventHandler("msk_enginetoggle:async", function(vehicle, angle)
-		savedAngles[vehicle] = angle
-		TriggerClientEvent("msk_enginetoggle:syncanglesave", -1, vehicle, savedAngles[vehicle])
+	AddEventHandler("msk_enginetoggle:async", function(vehNetId, angle)
+		savedAngles[vehNetId] = angle
+		TriggerClientEvent("msk_enginetoggle:syncanglesave", -1, vehNetId, savedAngles[vehicle])
 	end)
 
 	RegisterServerEvent("msk_enginetoggle:angledelete")
-	AddEventHandler("msk_enginetoggle:angledelete", function(vehicle)
-		savedAngles[vehicle] = nil
+	AddEventHandler("msk_enginetoggle:angledelete", function(vehNetId)
+		savedAngles[vehNetId] = nil
 	end)
 
 	CreateThread(function()
