@@ -276,7 +276,7 @@ if Config.SaveSteeringAngle then
 						else
 							local vehNetId = VehToNet(vehicle)
 
-							if vehNetId then
+							if vehNetId and NetworkDoesEntityExistWithNetworkId(vehNetId) then
 								SetNetworkIdExistsOnAllMachines(vehNetId, true)
 								TriggerServerEvent('msk_enginetoggle:async', vehNetId, steeringAngle)
 							end
@@ -293,6 +293,7 @@ if Config.SaveSteeringAngle then
 	
 	RegisterNetEvent("msk_enginetoggle:syncanglesave")
 	AddEventHandler("msk_enginetoggle:syncanglesave", function(vehNetId, steeringAngle)
+		if not NetworkDoesEntityExistWithNetworkId(vehNetId) then return end
 		local vehicle = NetToVeh(vehNetId)
 
 		if DoesEntityExist(vehicle) then
@@ -312,7 +313,7 @@ if Config.SaveSteeringAngle then
 					local vehicle = GetVehiclePedIsIn(playerPed, true)
 					local vehNetId = VehToNet(vehicle)
 
-					if GetPedInVehicleSeat(vehicle, -1) == playerPed and not justDeleted and GetIsVehicleEngineRunning(vehicle) and vehNetId then
+					if GetPedInVehicleSeat(vehicle, -1) == playerPed and not justDeleted and GetIsVehicleEngineRunning(vehicle) and vehNetId and NetworkDoesEntityExistWithNetworkId(vehNetId) then
 						TriggerServerEvent("msk_enginetoggle:angledelete", vehNetId)
 						justDeleted = true
 					end
