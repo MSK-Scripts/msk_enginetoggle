@@ -3,7 +3,7 @@ Config = {}
 Config.Locale = 'de'
 Config.VersionChecker = true
 ----------------------------------------------------------------
--- If Standalone then you have to change the Notification
+-- If Standalone then you cant't use the Hotwire Feature and you have to replace the Notification
 Config.Framework = 'ESX' -- 'ESX' or 'Standalone'
 ----------------------------------------------------------------
 -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
@@ -31,17 +31,16 @@ Config.Whitelist = {
     },
     plates = {
         -- "ESX",
-        -- "ZOOM",
+        -- "MSK",
     },
 }
 ----------------------------------------------------------------
 -- !!! This function is clientside AND serverside !!!
--- Look for type == 'client' and type == 'server'
-Config.Notification = function(src, action, xPlayer, message) -- xPlayer = ESX.GetPlayerFromId(src)
-    if action == 'client' then -- clientside
-        ESX.ShowNotification(message) -- replace this with your Notify // example: exports['okokNotify']:Alert('Crafting', message, 5000, 'info')
-    elseif action == 'server' then -- serverside
-        xPlayer.showNotification(message) -- replace this with your Notify // example: TriggerClientEvent('okokNotify:Alert', src, 'Crafting', message, 5000, 'info')
+Config.Notification = function(source, message)
+    if IsDuplicityVersion() then -- serverside
+        TriggerClientEvent('esx:showNotification', source, message)
+    else -- clientside
+        ESX.ShowNotification(message)
     end
 end
 ----------------------------------------------------------------

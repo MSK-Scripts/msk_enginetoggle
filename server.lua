@@ -19,7 +19,7 @@ end
 RegisterNetEvent('msk_enginetoggle:addcarkeys')
 AddEventHandler('msk_enginetoggle:addcarkeys', function(plate)
     exports["VehicleKeyChain"]:AddTempKey(source, plate)
-	Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hotwiring_foundkey'])
+	Config.Notification(source, Translation[Config.Locale]['hotwiring_foundkey'])
 end)
 
 if Config.enableLockpick and Config.Framework:match('ESX') then
@@ -51,7 +51,7 @@ if Config.enableLockpick and Config.Framework:match('ESX') then
 		if hasItem > 0 then
 			TriggerClientEvent('msk_enginetoggle:hotwire', source)
 		else
-			Config.Notification(source, 'server', xPlayer, Translation[Config.Locale]['hasno_lockpick'])
+			Config.Notification(source, Translation[Config.Locale]['hasno_lockpick'])
 		end
 	end)
 end

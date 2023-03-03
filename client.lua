@@ -95,22 +95,22 @@ AddEventHandler('msk_enginetoggle:Engine', function()
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
-					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_start'])
+					Config.Notification(nil, Translation[Config.Locale]['engine_start'])
 				else
-					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_stop'])
+					Config.Notification(nil, Translation[Config.Locale]['engine_stop'])
 				end
 			end 
 		elseif IsPedInAnyVehicle(PlayerPedId(), false) and (not isVehicleOrKeyOwner or not isVehicle or not isPlate) then
-			Config.Notification(nil, 'client', nil, Translation[Config.Locale]['key_nokey'])
+			Config.Notification(nil, Translation[Config.Locale]['key_nokey'])
     	end 
 	else
 		if IsPedInAnyVehicle(PlayerPedId(), false) then 
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
-					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_start'])
+					Config.Notification(nil, Translation[Config.Locale]['engine_start'])
 				else
-					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_stop'])
+					Config.Notification(nil, Translation[Config.Locale]['engine_stop'])
 				end
 			end
 		end
@@ -132,7 +132,7 @@ if Config.OnAtEnter then
 					if vehicle[1] == GetVehiclePedIsTryingToEnter(PlayerPedId()) and not vehicle[2] then
 						Wait(0)
 						vehicle[2] = true
-						Config.Notification(nil, 'client', nil, Translation[Config.Locale]['engine_onatenter'])
+						Config.Notification(nil, Translation[Config.Locale]['engine_onatenter'])
 					end
 				end
 			end
@@ -187,12 +187,12 @@ AddEventHandler('msk_enginetoggle:hotwire', function()
 					SetVehicleDoorsLockedForAllPlayers(vehicle, false)
 					FreezeEntityPosition(playerPed, false)
 					ClearPedTasksImmediately(playerPed)
-					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['vehicle_unlocked'])
+					Config.Notification(nil, Translation[Config.Locale]['vehicle_unlocked'])
 				else
 					TriggerServerEvent('msk_enginetoggle:delhotwire')
 					FreezeEntityPosition(playerPed, false)
 					ClearPedTasksImmediately(playerPed)
-					Config.Notification(nil, 'client', nil, Translation[Config.Locale]['hotwiring_failed'])
+					Config.Notification(nil, Translation[Config.Locale]['hotwiring_failed'])
 					return
 				end
 
@@ -219,7 +219,7 @@ AddEventHandler('msk_enginetoggle:hotwire', function()
 						if chance <= Config.Probability.searchKey then
 							TriggerServerEvent('msk_enginetoggle:addcarkeys', plate)
 						else
-							Config.Notification(nil, 'client', nil, Translation[Config.Locale]['hotwiring_notfoundkey'])
+							Config.Notification(nil, Translation[Config.Locale]['hotwiring_notfoundkey'])
 						end
 					else
 						TriggerServerEvent('msk_enginetoggle:addcarkeys', plate)
