@@ -31,7 +31,6 @@ Config.AdminCommand = { -- ESX Framework required !!
     groups = {'superadmin', 'admin'}
 }
 
-Config.SyncEngine = true -- Set to false if you don't want to sync engine on/off (better performance)
 Config.OnAtEnter = false -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 ----------------------------------------------------------------
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
