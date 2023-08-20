@@ -6,13 +6,33 @@ Config.VersionChecker = true
 -- If Standalone then you cant't use the Hotwire Feature and you have to replace the Notification
 Config.Framework = 'ESX' -- 'ESX' or 'Standalone'
 ----------------------------------------------------------------
--- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
-Config.OnAtEnter = false
+-- !!! This function is clientside AND serverside !!!
+Config.Notification = function(source, message)
+    if IsDuplicityVersion() then -- serverside
+        TriggerClientEvent('esx:showNotification', source, message)
+    else -- clientside
+        ESX.ShowNotification(message)
+    end
+end
 ----------------------------------------------------------------
-Config.UseKey = true -- Set true if you want to use a Hotkey
-    Config.ToggleKey = 244 -- M (https://docs.fivem.net/docs/game-references/controls/)
-Config.UseCommand = false -- Set true if you want to use a Command
-    Config.Commad = 'engine'
+Config.Hotkey = {
+    enable = true, -- Set false if you don't want to use a Hotkey
+    key = 244 -- default: 244 = M
+}
+
+Config.Command = {
+    enable = false, -- Set true if you want to use a Command
+    command = 'engine'
+}
+
+Config.AdminCommand = { -- ESX Framework required !!
+    enable = false,
+    command = 'adengine',
+    groups = {'superadmin', 'admin'}
+}
+
+Config.SyncEngine = true -- Set to false if you don't want to sync engine on/off (better performance)
+Config.OnAtEnter = false -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
 ----------------------------------------------------------------
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package/4524211
@@ -35,21 +55,12 @@ Config.Whitelist = {
     },
 }
 ----------------------------------------------------------------
--- !!! This function is clientside AND serverside !!!
-Config.Notification = function(source, message)
-    if IsDuplicityVersion() then -- serverside
-        TriggerClientEvent('esx:showNotification', source, message)
-    else -- clientside
-        ESX.ShowNotification(message)
-    end
-end
-----------------------------------------------------------------
+-- Only possible with ESX Framework
+Config.enableLockpick = true -- Set false if you want to deactivate this feature
+
 Config.progressBar = function(time, message)
     exports['pogressBar']:drawBar(time, message)
 end
-----------------------------------------------------------------
--- Only possible with ESX Framework
-Config.enableLockpick = true -- Set false if you want to deactivate this feature
 
 Config.RemoveLockpickItem = true -- Set true if you like to remove item after failing lockpicking
 Config.LockpickItem = 'lockpick' -- Set the itemname what you want to use

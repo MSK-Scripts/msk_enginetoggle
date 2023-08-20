@@ -10,14 +10,16 @@ CreateThread(function()
 
 		if Config.enableLockpick and Config.LockpickKey.enable then
 			sleep = 0
+
 			if IsControlJustReleased(0, Config.LockpickKey.key) then
 				TriggerServerEvent('msk_enginetoggle:hasItem')
 			end
 		end
 
-		if Config.UseKey and Config.ToggleKey and IsPedInAnyVehicle(PlayerPedId()) and (GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) == PlayerPedId()) then
+		if Config.Hotkey.enable and Config.Hotkey.key and IsPedInAnyVehicle(PlayerPedId()) and (GetPedInVehicleSeat(GetVehiclePedIsIn(PlayerPedId()), -1) == PlayerPedId()) then
 			sleep = 0
-			if IsControlJustReleased(0, Config.ToggleKey) then
+
+			if IsControlJustReleased(0, Config.Hotkey.key) then
 				TriggerEvent('msk_enginetoggle:Engine')
 			end
 		end
@@ -34,7 +36,8 @@ CreateThread(function()
 					if RPWorking then
 						SetVehicleEngineOn(vehicle[1], vehicle[2], false, false)
 						SetVehicleJetEngineOn(vehicle[1], vehicle[2])
-						if not IsPedInAnyVehicle(PlayerPedId(), false) or (IsPedInAnyVehicle(PlayerPedId(), false) and vehicle[1]~= GetVehiclePedIsIn(PlayerPedId(), false)) then
+						
+						if not IsPedInAnyVehicle(PlayerPedId(), false) or (IsPedInAnyVehicle(PlayerPedId(), false) and vehicle[1] ~= GetVehiclePedIsIn(PlayerPedId(), false)) then
 							if IsThisModelAHeli(GetEntityModel(vehicle[1])) or IsThisModelAPlane(GetEntityModel(vehicle[1])) then
 								if vehicle[2] then
 									SetHeliBladesFullSpeed(vehicle[1])
@@ -53,16 +56,15 @@ CreateThread(function()
 end)
 
 RegisterNetEvent('msk_enginetoggle:Engine')
-AddEventHandler('msk_enginetoggle:Engine', function()
+AddEventHandler('msk_enginetoggle:Engine', function(isAdmin)
 	local veh
 	local StateIndex
 
 	for i, vehicle in ipairs(vehicles) do
 		if vehicle[1] == GetVehiclePedIsIn(PlayerPedId(), false) then
-			-- sets the veh variable as the vehicle you're currently in
-			veh = vehicle[1]
-			StateIndex = i
-			-- sets the state index = 1
+			veh = vehicle[1] -- sets the veh variable as the vehicle you're currently in
+			StateIndex = i -- sets the state index = 1
+			break
 		end
 	end
 	Wait(0)
@@ -83,15 +85,18 @@ AddEventHandler('msk_enginetoggle:Engine', function()
 		for k, v in pairs(Config.Whitelist.vehicles) do 
 			if GetHashKey(v) == GetEntityModel(veh) then
 				isVehicle = true
-			end
-		end
-		for k, v in pairs(Config.Whitelist.plates) do 
-			if string.find(trim(tostring(GetVehicleNumberPlateText(veh))), v) then 
-				isPlate = true
+				break
 			end
 		end
 
-		if IsPedInAnyVehicle(PlayerPedId(), false) and (isVehicleOrKeyOwner or isVehicle or isPlate) then
+		for k, v in pairs(Config.Whitelist.plates) do 
+			if string.find(trim(tostring(GetVehicleNumberPlateText(veh))), v) then 
+				isPlate = true
+				break
+			end
+		end
+
+		if IsPedInAnyVehicle(PlayerPedId(), false) and (isVehicleOrKeyOwner or isVehicle or isPlate or isAdmin) then
 			if (GetPedInVehicleSeat(veh, -1) == PlayerPedId()) then
 				vehicles[StateIndex][2] = not GetIsVehicleEngineRunning(veh)
 				if vehicles[StateIndex][2] then
