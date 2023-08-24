@@ -67,7 +67,6 @@ AddEventHandler('msk_enginetoggle:Engine', function(isAdmin)
 			break
 		end
 	end
-	Wait(0)
 
 	-- The below is simply to generate a timer for requesting control of entity
 	local netTime = 15
@@ -75,8 +74,10 @@ AddEventHandler('msk_enginetoggle:Engine', function(isAdmin)
     while not NetworkHasControlOfEntity(veh) and netTime > 0 do 
         NetworkRequestControlOfEntity(veh)
         Wait(1)
-        netTime = netTime -1
+        netTime = netTime - 1
     end
+
+	if not veh or not DoesEntityExist(veh) then return end
 
 	if Config.VehicleKeyChain and (GetResourceState("VehicleKeyChain") == "started") then
 		local isVehicle, isPlate = false, false
