@@ -15,6 +15,7 @@ Vehicle Engine Toggle On/Off
 * If you set `Config.VehicleKeyChain` to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
 * Admin Command to start/stop the engine without a Key *(Bypass)*
 * Whitelist for models and plates that do not need a Key to start/stop the engine
+* Save the Angel of the Steering Wheel *(Synced)*
 * Hotwire Function in compatibility with VehicleKeyChain
 
 ## Requirements
