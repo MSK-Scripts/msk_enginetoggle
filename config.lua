@@ -1,37 +1,39 @@
 Config = {}
 ----------------------------------------------------------------
 Config.Locale = 'de'
+Config.Debug = false
 Config.VersionChecker = true
 ----------------------------------------------------------------
--- If Standalone then you cant't use the Hotwire Feature and you have to replace the Notification
-Config.Framework = 'ESX' -- 'ESX' or 'Standalone'
+-- If Standalone then you have to add your own code for the Hotwire Feature
+-- You can use this Feature anyway
+Config.Framework = 'ESX' -- 'ESX', 'QBCore' or 'Standalone'
 ----------------------------------------------------------------
 -- !!! This function is clientside AND serverside !!!
-Config.Notification = function(source, message)
+Config.Notification = function(source, message, typ)
     if IsDuplicityVersion() then -- serverside
-        TriggerClientEvent('esx:showNotification', source, message)
+        exports.msk_core:Notification(source, 'Engine', message, typ)
     else -- clientside
-        ESX.ShowNotification(message)
+        exports.msk_core:Notification('Engine', message, typ)
     end
 end
 ----------------------------------------------------------------
-Config.Hotkey = {
-    enable = true, -- Set false if you don't want to use a Hotkey
-    key = 244 -- default: 244 = M
-}
-
 Config.Command = {
-    enable = false, -- Set true if you want to use a Command
+    enable = true, -- If you set to false then the Hotkey won't work !!!
     command = 'engine'
 }
 
-Config.AdminCommand = { -- ESX Framework required !!
-    enable = false,
+Config.Hotkey = {
+    enable = true, -- Set false if you don't want to use a Hotkey
+    key = 'M'
+}
+
+Config.AdminCommand = {
+    enable = true, -- Start/Stop Engine if you don't have a key for that vehicle
     command = 'adengine',
     groups = {'superadmin', 'admin'}
 }
 
-Config.OnAtEnter = false -- Change 'false' to 'true' to toggle the engine automatically on when entering a vehicle
+Config.EngineOnAtEnter = false -- Set to true to toggle the engine automatically on when entering a vehicle
 ----------------------------------------------------------------
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 Config.VehicleKeyChain = false -- https://kiminazes-script-gems.tebex.io/package/4524211
@@ -55,29 +57,36 @@ Config.Whitelist = {
 }
 ----------------------------------------------------------------
 -- Only possible with ESX Framework
-Config.enableLockpick = true -- Set false if you want to deactivate this feature
+Config.EnableLockpick = true -- Set false if you want to deactivate this feature
 
 Config.progressBar = function(time, message)
-    exports['pogressBar']:drawBar(time, message)
+    exports.msk_core:ProgressStart(time, message)
 end
 
-Config.RemoveLockpickItem = true -- Set true if you like to remove item after failing lockpicking
-Config.LockpickItem = 'lockpick' -- Set the itemname what you want to use
-Config.startEngine = true -- Set true if you want to start the engine after successfull lockpicking
+Config.LockpickHotkey = {
+    enable = false, -- Set to true if you want to use a Hotkey
+    command = 'lockpickvehicle',
+    key = 'L'
+}
+
+Config.LockpickSettings = {
+    item = 'lockpick', -- Set the item that you want to use
+    removeItem = true, -- Set true if you like to remove item after failing lockpicking
+    startEngine = true, -- Set true if you want to start the engine after successfull lockpicking
+}
+
 Config.Probability = {
     lockpick = 66, -- default: 66%
     alarm = 33, -- default: 33%
     enableSearchKey = true, -- Set false if you dont want this
     searchKey = 66 -- default: 66%
 }
-Config.LockpickKey = {
-    enable = false, -- Set to true if you want to use a Hotkey
-    key = 38 -- default: E // Set the Hotkey
-}
+
 Config.ProgessBar = {
     enable = true, -- Set true if you want to show a progressbar
     time = 8 -- In seconds // Time how long does it takes
 }
+
 Config.Animation = {
     InsideOutsideAnimation = true, -- Set to false if you want same Animation for inside and outside
     generalAnimation = 'WORLD_HUMAN_WELDING',
@@ -86,6 +95,7 @@ Config.Animation = {
         dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
         anim = 'machinic_loop_mechandplayer'
     },
+
     outsideVehicle = { -- Animation outside Vehicle
         dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
         anim = 'machinic_loop_mechandplayer'

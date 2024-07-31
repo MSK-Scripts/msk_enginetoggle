@@ -1,10 +1,10 @@
-fx_version 'adamant'
+fx_version 'cerulean'
 games { 'gta5' }
 
 author 'Musiker15 - MSK Scripts'
 name 'msk_enginetoggle'
 description 'EngineToggle for Vehicles'
-version '3.8'
+version '4.0.0'
 
 lua54 'yes'
 
@@ -14,9 +14,9 @@ shared_script {
 }
 
 client_scripts {
-	'client.lua'
+	'client/**/*.*'
 }
 
 server_scripts {
-	'server.lua'
+	'server/**/*.*'
 }

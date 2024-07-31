@@ -1,5 +1,5 @@
-# EngineToggle
-FiveM Script - Vehicle Engine Toggle On/Off
+# MSK EngineToggle
+Vehicle Engine Toggle On/Off
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Musiker15/msk_enginetoggle?color=gree&label=Update)
 
@@ -10,17 +10,18 @@ FiveM Script - Vehicle Engine Toggle On/Off
 ## Description
 * The engine keeps running if you leave the vehicle without turning the engine off.
 * You can set that the engine starts automatically when entering a vehicle.
-* You can choose if you use a Hotkey or a Command.
-* You can choose between 3 diffrent Notifications.
+* You can set a Command and Hotkey *(RegisterKeyMapping)*.
+* Set your own Notification and Progressbar.
 * If you set `Config.VehicleKeyChain` to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
-* Hotwire Function in compatibility with VKC
+* Admin Command to start/stop the engine without a Key *(Bypass)*
+* Whitelist for models and plates that do not need a Key to start/stop the engine
+* Hotwire Function in compatibility with VehicleKeyChain
 
 ## Requirements
-* Standalone
-* ESX Framework **only** for `Hotwire Function`
+* No Requirements needed
 ### Optional
+* MSK Core (https://github.com/MSK-Scripts/msk_core)
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
-* ProgessBar (https://forum.cfx.re/t/release-pogress-bar-progress-bar-standalone-smooth-animation/838951)
 
 ### VehicleKeyChain
 If you want to add a permanent key:
@@ -97,15 +98,19 @@ end
 ```
 
 ## My other Scripts
-#### PAID
-* [[ESX] Armor Script - Multiple Armor Vests](https://forum.cfx.re/t/release-esx-armor-script-usable-armor-vests-status-will-be-saved-in-database-and-restore-after-relog/4812243)
-* [[ESX] Banking - NativeUI](https://forum.cfx.re/t/esx-msk-banking-nativeui/4859560)
-* [[ESX] Handcuffs - Realistic Handcuffs](https://forum.cfx.re/t/esx-msk-handcuffs-realistic-handcuffs/4885324)
-* [[ESX] Shopsystem - NativeUI & Database Feature](https://forum.cfx.re/t/release-esx-msk-shopsystem-nativeui-database-feature/4853593)
-* [[ESX/QBCore] Simcard - Change your phonenumber](https://forum.cfx.re/t/release-esx-qbcore-usable-simcard/4847008)
-* [[ESX] Weapon Ammunition with Clips, Components & Tints](https://forum.cfx.re/t/release-esx-weapon-ammunition-with-clips-components-tints/4793783)
-#### FREE
-* [[ESX] MSK Deathcounter - integrated in myMultichar](https://forum.cfx.re/t/release-esx-msk-deathcounter-integrated-in-mymultichar/4863428)
+### Paid
+* [[ESX] MSK Armor - Multiple Armor Vests](https://forum.cfx.re/t/release-esx-armor-script-usable-armor-vests-status-will-be-saved-in-database-and-restore-after-relog/4812243)
+* [[ESX] MSK Banking - Advanced Banking  with NativeUI](https://forum.cfx.re/t/esx-msk-bankingsystem-with-nativeui/4859560)
+* [[ESX] MSK Garage - Garage & Impounds](https://forum.cfx.re/t/esx-msk-garage-and-impound/5122014)
+* [[ESX] MSK Handcuffs - Realistic Handcuffs](https://forum.cfx.re/t/esx-msk-handcuffs-realistic-handcuffs/4885324)
+* [[ESX/QBCore] MSK Radio - Channels with password](https://forum.cfx.re/t/esx-msk-radio/5237033)
+* [[ESX/QBCore] MSK Simcard - Change your phonenumber](https://forum.cfx.re/t/release-esx-qbcore-usable-simcard/4847008)
+* [[ESX] MSK Storage](https://forum.cfx.re/t/esx-msk-storage/5252155)
+* [[ESX] MSK WeaponAmmo - Clips, Components & Tints](https://forum.cfx.re/t/release-esx-weapon-ammunition-with-clips-components-tints/4793783)
+
+### Free
+* [MSK Scripts Repositories](https://github.com/MSK-Scripts)
+* [Musiker15's Repositories](https://github.com/Musiker15)
 
 ## License
 **GNU General Public License v3.0**
