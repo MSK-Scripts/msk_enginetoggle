@@ -24,51 +24,12 @@ Vehicle Engine Toggle On/Off
 * MSK Core (https://github.com/MSK-Scripts/msk_core)
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 
-### VehicleKeyChain
-If you want to add a permanent key:
-```lua
--- clientside --
-local plate = GetVehicleNumberPlateText(vehicle)
-TriggerServerEvent('VKC:setKey', true, plate, 1) -- Give a Key to the Player
-TriggerServerEvent('VKC:setKey', false, plate, 1) -- Remove the Key from the Player
+## Exports
+All exports are CLIENTSIDE. Look at the [Documentation](https://docu.msk-scripts.de/engine-toggle) for more information.
+* toggleEngine -> Toggles the engine on/off
+* toggleHotwire -> Starts the Hotwire Feature
+* getEngineState -> Get the current Enginestate of the vehicle
 
--- or this one
-
--- clientside --
--- Give a Key to the Player
-local plate = 'ABC 123'
-SetVehicleNumberPlateText(vehicle, plate) -- Only if you don't use AdvancedParking
-exports["AdvancedParking"]:UpdatePlate(vehicle, plate) -- Only if you use AdvancedParking
-TriggerServerEvent('VKC:setKey', true, plate, 1)
--- Remove the Key from the Player
-TriggerServerEvent('VKC:setKey', false, plate, 1)
-
--- serverside --
-RegisterServerEvent('VKC:setKey')
-AddEventHandler('VKC:setKey', function(set, plate, count)
-    if set then -- Add Key
-        exports["VehicleKeyChain"]:AddKey(source, plate, count)
-    else -- Remove Key
-        exports["VehicleKeyChain"]:RemoveKey(source, plate, count)
-    end
-end)
-```
-If you only want a temporary key that will be deleted after restart use this:
-```lua
--- clientside --
-TriggerServerEvent("VKC:giveTempKey", true, "PLATE") -- Add Temp Key
-TriggerServerEvent("VKC:giveTempKey", false, "PLATE") -- Remove Temp Key
-
--- serverside --
-RegisterNetEvent("VKC:giveTempKey")
-AddEventHandler("VKC:giveTempKey", function(set, plate)
-    if set then -- Add Temp Key
-        exports["VehicleKeyChain"]:AddTempKey(source, plate)
-    else -- Remove Temp Key
-        exports["VehicleKeyChain"]:RemoveTempKey(source, plate)
-    end
-end)
-```
 ### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
 ```lua
@@ -82,6 +43,7 @@ if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     TriggerEvent('msk_enginetoggle:RPDamage', false)
 end
 ```
+
 ### QB-Vehiclefailure
 IF you use `qb-vehiclefailure`, then replace the following Code in `client.lua` on Line 530 in qb-vehiclefailure:
 ```lua
