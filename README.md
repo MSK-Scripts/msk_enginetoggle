@@ -25,7 +25,7 @@ Vehicle Engine Toggle On/Off
 * VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
 
 ## Exports
-All exports are CLIENTSIDE. Look at the [Documentation](https://docu.msk-scripts.de/engine-toggle) for more information.
+All exports are CLIENTSIDE. Look at the [Documentation](https://docu.msk-scripts.de/enginetoggle) for more information.
 * toggleEngine -> Toggles the engine on/off
 * toggleHotwire -> Starts the Hotwire Feature
 * getEngineState -> Get the current Enginestate of the vehicle
