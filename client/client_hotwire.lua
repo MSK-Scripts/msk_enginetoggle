@@ -108,18 +108,18 @@ toggleHotwire = function()
 					return
 				end
 
-				if Config.VehicleKeyChain and (GetResourceState("VehicleKeyChain") == "started") then
-					local vehicle2 = GetVehiclePedIsIn(playerPed, false)
-					local plate = GetVehicleNumberPlateText(vehicle2)
+				if Config.VehicleKeys.enable and (GetResourceState(Config.VehicleKeys.script) == "started") then
+					local currVehicle = GetVehiclePedIsIn(playerPed, false)
+					local currPlate = GetVehicleNumberPlateText(currVehicle)
 
 					if Config.Probability.enableSearchKey then
 						if chance <= Config.Probability.searchKey then
-							TriggerServerEvent('msk_enginetoggle:addcarkeys', tostring(plate))
+							TriggerServerEvent('msk_enginetoggle:addTempKey', tostring(currPlate))
 						else
 							Config.Notification(nil, Translation[Config.Locale]['hotwiring_notfoundkey'], 'info')
 						end
 					else
-						TriggerServerEvent('msk_enginetoggle:addcarkeys', tostring(plate))
+						TriggerServerEvent('msk_enginetoggle:addTempKey', tostring(currPlate))
 					end
 
 					Wait(200)

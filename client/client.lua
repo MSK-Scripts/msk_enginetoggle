@@ -8,11 +8,6 @@ end
 
 currentVehicle = {}
 isInVehicle, isEnteringVehicle, disabledDrive = false, false, false
-RPWorking = true
-
-RegisterNetEvent('msk_enginetoggle:RPDamage', function(state)
-	RPWorking = state
-end)
 
 if Config.Command.enable then
 	RegisterCommand(Config.Command.command, function(source, args, rawCommand)
@@ -31,49 +26,37 @@ toggleEngine = function(bypass)
 	if not IsPedInAnyVehicle(playerPed) then return end
 	local currVehicle = GetVehiclePedIsIn(playerPed)
 
-	if GetPedInVehicleSeat(currVehicle, -1) ~= playerPed then return end
-	local isEngineOn = GetIsVehicleEngineRunning(currVehicle)
+	if not Config.EngineFromSecondSeat and GetPedInVehicleSeat(currVehicle, -1) ~= playerPed then return end
 
-	if Config.VehicleKeyChain and (GetResourceState("VehicleKeyChain") == "started") then
-		local isVehicle, isPlate = false, false
-		local isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(currVehicle)
-
-		for k, v in pairs(Config.Whitelist.vehicles) do 
-			if GetHashKey(v) == GetEntityModel(currVehicle) then
-				isVehicle = true
-				break
-			end
+	if Config.EngineFromSecondSeat then
+		if playerPed ~= GetPedInVehicleSeat(currVehicle, -1) and playerPed ~= GetPedInVehicleSeat(currVehicle, 0) then
+			return
 		end
 
-		for k, v in pairs(Config.Whitelist.plates) do 
-			if string.find(trim(tostring(GetVehicleNumberPlateText(currVehicle))), v) then 
-				isPlate = true
-				break
-			end
-		end
-
-		if not isVehicleOrKeyOwner and not isVehicle and not isPlate and not bypass then
-			canToggleEngine = false
-		end
+		if IsVehicleSeatFree(currVehicle, -1) then return end
 	end
-
+	
+	if not bypass then
+		canToggleEngine = getIsVehicleOrKeyOwner(currVehicle)
+	end
+	
 	if not canToggleEngine then 
 		return Config.Notification(nil, Translation[Config.Locale]['key_nokey'], 'error')
 	end
-	if not RPWorking then return end
+
+	if getVehicleDamaged(currVehicle) then return end
+	local isEngineOn = GetIsVehicleEngineRunning(currVehicle)
 
 	SetVehicleEngineOn(currVehicle, not isEngineOn, false, true)
 	SetVehicleKeepEngineOnWhenAbandoned(currVehicle, not isEngineOn)
+	SetVehicleUndriveable(currVehicle, isEngineOn)
+	setEngineState(currVehicle, not isEngineOn)
 	
 	if isEngineOn then
 		CreateThread(disableDrive)
-		SetVehicleUndriveable(currVehicle, true)
-		setEngineState(currVehicle, false)
 		Config.Notification(nil, Translation[Config.Locale]['engine_stop'], 'success')
 	else
 		disabledDrive = false
-		SetVehicleUndriveable(currVehicle, false)
-		setEngineState(currVehicle, true)
 		Config.Notification(nil, Translation[Config.Locale]['engine_start'], 'success')
 	end
 end
@@ -138,11 +121,6 @@ AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat,
 	end
 end)
 
-RegisterCommand('state', function(source, args, raw)
-	local vehicle = GetVehiclePedIsIn(PlayerPedId())
-	logging('getEngineState', vehicle, getEngineState(vehicle))
-end)
-
 CreateThread(function()
 	while true do
 		local sleep = 200
@@ -152,7 +130,7 @@ CreateThread(function()
 		for i = 1, #vehiclePool do
 			local vehicle = vehiclePool[i]
 
-			if DoesEntityExist(vehicle) and RPWorking and IsVehicleSeatFree(vehicle, -1) and (not IsPedInAnyVehicle(playerPed, false) or (IsPedInAnyVehicle(playerPed, false) and vehicle ~= GetVehiclePedIsIn(playerPed, false))) then
+			if DoesEntityExist(vehicle) and not getVehicleDamaged(vehicle) and IsVehicleSeatFree(vehicle, -1) and (not IsPedInAnyVehicle(playerPed, false) or (IsPedInAnyVehicle(playerPed, false) and vehicle ~= GetVehiclePedIsIn(playerPed, false))) then
 				local vehicleModel = GetEntityModel(vehicle)
 
 				if (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
@@ -220,12 +198,26 @@ end
 
 getEngineState = function(vehicle)
 	if Entity(vehicle).state.isEngineOn == nil then
-		logging('getEngineState is nil')
 		Entity(vehicle).state.isEngineOn = GetIsVehicleEngineRunning(vehicle)
 	end
 	return Entity(vehicle).state.isEngineOn
 end
 exports('getEngineState', getEngineState)
+
+setVehicleDamaged = function(vehicle, state)
+	currentVehicle.isDamaged = state
+	Entity(vehicle).state.isDamaged = state
+end
+exports('setVehicleDamaged', setVehicleDamaged)
+RegisterNetEvent('msk_enginetoggle:setVehicleDamaged', setVehicleDamaged)
+
+getVehicleDamaged = function(vehicle)
+	if Entity(vehicle).state.isDamaged == nil then
+		Entity(vehicle).state.isDamaged = false
+	end
+	return Entity(vehicle).state.isDamaged
+end
+exports('getVehicleDamaged', getVehicleDamaged)
 
 disableDrive = function()
 	if disabledDrive then return end
@@ -242,11 +234,7 @@ disableDrive = function()
 	disabledDrive = false
 end
 
-trim = function(str)
-	return string.gsub(str, "%s+", "")
-end
-
-function GetPedVehicleSeat(ped, vehicle)
+GetPedVehicleSeat = function(ped, vehicle)
     for i = -1, 16 do
         if (GetPedInVehicleSeat(vehicle, i) == ped) then return i end
     end

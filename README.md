@@ -3,7 +3,7 @@ Vehicle Engine Toggle On/Off
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Musiker15/msk_enginetoggle?color=gree&label=Update)
 
-**Forum:** https://forum.cfx.re/t/re-release-enginetoggle/4793840
+**Forum:** https://forum.cfx.re/t/msk-enginetoggle-toggle-engine-on-off/4793840
 
 **Discord Support:** https://discord.gg/5hHSBRHvJE
 
@@ -21,26 +21,31 @@ Vehicle Engine Toggle On/Off
 ## Requirements
 * No Requirements needed
 ### Optional
-* MSK Core (https://github.com/MSK-Scripts/msk_core)
-* VehicleKeyChain (https://forum.cfx.re/t/release-vehicle-key-chain/3319563)
+* [ESX Legacy](https://github.com/esx-framework/esx_core)
+* [QBCore](https://github.com/qbcore-framework/qb-core)
+* [MSK Core](https://github.com/MSK-Scripts/msk_core)
+* [VehicleKeyChain](https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563)
+* [vehicle_keys](https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274)
 
 ## Exports
 All exports are CLIENTSIDE. Look at the [Documentation](https://docu.msk-scripts.de/enginetoggle) for more information.
 * toggleEngine -> Toggles the engine on/off
 * toggleHotwire -> Starts the Hotwire Feature
 * getEngineState -> Get the current Enginestate of the vehicle
+* setVehicleDamaged -> Set the vehicle undrivable (Can't start/stop engine)
+* getVehicleDamaged -> Get the vehicle is undrivable
 
 ### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
-    SetVehicleUndriveable(vehicle,false)
-    TriggerEvent('msk_enginetoggle:RPDamage', true)
+    SetVehicleUndriveable(vehicle, false)
+    exports.msk_enginetoggle:setEngineState(vehicle, true)
 end
 
 if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
-    SetVehicleUndriveable(vehicle,true)
-    TriggerEvent('msk_enginetoggle:RPDamage', false)
+    SetVehicleUndriveable(vehicle, true)
+    exports.msk_enginetoggle:setEngineState(vehicle, false)
 end
 ```
 
@@ -49,14 +54,14 @@ IF you use `qb-vehiclefailure`, then replace the following Code in `client.lua` 
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle, false)
-    TriggerEvent('msk_enginetoggle:RPDamage', true)
+    exports.msk_enginetoggle:setEngineState(vehicle, true)
 end
 
 if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     local vehpos = GetEntityCoords(vehicle)
     StartParticleFxLoopedAtCoord("ent_ray_heli_aprtmnt_l_fire", vehpos.x, vehpos.y, vehpos.z-0.7, 0.0, 0.0, 0.0, 1.0, false, false, false, false)
     SetVehicleUndriveable(vehicle, true)
-    TriggerEvent('msk_enginetoggle:RPDamage', false)
+    exports.msk_enginetoggle:setEngineState(vehicle, false)
 end
 ```
 
@@ -74,6 +79,3 @@ end
 ### Free
 * [MSK Scripts Repositories](https://github.com/MSK-Scripts)
 * [Musiker15's Repositories](https://github.com/Musiker15)
-
-## License
-**GNU General Public License v3.0**

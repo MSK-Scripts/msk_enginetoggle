@@ -31,8 +31,16 @@ if Config.AdminCommand.enable then
 	end)
 end
 
-RegisterNetEvent('msk_enginetoggle:addcarkeys', function(plate)
-    exports["VehicleKeyChain"]:AddTempKey(source, plate)
+RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
+	if not Config.VehicleKeys.enable then return end
+	local playerId = source
+
+	if Config.VehicleKeys.script == 'VehicleKeyChain' then
+		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
+	elseif Config.VehicleKeys.script == 'vehicles_keys' then
+		exports["vehicles_keys"]:giveVehicleKeysToPlayerId(playerId, plate, 'temporary')
+	end
+
 	Config.Notification(source, Translation[Config.Locale]['hotwiring_foundkey'], 'info')
 end)
 
@@ -43,7 +51,7 @@ GithubUpdater = function()
 
 	local CurrentVersion = GetCurrentVersion()
 	local resourceName = "^0[^2"..GetCurrentResourceName().."^0]"
-	local VehicleKeyChain = "^3[VehicleKeyChain]^0"
+	local VehicleScript = ("^3[%s]^0"):format(Config.VehicleKeys.script)
 
 	if Config.VersionChecker then
 		PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/msk_enginetoggle/main/VERSION', function(Error, NewestVersion, Header)
@@ -54,11 +62,13 @@ GithubUpdater = function()
 				print('^5Newest Version: ^2' .. NewestVersion .. '^0 - ^6Download here: ^9https://github.com/Musiker15/msk_enginetoggle/releases/tag/v'.. NewestVersion .. '^0')
 			end
 
-			if Config.VehicleKeyChain then
-				if (GetResourceState("VehicleKeyChain") == "started") then
-					print('^2[READY]^0 Script '.. VehicleKeyChain ..' found!')
-				elseif (GetResourceState("VehicleKeyChain") == "stopped") then
-					print('^1[ERROR]^0 Script '.. VehicleKeyChain ..' not found! Please be sure, that '.. VehicleKeyChain ..' is started.')
+			if Config.VehicleKeys.enable then
+				if (GetResourceState(Config.VehicleKeys.script) == "started") then
+					print(("Script %s was found and is running!"):format(VehicleScript))
+				elseif (GetResourceState(Config.VehicleKeys.script) == "stopped") then
+					print(("Script %s was found but is stopped, please start the Script!"):format(VehicleScript))
+				elseif (GetResourceState(Config.VehicleKeys.script) == "missing") then
+					print(("Script %s was not found, please make sure that the Script is started!"):format(VehicleScript))
 				end
 			end
 		end)
