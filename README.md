@@ -40,12 +40,12 @@ If you use `RealisticVehicleDamage`, then replace following Code in `client.lua`
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle, false)
-    exports.msk_enginetoggle:setEngineState(vehicle, true)
+    exports.msk_enginetoggle:setVehicleDamaged(vehicle, true)
 end
 
 if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     SetVehicleUndriveable(vehicle, true)
-    exports.msk_enginetoggle:setEngineState(vehicle, false)
+    exports.msk_enginetoggle:setVehicleDamaged(vehicle, false)
 end
 ```
 
@@ -54,14 +54,14 @@ IF you use `qb-vehiclefailure`, then replace the following Code in `client.lua` 
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle, false)
-    exports.msk_enginetoggle:setEngineState(vehicle, true)
+    exports.msk_enginetoggle:setVehicleDamaged(vehicle, true)
 end
 
 if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     local vehpos = GetEntityCoords(vehicle)
     StartParticleFxLoopedAtCoord("ent_ray_heli_aprtmnt_l_fire", vehpos.x, vehpos.y, vehpos.z-0.7, 0.0, 0.0, 0.0, 1.0, false, false, false, false)
     SetVehicleUndriveable(vehicle, true)
-    exports.msk_enginetoggle:setEngineState(vehicle, false)
+    exports.msk_enginetoggle:setVehicleDamaged(vehicle, false)
 end
 ```
 
