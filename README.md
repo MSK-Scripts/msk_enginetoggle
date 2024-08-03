@@ -50,7 +50,7 @@ end
 ```
 
 ### QB-Vehiclefailure
-IF you use `qb-vehiclefailure`, then replace the following Code in `client.lua` on Line 530 in qb-vehiclefailure:
+If you use `qb-vehiclefailure`, then replace the following Code in `client.lua` on Line 530 in qb-vehiclefailure:
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle, false)
