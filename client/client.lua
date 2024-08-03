@@ -123,7 +123,7 @@ end)
 
 CreateThread(function()
 	while true do
-		local sleep = 200
+		local sleep = 500
 		local playerPed = PlayerPedId()
 		local vehiclePool = GetGamePool('CVehicle')
 
