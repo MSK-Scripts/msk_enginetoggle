@@ -12,11 +12,11 @@ Vehicle Engine Toggle On/Off
 * You can set that the engine starts automatically when entering a vehicle.
 * You can set a Command and Hotkey *(RegisterKeyMapping)*.
 * Set your own Notification and Progressbar.
-* If you set `Config.VehicleKeyChain` to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
+* If you set `Config.VehicleKeys` to true then only the Owner of the Vehicle or someone with a Key can start the Engine!
 * Admin Command to start/stop the engine without a Key *(Bypass)*
 * Whitelist for models and plates that do not need a Key to start/stop the engine
 * Save the Angel of the Steering Wheel *(Synced)*
-* Hotwire Function in compatibility with VehicleKeyChain
+* Hotwire Function in compatibility with VehicleKeyChain and Jaksams vehicle_keys
 
 ## Resmon
 Resmon without any near vehicles
