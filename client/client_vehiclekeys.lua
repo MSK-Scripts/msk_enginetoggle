@@ -5,8 +5,8 @@ getIsVehicleOrKeyOwner = function(vehicle)
 
     if Config.VehicleKeys.script == 'VehicleKeyChain' and (GetResourceState("VehicleKeyChain") == "started") then
         isVehicleOrKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(vehicle)
-    elseif Config.VehicleKeys.script == 'vehicles_keys' and (GetResourceState("vehicles_keys") == "started") then
-        isVehicleOrKeyOwner = exports["vehicles_keys"]:doesPlayerOwnPlate(GetVehicleNumberPlateText(vehicle))
+    elseif Config.VehicleKeys.script == 'vehicle_keys' and (GetResourceState("vehicle_keys") == "started") then
+        isVehicleOrKeyOwner = exports["vehicle_keys"]:doesPlayerOwnPlate(GetVehicleNumberPlateText(vehicle))
     else
         if (GetResourceState(Config.VehicleKeys.script) == "started") then
             -- Add your own code here

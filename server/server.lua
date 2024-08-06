@@ -37,8 +37,8 @@ RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
 
 	if Config.VehicleKeys.script == 'VehicleKeyChain' then
 		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
-	elseif Config.VehicleKeys.script == 'vehicles_keys' then
-		exports["vehicles_keys"]:giveVehicleKeysToPlayerId(playerId, plate, 'temporary')
+	elseif Config.VehicleKeys.script == 'vehicle_keys' then
+		exports["vehicle_keys"]:giveVehicleKeysToPlayerId(playerId, plate, 'temporary')
 	end
 
 	Config.Notification(source, Translation[Config.Locale]['hotwiring_foundkey'], 'info')

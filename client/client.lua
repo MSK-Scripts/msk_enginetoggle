@@ -63,7 +63,7 @@ end
 exports('toggleEngine', toggleEngine)
 RegisterNetEvent('msk_enginetoggle:toggleEngine', toggleEngine)
 
-AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, seat, netId, isEngineOn)
+AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	logging('enteringVehicle', vehicle, plate, seat, netId, isEngineOn)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
@@ -83,7 +83,7 @@ AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, sea
 	end
 end)
 
-AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat, netId, isEngineOn)
+AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	logging('enteredVehicle', vehicle, plate, seat, netId, isEngineOn)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
@@ -108,7 +108,7 @@ AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat
 	end
 end)
 
-AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat, netId, isEngineOn)
+AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	logging('exitedVehicle', vehicle, plate, seat, netId, isEngineOn)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
@@ -157,11 +157,12 @@ CreateThread(function()
 				local vehicle = GetVehiclePedIsTryingToEnter(playerPed)
                 local plate = GetVehicleNumberPlateText(vehicle)
                 local seat = GetSeatPedIsTryingToEnter(playerPed)
-				local isEngineOn = getEngineState(vehicle)
 				local netId = VehToNet(vehicle)
+				local isEngineOn = getEngineState(vehicle)
+				local isDamaged = getVehicleDamaged(vehicle)
 				isEnteringVehicle = true
-				TriggerEvent('msk_enginetoggle:enteringVehicle', vehicle, plate, seat, netId, isEngineOn)
-                TriggerServerEvent('msk_enginetoggle:enteringVehicle', plate, seat, netId, isEngineOn)
+				TriggerEvent('msk_enginetoggle:enteringVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
+                TriggerServerEvent('msk_enginetoggle:enteringVehicle', plate, seat, netId, isEngineOn, isDamaged)
 			elseif not DoesEntityExist(GetVehiclePedIsTryingToEnter(playerPed)) and not IsPedInAnyVehicle(playerPed, true) and isEnteringVehicle then
 				TriggerEvent('msk_enginetoggle:enteringVehicleAborted')
                 TriggerServerEvent('msk_enginetoggle:enteringVehicleAborted')
@@ -172,16 +173,17 @@ CreateThread(function()
 				currentVehicle.vehicle = GetVehiclePedIsIn(playerPed)
 				currentVehicle.plate = GetVehicleNumberPlateText(currentVehicle.vehicle)
 				currentVehicle.seat = GetPedVehicleSeat(playerPed, currentVehicle.vehicle)
-				currentVehicle.isEngineOn = getEngineState(currentVehicle.vehicle)
 				currentVehicle.netId = VehToNet(currentVehicle.vehicle)
-				TriggerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.vehicle, currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn)
-                TriggerServerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.plate, currentVehicle.seat, currentVehicle.netId,currentVehicle.isEngineOn)
+				currentVehicle.isEngineOn = getEngineState(currentVehicle.vehicle)
+				currentVehicle.isDamaged = getVehicleDamaged(currentVehicle.vehicle)
+				TriggerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.vehicle, currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn, currentVehicle.isDamaged)
+                TriggerServerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.plate, currentVehicle.seat, currentVehicle.netId,currentVehicle.isEngineOn, currentVehicle.isDamaged)
 			end
 		elseif isInVehicle then
 			if not IsPedInAnyVehicle(playerPed, false) or IsPlayerDead(PlayerId()) then
 				isInVehicle = false
-				TriggerEvent('msk_enginetoggle:exitedVehicle', currentVehicle.vehicle, currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn)
-                TriggerServerEvent('msk_enginetoggle:exitedVehicle', currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn)
+				TriggerEvent('msk_enginetoggle:exitedVehicle', currentVehicle.vehicle, currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn, currentVehicle.isDamaged)
+                TriggerServerEvent('msk_enginetoggle:exitedVehicle', currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn, currentVehicle.isDamaged)
 				currentVehicle = {}
 			end
 		end
@@ -205,6 +207,7 @@ end
 exports('getEngineState', getEngineState)
 
 setVehicleDamaged = function(vehicle, state)
+	logging('setVehicleDamaged', vehicle, state)
 	currentVehicle.isDamaged = state
 	Entity(vehicle).state.isDamaged = state
 end

@@ -42,11 +42,11 @@ Config.EngineFromSecondSeat = false
 ----------------------------------------------------------------
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 -- VehicleKeyChain: https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563
--- vehicles_keys: https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274
+-- vehicle_keys: https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274
 
 Config.VehicleKeys = {
     enable = false,
-    script = 'VehicleKeyChain' -- Set to 'VehicleKeyChain' or 'vehicles_keys'
+    script = 'VehicleKeyChain' -- Set to 'VehicleKeyChain' or 'vehicle_keys'
 }
 ----------------------------------------------------------------
 Config.SaveSteeringAngle = true
