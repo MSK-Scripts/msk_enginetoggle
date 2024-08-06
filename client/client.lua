@@ -64,7 +64,7 @@ exports('toggleEngine', toggleEngine)
 RegisterNetEvent('msk_enginetoggle:toggleEngine', toggleEngine)
 
 AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	logging('enteringVehicle', vehicle, plate, seat, netId, isEngineOn)
+	logging('enteringVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
 
@@ -84,7 +84,7 @@ AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, sea
 end)
 
 AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	logging('enteredVehicle', vehicle, plate, seat, netId, isEngineOn)
+	logging('enteredVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
 
@@ -109,7 +109,7 @@ AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat
 end)
 
 AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	logging('exitedVehicle', vehicle, plate, seat, netId, isEngineOn)
+	logging('exitedVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
 
@@ -147,6 +147,7 @@ CreateThread(function()
 	end
 end)
 
+-- Credits to ESX Legacy (https://github.com/esx-framework/esx_core/blob/main/%5Bcore%5D/es_extended/client/modules/actions.lua)
 CreateThread(function()
 	while true do
 		local sleep = 200
