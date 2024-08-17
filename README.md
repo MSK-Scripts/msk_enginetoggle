@@ -39,21 +39,21 @@ Resmon with near vehicles and engines on
 All exports are CLIENTSIDE. Look at the [Documentation](https://docu.msk-scripts.de/enginetoggle) for more information.
 * toggleEngine -> Toggles the engine on/off
 * toggleHotwire -> Starts the Hotwire Feature
-* getEngineState -> Get the current Enginestate of the vehicle
-* setVehicleDamaged -> Set the vehicle undrivable (Can't start/stop engine)
-* getVehicleDamaged -> Get the vehicle is undrivable
+* GetEngineState -> Get the current Enginestate of the vehicle
+* SetVehicleDamaged -> Set the vehicle undrivable (Can't start/stop engine)
+* GetVehicleDamaged -> Get the vehicle is undrivable
 
 ### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle, false)
-    exports.msk_enginetoggle:setVehicleDamaged(vehicle, true)
+    exports.msk_enginetoggle:SetVehicleDamaged(vehicle, true)
 end
 
 if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     SetVehicleUndriveable(vehicle, true)
-    exports.msk_enginetoggle:setVehicleDamaged(vehicle, false)
+    exports.msk_enginetoggle:SetVehicleDamaged(vehicle, false)
 end
 ```
 
@@ -62,14 +62,14 @@ If you use `qb-vehiclefailure`, then replace the following Code in `client.lua` 
 ```lua
 if healthEngineCurrent > cfg.engineSafeGuard+1 then
     SetVehicleUndriveable(vehicle, false)
-    exports.msk_enginetoggle:setVehicleDamaged(vehicle, true)
+    exports.msk_enginetoggle:SetVehicleDamaged(vehicle, true)
 end
 
 if healthEngineCurrent <= cfg.engineSafeGuard+1 and cfg.limpMode == false then
     local vehpos = GetEntityCoords(vehicle)
     StartParticleFxLoopedAtCoord("ent_ray_heli_aprtmnt_l_fire", vehpos.x, vehpos.y, vehpos.z-0.7, 0.0, 0.0, 0.0, 1.0, false, false, false, false)
     SetVehicleUndriveable(vehicle, true)
-    exports.msk_enginetoggle:setVehicleDamaged(vehicle, false)
+    exports.msk_enginetoggle:SetVehicleDamaged(vehicle, false)
 end
 ```
 
