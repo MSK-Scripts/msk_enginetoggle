@@ -1,12 +1,12 @@
 if Config.EnableLockpick then
     if Config.Framework == 'ESX' then
 		ESX.RegisterUsableItem(Config.LockpickSettings.item, function(source)
-			TriggerClientEvent('msk_enginetoggle:hotwire', source)
+			TriggerClientEvent('msk_enginetoggle:toggleHotwire', source)
 		end)
 
         ESX.RegisterServerCallback('msk_enginetoggle:hasItem', function(source, cb, item)
             local src = source
-            local xPlayer = ESX.getPlayerFromId(src)
+            local xPlayer = ESX.GetPlayerFromId(src)
             local hasItem = xPlayer.hasItem(item)
 
             if hasItem and hasItem.count > 0 then
@@ -17,7 +17,7 @@ if Config.EnableLockpick then
         end)
     elseif Config.Framework == 'QBCore' then
         QBCore.Functions.CreateUseableItem(Config.LockpickSettings.item, function(source)
-            TriggerClientEvent('msk_enginetoggle:hotwire', source)
+            TriggerClientEvent('msk_enginetoggle:toggleHotwire', source)
         end)
 
         QBCore.Functions.CreateCallback('msk_enginetoggle:hasItem', function(source, cb, item)
@@ -36,8 +36,8 @@ if Config.EnableLockpick then
     end
 
 	RegisterNetEvent('msk_enginetoggle:removeLockpickItem', function()
-        local src = source
         if not Config.LockpickSettings.removeItem then return end
+        local src = source
 
         if Config.Framework == 'ESX' then
             local xPlayer = ESX.GetPlayerFromId(src)

@@ -45,7 +45,7 @@ Config.EngineFromSecondSeat = false
 -- vehicle_keys: https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274
 
 Config.VehicleKeys = {
-    enable = false,
+    enable = false, -- Set true to enable this feature
     script = 'VehicleKeyChain' -- Set to 'VehicleKeyChain' or 'vehicle_keys'
 }
 ----------------------------------------------------------------

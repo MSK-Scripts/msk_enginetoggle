@@ -44,13 +44,11 @@ toggleEngine = function(bypass)
 		return Config.Notification(nil, Translation[Config.Locale]['key_nokey'], 'error')
 	end
 
-	if getVehicleDamaged(currVehicle) then return end
+	if GetVehicleDamaged(currVehicle) then return end
 	local isEngineOn = GetIsVehicleEngineRunning(currVehicle)
 
-	SetVehicleEngineOn(currVehicle, not isEngineOn, false, true)
+	SetEngineState(currVehicle, not isEngineOn, true)
 	SetVehicleKeepEngineOnWhenAbandoned(currVehicle, not isEngineOn)
-	SetVehicleUndriveable(currVehicle, isEngineOn)
-	setEngineState(currVehicle, not isEngineOn)
 	
 	if isEngineOn then
 		CreateThread(disableDrive)
@@ -72,12 +70,11 @@ AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, sea
 		logging('SetVehicleUndriveable')
 
 		if not Config.EngineOnAtEnter then
-			SetVehicleUndriveable(vehicle, true)
-			SetVehicleEngineOn(vehicle, false, false, true)
+			SetEngineState(vehicle, false, true)
 			SetVehicleKeepEngineOnWhenAbandoned(vehicle, false)
 		end
 	elseif seat == -1 and isEngineOn and (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
-		SetVehicleEngineOn(vehicle, true, false, true)
+		SetEngineState(vehicle, true, true)
 		SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 		SetHeliBladesFullSpeed(vehicle)
 	end
@@ -92,17 +89,15 @@ AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat
 		logging('SetVehicleUndriveable')
 
 		if not Config.EngineOnAtEnter then
-			CreateThread(disableDrive)
-			SetVehicleUndriveable(vehicle, true)
-			SetVehicleEngineOn(vehicle, false, false, true)
+			SetEngineState(vehicle, false, true)
 			SetVehicleKeepEngineOnWhenAbandoned(vehicle, false)
+			CreateThread(disableDrive)
 		else
-			SetVehicleUndriveable(vehicle, false)
-			SetVehicleEngineOn(vehicle, true, false, true)
+			SetEngineState(vehicle, true, true)
 			SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 		end
 	elseif seat == -1 and isEngineOn and (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
-		SetVehicleEngineOn(vehicle, true, false, true)
+		SetEngineState(vehicle, true, true)
 		SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 		SetHeliBladesFullSpeed(vehicle)
 	end
@@ -115,8 +110,7 @@ AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat,
 
 	if seat == -1 and not isEngineOn then
 		logging('SetVehicleUndriveable')
-		SetVehicleUndriveable(vehicle, true)
-		SetVehicleEngineOn(vehicle, false, false, true)
+		SetEngineState(vehicle, false, true)
 		SetVehicleKeepEngineOnWhenAbandoned(vehicle, false)
 	end
 end)
@@ -130,12 +124,12 @@ CreateThread(function()
 		for i = 1, #vehiclePool do
 			local vehicle = vehiclePool[i]
 
-			if DoesEntityExist(vehicle) and not getVehicleDamaged(vehicle) and IsVehicleSeatFree(vehicle, -1) and (not IsPedInAnyVehicle(playerPed, false) or (IsPedInAnyVehicle(playerPed, false) and vehicle ~= GetVehiclePedIsIn(playerPed, false))) then
+			if DoesEntityExist(vehicle) and not GetVehicleDamaged(vehicle) and IsVehicleSeatFree(vehicle, -1) and (not IsPedInAnyVehicle(playerPed, false) or (IsPedInAnyVehicle(playerPed, false) and vehicle ~= GetVehiclePedIsIn(playerPed, false))) then
 				local vehicleModel = GetEntityModel(vehicle)
 
 				if (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
-					if getEngineState(vehicle) then
-						SetVehicleEngineOn(vehicle, true, false, true)
+					if GetEngineState(vehicle) then
+						SetEngineState(vehicle, true, true)
 						SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 						SetHeliBladesFullSpeed(vehicle)
 					end
@@ -159,8 +153,8 @@ CreateThread(function()
                 local plate = GetVehicleNumberPlateText(vehicle)
                 local seat = GetSeatPedIsTryingToEnter(playerPed)
 				local netId = VehToNet(vehicle)
-				local isEngineOn = getEngineState(vehicle)
-				local isDamaged = getVehicleDamaged(vehicle)
+				local isEngineOn = GetEngineState(vehicle)
+				local isDamaged = GetVehicleDamaged(vehicle)
 				isEnteringVehicle = true
 				TriggerEvent('msk_enginetoggle:enteringVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
                 TriggerServerEvent('msk_enginetoggle:enteringVehicle', plate, seat, netId, isEngineOn, isDamaged)
@@ -175,8 +169,8 @@ CreateThread(function()
 				currentVehicle.plate = GetVehicleNumberPlateText(currentVehicle.vehicle)
 				currentVehicle.seat = GetPedVehicleSeat(playerPed, currentVehicle.vehicle)
 				currentVehicle.netId = VehToNet(currentVehicle.vehicle)
-				currentVehicle.isEngineOn = getEngineState(currentVehicle.vehicle)
-				currentVehicle.isDamaged = getVehicleDamaged(currentVehicle.vehicle)
+				currentVehicle.isEngineOn = GetEngineState(currentVehicle.vehicle)
+				currentVehicle.isDamaged = GetVehicleDamaged(currentVehicle.vehicle)
 				TriggerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.vehicle, currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn, currentVehicle.isDamaged)
                 TriggerServerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.plate, currentVehicle.seat, currentVehicle.netId,currentVehicle.isEngineOn, currentVehicle.isDamaged)
 			end
@@ -193,44 +187,76 @@ CreateThread(function()
 	end
 end)
 
-setEngineState = function(vehicle, state)
-	logging('setEngineState', vehicle, state)
-	currentVehicle.isEngineOn = state
-	Entity(vehicle).state.isEngineOn = state
-end
+SetEngineState = function(vehicle, state, engine)
+	if not DoesEntityExist(vehicle) then return end
+	logging('SetEngineState', vehicle, state)
 
-getEngineState = function(vehicle)
+	currentVehicle.isEngineOn = state
+	Entity(vehicle).state:set('isEngineOn', state, true)
+
+	if not engine then return end
+	SetVehicleEngineOn(vehicle, state, false, true)
+	SetVehicleUndriveable(vehicle, not state)
+end
+exports('SetEngineState', SetEngineState)
+
+GetEngineState = function(vehicle)
+	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
+	if not DoesEntityExist(vehicle) then return end
+
 	if Entity(vehicle).state.isEngineOn == nil then
-		Entity(vehicle).state.isEngineOn = GetIsVehicleEngineRunning(vehicle)
+		SetEngineState(vehicle, GetIsVehicleEngineRunning(vehicle), false)
 	end
 	return Entity(vehicle).state.isEngineOn
 end
-exports('getEngineState', getEngineState)
+exports('GetEngineState', GetEngineState)
+exports('getEngineState', GetEngineState) -- Support for old versions
 
-setVehicleDamaged = function(vehicle, state)
-	logging('setVehicleDamaged', vehicle, state)
+SetVehicleDamaged = function(vehicle, state)
+	if not DoesEntityExist(vehicle) then return end
+	logging('SetVehicleDamaged', vehicle, state)
+
 	currentVehicle.isDamaged = state
-	Entity(vehicle).state.isDamaged = state
+	Entity(vehicle).state:set('isDamaged', state, true)
 end
-exports('setVehicleDamaged', setVehicleDamaged)
-RegisterNetEvent('msk_enginetoggle:setVehicleDamaged', setVehicleDamaged)
+exports('SetVehicleDamaged', SetVehicleDamaged)
+exports('setVehicleDamaged', SetVehicleDamaged) -- Support for old versions
+RegisterNetEvent('msk_enginetoggle:setVehicleDamaged', SetVehicleDamaged)
 
-getVehicleDamaged = function(vehicle)
+GetVehicleDamaged = function(vehicle)
+	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
+	if not DoesEntityExist(vehicle) then return end
+
 	if Entity(vehicle).state.isDamaged == nil then
-		Entity(vehicle).state.isDamaged = false
+		SetVehicleDamaged(vehicle, false)
 	end
 	return Entity(vehicle).state.isDamaged
 end
-exports('getVehicleDamaged', getVehicleDamaged)
+exports('GetVehicleDamaged', GetVehicleDamaged)
+exports('getVehicleDamaged', GetVehicleDamaged) -- Support for old versions
+
+GetPedVehicleSeat = function(playerPed, vehicle)
+	if not playerPed then playerPed = PlayerPedId() end
+	if not vehicle then vehicle = GetVehiclePedIsIn(playerPed) end
+	if not DoesEntityExist(vehicle) then return end
+
+    for i = -1, 16 do
+        if (GetPedInVehicleSeat(vehicle, i) == playerPed) then 
+			return i 
+		end
+    end	
+    return -1
+end
 
 disableDrive = function()
 	if disabledDrive then return end
 	disabledDrive = true
 
-	while isInVehicle and disabledDrive and currentVehicle.seat == -1 and not currentVehicle.isEngineOn do
+	while isInVehicle and disabledDrive and GetPedVehicleSeat() == -1 and not currentVehicle.isEngineOn do
 		local sleep = 1
 
-		DisableControlAction(0, 71, true)
+		DisableControlAction(0, 71, true) -- W
+		DisableControlAction(0, 72, true) -- S
 
 		Wait(sleep)
 	end
@@ -238,14 +264,7 @@ disableDrive = function()
 	disabledDrive = false
 end
 
-GetPedVehicleSeat = function(ped, vehicle)
-    for i = -1, 16 do
-        if (GetPedInVehicleSeat(vehicle, i) == ped) then return i end
-    end
-    return -1
-end
-
 logging = function(...)
 	if not Config.Debug then return end
-	print('[DEBUG]', ...)
+	print('[^3DEBUG^0]', ...)
 end
