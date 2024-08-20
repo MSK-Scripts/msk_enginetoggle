@@ -24,32 +24,32 @@ toggleEngine = function(bypass)
 	local canToggleEngine = true
 
 	if not IsPedInAnyVehicle(playerPed) then return end
-	local currVehicle = GetVehiclePedIsIn(playerPed)
+	local vehicle = GetVehiclePedIsIn(playerPed)
 
-	if not Config.EngineFromSecondSeat and GetPedInVehicleSeat(currVehicle, -1) ~= playerPed then return end
+	if not Config.EngineFromSecondSeat and GetPedInVehicleSeat(vehicle, -1) ~= playerPed then return end
 
 	if Config.EngineFromSecondSeat then
-		if playerPed ~= GetPedInVehicleSeat(currVehicle, -1) and playerPed ~= GetPedInVehicleSeat(currVehicle, 0) then
+		if playerPed ~= GetPedInVehicleSeat(vehicle, -1) and playerPed ~= GetPedInVehicleSeat(vehicle, 0) then
 			return
 		end
 
-		if IsVehicleSeatFree(currVehicle, -1) then return end
+		if IsVehicleSeatFree(vehicle, -1) then return end
 	end
 
-	if GetVehicleDamaged(currVehicle) then 
+	if GetVehicleDamaged(vehicle) then 
 		return Config.Notification(nil, Translation[Config.Locale]['veh_is_damaged'], 'error')
 	end
 	
 	if not bypass then
-		canToggleEngine = getIsVehicleOrKeyOwner(currVehicle)
+		canToggleEngine = getIsVehicleOrKeyOwner(vehicle)
 	end
 	
 	if not canToggleEngine then 
 		return Config.Notification(nil, Translation[Config.Locale]['key_nokey'], 'error')
 	end
 
-	local isEngineOn = GetIsVehicleEngineRunning(currVehicle)
-	SetEngineState(currVehicle, not isEngineOn, true)
+	local isEngineOn = GetIsVehicleEngineRunning(vehicle)
+	SetEngineState(vehicle, not isEngineOn, true)
 	
 	if isEngineOn then
 		CreateThread(disableDrive)
@@ -68,10 +68,9 @@ AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, sea
 	local vehicleModel = GetEntityModel(vehicle)
 
 	if seat == -1 and not isEngineOn then
-		logging('SetVehicleUndriveable')
-
 		if not Config.EngineOnAtEnter then
 			SetEngineState(vehicle, false, true)
+			CreateThread(disableDrive)
 		end
 	elseif seat == -1 and isEngineOn and (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
 		SetEngineState(vehicle, true, true)
@@ -85,8 +84,6 @@ AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat
 	local vehicleModel = GetEntityModel(vehicle)
 
 	if seat == -1 and not isEngineOn then
-		logging('SetVehicleUndriveable')
-
 		if not Config.EngineOnAtEnter then
 			SetEngineState(vehicle, false, true)
 			CreateThread(disableDrive)
@@ -105,7 +102,6 @@ AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat,
 	local vehicleModel = GetEntityModel(vehicle)
 
 	if seat == -1 and not isEngineOn then
-		logging('SetVehicleUndriveable')
 		SetEngineState(vehicle, false, true)
 	end
 end)
@@ -194,7 +190,8 @@ SetEngineState = function(vehicle, state, engine)
 	if not engine then return end
 	SetVehicleEngineOn(vehicle, state, false, true)
 end
-exports('SetEngineState', SetEngineState)
+exports('SetEngineState', SetEngineState) -- Do not use this Export if you don't know what you are doing!!!
+RegisterNetEvent('msk_enginetoggle:setEngineState', SetEngineState) -- Do not use this Event if you don't know what you are doing!!!
 
 GetEngineState = function(vehicle)
 	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
@@ -214,7 +211,17 @@ SetVehicleDamaged = function(vehicle, state)
 
 	currentVehicle.isDamaged = state
 	Entity(vehicle).state:set('isDamaged', state, true)
-	if state then SetEngineState(vehicle, not state, true) end
+
+	if state then 
+		SetEngineState(vehicle, false, true) 
+
+		local playerPed = PlayerPedId()
+		if IsPedInAnyVehicle(playerPed) then
+			if vehicle == GetVehiclePedIsIn(playerPed) then
+				CreateThread(disableDrive)
+			end
+		end
+	end
 end
 exports('SetVehicleDamaged', SetVehicleDamaged)
 exports('setVehicleDamaged', SetVehicleDamaged) -- Support for old versions
@@ -252,8 +259,12 @@ disableDrive = function()
 	while isInVehicle and disabledDrive and GetPedVehicleSeat() == -1 and not currentVehicle.isEngineOn do
 		local sleep = 1
 
-		DisableControlAction(0, 71, true) -- W
-		DisableControlAction(0, 72, true) -- S
+		DisableControlAction(0, 71, true) -- W (accelerate)
+		DisableControlAction(0, 72, true) -- S (brake/reverse)
+
+		if currentVehicle then 
+			SetVehicleUndriveable(currentVehicle.vehicle, true) 
+		end
 
 		Wait(sleep)
 	end
