@@ -35,6 +35,10 @@ toggleEngine = function(bypass)
 
 		if IsVehicleSeatFree(currVehicle, -1) then return end
 	end
+
+	if GetVehicleDamaged(currVehicle) then 
+		return Config.Notification(nil, Translation[Config.Locale]['veh_is_damaged'], 'error')
+	end
 	
 	if not bypass then
 		canToggleEngine = getIsVehicleOrKeyOwner(currVehicle)
@@ -44,11 +48,8 @@ toggleEngine = function(bypass)
 		return Config.Notification(nil, Translation[Config.Locale]['key_nokey'], 'error')
 	end
 
-	if GetVehicleDamaged(currVehicle) then return end
 	local isEngineOn = GetIsVehicleEngineRunning(currVehicle)
-
 	SetEngineState(currVehicle, not isEngineOn, true)
-	SetVehicleKeepEngineOnWhenAbandoned(currVehicle, not isEngineOn)
 	
 	if isEngineOn then
 		CreateThread(disableDrive)
@@ -71,11 +72,9 @@ AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, sea
 
 		if not Config.EngineOnAtEnter then
 			SetEngineState(vehicle, false, true)
-			SetVehicleKeepEngineOnWhenAbandoned(vehicle, false)
 		end
 	elseif seat == -1 and isEngineOn and (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
 		SetEngineState(vehicle, true, true)
-		SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 		SetHeliBladesFullSpeed(vehicle)
 	end
 end)
@@ -90,15 +89,12 @@ AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat
 
 		if not Config.EngineOnAtEnter then
 			SetEngineState(vehicle, false, true)
-			SetVehicleKeepEngineOnWhenAbandoned(vehicle, false)
 			CreateThread(disableDrive)
 		else
 			SetEngineState(vehicle, true, true)
-			SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 		end
 	elseif seat == -1 and isEngineOn and (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
 		SetEngineState(vehicle, true, true)
-		SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 		SetHeliBladesFullSpeed(vehicle)
 	end
 end)
@@ -111,7 +107,6 @@ AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat,
 	if seat == -1 and not isEngineOn then
 		logging('SetVehicleUndriveable')
 		SetEngineState(vehicle, false, true)
-		SetVehicleKeepEngineOnWhenAbandoned(vehicle, false)
 	end
 end)
 
@@ -130,7 +125,6 @@ CreateThread(function()
 				if (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
 					if GetEngineState(vehicle) then
 						SetEngineState(vehicle, true, true)
-						SetVehicleKeepEngineOnWhenAbandoned(vehicle, true)
 						SetHeliBladesFullSpeed(vehicle)
 					end
 				end
@@ -194,9 +188,11 @@ SetEngineState = function(vehicle, state, engine)
 	currentVehicle.isEngineOn = state
 	Entity(vehicle).state:set('isEngineOn', state, true)
 
+	SetVehicleUndriveable(vehicle, not state)
+	SetVehicleKeepEngineOnWhenAbandoned(vehicle, state)
+
 	if not engine then return end
 	SetVehicleEngineOn(vehicle, state, false, true)
-	SetVehicleUndriveable(vehicle, not state)
 end
 exports('SetEngineState', SetEngineState)
 
@@ -218,6 +214,7 @@ SetVehicleDamaged = function(vehicle, state)
 
 	currentVehicle.isDamaged = state
 	Entity(vehicle).state:set('isDamaged', state, true)
+	if state then SetEngineState(vehicle, not state, true) end
 end
 exports('SetVehicleDamaged', SetVehicleDamaged)
 exports('setVehicleDamaged', SetVehicleDamaged) -- Support for old versions

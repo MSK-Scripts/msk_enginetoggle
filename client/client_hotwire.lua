@@ -27,7 +27,7 @@ if Config.EnableLockpick and Config.LockpickHotkey.enable then
             toggleHotwire()
         end
 	end)
-	RegisterKeyMapping(Config.LockpickHotkey.command, 'Toggle Engine', 'keyboard', Config.LockpickHotkey.key)
+	RegisterKeyMapping(Config.LockpickHotkey.command, 'Lockpick Vehicle', 'keyboard', Config.LockpickHotkey.key)
 end
 
 loadAnimDict = function(dict)
