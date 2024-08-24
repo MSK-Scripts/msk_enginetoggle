@@ -39,6 +39,10 @@ RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
 		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
 	elseif Config.VehicleKeys.script == 'vehicle_keys' then
 		exports["vehicle_keys"]:giveVehicleKeysToPlayerId(playerId, plate, 'temporary')
+	elseif Config.VehicleKeys.script == 'okokGarage' then
+		TriggerEvent("okokGarage:GiveKeys", plate, playerId)
+	else
+		-- Add your own code here
 	end
 
 	Config.Notification(source, Translation[Config.Locale]['hotwiring_foundkey'], 'info')

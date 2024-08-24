@@ -41,7 +41,7 @@ toggleEngine = function(bypass)
 	end
 	
 	if not bypass then
-		canToggleEngine = getIsVehicleOrKeyOwner(vehicle)
+		canToggleEngine = getIsKeyOwner(vehicle)
 	end
 	
 	if not canToggleEngine then 
@@ -178,7 +178,7 @@ CreateThread(function()
 end)
 
 SetEngineState = function(vehicle, state, engine)
-	if not DoesEntityExist(vehicle) then return end
+	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetEngineState')
 	logging('SetEngineState', vehicle, state)
 
 	currentVehicle.isEngineOn = state
@@ -195,7 +195,7 @@ RegisterNetEvent('msk_enginetoggle:setEngineState', SetEngineState) -- Do not us
 
 GetEngineState = function(vehicle)
 	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
-	if not DoesEntityExist(vehicle) then return end
+	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetEngineState')
 
 	if Entity(vehicle).state.isEngineOn == nil then
 		SetEngineState(vehicle, GetIsVehicleEngineRunning(vehicle), false)
@@ -206,7 +206,7 @@ exports('GetEngineState', GetEngineState)
 exports('getEngineState', GetEngineState) -- Support for old versions
 
 SetVehicleDamaged = function(vehicle, state)
-	if not DoesEntityExist(vehicle) then return end
+	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetVehicleDamaged')
 	logging('SetVehicleDamaged', vehicle, state)
 
 	currentVehicle.isDamaged = state
@@ -229,7 +229,7 @@ RegisterNetEvent('msk_enginetoggle:setVehicleDamaged', SetVehicleDamaged)
 
 GetVehicleDamaged = function(vehicle)
 	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
-	if not DoesEntityExist(vehicle) then return end
+	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetVehicleDamaged')
 
 	if Entity(vehicle).state.isDamaged == nil then
 		SetVehicleDamaged(vehicle, false)
@@ -242,7 +242,7 @@ exports('getVehicleDamaged', GetVehicleDamaged) -- Support for old versions
 GetPedVehicleSeat = function(playerPed, vehicle)
 	if not playerPed then playerPed = PlayerPedId() end
 	if not vehicle then vehicle = GetVehiclePedIsIn(playerPed) end
-	if not DoesEntityExist(vehicle) then return end
+	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetPedVehicleSeat')
 
     for i = -1, 16 do
         if (GetPedInVehicleSeat(vehicle, i) == playerPed) then 

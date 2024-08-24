@@ -1,7 +1,5 @@
 if Config.EnableLockpick and Config.LockpickHotkey.enable then
 	RegisterCommand(Config.LockpickHotkey.command, function(source, args, rawCommand)
-		TriggerServerEvent('msk_enginetoggle:hasItem')
-
         if Config.Framework == 'ESX' then
             ESX = exports["es_extended"]:getSharedObject()
 

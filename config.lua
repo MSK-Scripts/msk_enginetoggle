@@ -46,7 +46,15 @@ Config.EngineFromSecondSeat = false
 
 Config.VehicleKeys = {
     enable = false, -- Set true to enable this feature
-    script = 'VehicleKeyChain' -- Set to 'VehicleKeyChain' or 'vehicle_keys'
+
+    -- Supported Scripts: 'VehicleKeyChain', 'vehicle_keys', 'okokGarage'
+    script = 'VehicleKeyChain',
+
+    -- This is for inventories with metadata like ox_inventory
+    -- Supported Inventories: ox_inventory, qs-inventory, core_inventory
+    inventory = 'ox_inventory',
+    item = 'keys',
+    plate = 'plate' -- Key Name for plate in your inventory for your vehicle keys script
 }
 ----------------------------------------------------------------
 Config.SaveSteeringAngle = true
