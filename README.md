@@ -27,10 +27,10 @@ Resmon with near vehicles and engines on
 
 
 ## Requirements
-* No Requirements needed
+* [ESX Legacy](https://github.com/esx-framework/esx_core) or [QBCore](https://github.com/qbcore-framework/qb-core)
+* [oxmysql](https://github.com/overextended/oxmysql)
+* [ox_lib](https://github.com/overextended/ox_lib)
 ### Optional
-* [ESX Legacy](https://github.com/esx-framework/esx_core)
-* [QBCore](https://github.com/qbcore-framework/qb-core)
 * [MSK Core](https://github.com/MSK-Scripts/msk_core)
 * [VehicleKeyChain](https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563)
 * [vehicle_keys](https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274)
@@ -42,6 +42,8 @@ All exports are CLIENTSIDE. Look at the [Documentation](https://docu.msk-scripts
 * GetEngineState -> Get the current Enginestate of the vehicle
 * SetVehicleDamaged -> Set the vehicle undrivable (Can't start/stop engine)
 * GetVehicleDamaged -> Get the vehicle is undrivable
+* SetSteeringAngle -> Set the steering angle
+* GetSteeringAngle -> Get the steering angle
 
 ### RealisticVehicleDamage
 If you use `RealisticVehicleDamage`, then replace following Code in `client.lua` on Line 333 in RealisticVehicleDamage:
