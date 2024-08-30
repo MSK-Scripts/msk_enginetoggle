@@ -1,12 +1,11 @@
 Config = {}
 ----------------------------------------------------------------
 Config.Locale = 'de'
-Config.Debug = false
+Config.Debug = true
 Config.VersionChecker = true
 ----------------------------------------------------------------
--- If Standalone then you have to add your own code for the Hotwire Feature
--- You can use this Feature anyway
-Config.Framework = 'ESX' -- 'ESX', 'QBCore' or 'Standalone'
+-- Supported Frameworks: 'ESX', 'QBCore'
+Config.Framework = 'ESX'
 ----------------------------------------------------------------
 -- !!! This function is clientside AND serverside !!!
 Config.Notification = function(source, message, typ)
@@ -52,15 +51,14 @@ Config.VehicleKeys = {
 
     -- This is for inventories with metadata like ox_inventory
     -- Supported Inventories: ox_inventory, qs-inventory, core_inventory
-    inventory = 'ox_inventory',
-    item = 'keys',
-    plate = 'plate' -- Key Name for plate in your inventory for your vehicle keys script
+    -- For okokGarage you have to set this to true!
+    uniqueItems = false, -- If set to true, it will search for the item in the inventory
+    item = 'keys', -- Item in your inventory for vehicle keys
+    plate = 'plate' -- Metadata Keyname for "plate" in your inventory
 }
 ----------------------------------------------------------------
 Config.SaveSteeringAngle = true
 Config.SaveAngleOnExit = 75 -- default: F - 75 (Exit Vehicle)
-Config.PerformanceVersion = false -- true = no sync but more performance
-Config.RefreshTime = 5 -- in seconds // Refreshing SteeringAngle all 5 seconds
 ----------------------------------------------------------------
 -- With this feature you can set vehicles and plates for which you don't need a key to start the engine
 -- either exact plates or just a string that should be in the vehicles plate e.g. "ESX" will ignore te plate "ESX1234" too
@@ -84,38 +82,101 @@ end
 Config.LockpickHotkey = {
     enable = false, -- Set to true if you want to use a Hotkey
     command = 'lockpickvehicle',
-    key = 'L'
+    key = 'N'
+}
+
+Config.PoliceAlert = {'police', 'sheriff', 'fib'}
+
+Config.SafetyStages = {
+    -- Do NOT rename the stages! Only change the options!
+    -- On deafult 'stage_1' is installed on every owned vehicle
+
+    ['stage_1'] = {
+        item = 'vehicle_alarm_1', -- Usable Item to set the stage to the vehicle
+        alarm = true, -- Acustic alarm
+        ownerAlert = true, -- Notify Owner
+        policeAlert = true, -- Notify Police
+        liveCoords = true, -- Owner gets live coords (Blip)
+    },
+    ['stage_2'] = {
+        item = 'vehicle_alarm_2', -- Usable Item to set the stage to the vehicle
+        alarm = true, -- Acustic alarm
+        ownerAlert = true, -- Notify Owner
+        policeAlert = false, -- Notify Police
+        liveCoords = false, -- Owner gets live coords (Blip)
+    },
+    ['stage_3'] = {
+        item = 'vehicle_alarm_3', -- Usable Item to set the stage to the vehicle
+        alarm = true, -- Acustic alarm
+        ownerAlert = true, -- Notify Owner
+        policeAlert = true, -- Notify Police
+        liveCoords = false, -- Owner gets live coords (Blip)
+    },
+    ['stage_4'] = {
+        item = 'vehicle_alarm_4', -- Usable Item to set the stage to the vehicle
+        alarm = true, -- Acustic alarm
+        ownerAlert = true, -- Notify Owner
+        policeAlert = true, -- Notify Police
+        liveCoords = true, -- Owner gets live coords (Blip)
+    },
 }
 
 Config.LockpickSettings = {
-    item = 'lockpick', -- Set the item that you want to use
+    item = 'lockpick', -- Set the usable item that you want to use
     removeItem = true, -- Set true if you like to remove item after failing lockpicking
+
     startEngine = true, -- Set true if you want to start the engine after successfull lockpicking
-}
+    startEngineBypass = false, -- Set true if you want to start the engine always even if the player hasn't found the key
 
-Config.Probability = {
-    lockpick = 66, -- default: 66%
-    alarm = 33, -- default: 33%
+    -- If you set to 'skillbar' then there won't be a progressbar'
+    -- If you set to 'progressbar' then there won't be a skillbar
+    action = 'skillbar', -- Set to 'skillbar' or 'progressbar'
+
+    -- If Config.VehicleKeys is activated then the player is always searching for the key
     enableSearchKey = true, -- Set false if you dont want this
-    searchKey = 66 -- default: 66%
+    searchKey = 66 -- default: 66% // Probability to find the key
 }
 
-Config.ProgessBar = {
-    enable = true, -- Set true if you want to show a progressbar
-    time = 8 -- In seconds // Time how long does it takes
+Config.LockpickProgessbar = {
+    time = 10, -- In seconds // Time how long does it takes
+    lockpick = 66, -- default: 66% // Probability successfully lockpick the vehicle
+}
+
+Config.LockpickSkillbar = {
+    type = 'ox_lib', -- 'ox_lib' or 'qb-skillbar'
+
+    -- This is only if you set to 'ox_lib'
+    inputs = {'w', 'a', 's', 'd'},
+    difficulty = {
+        -- Presets:
+        -- 'easy' -> { areaSize: 50, speedMultiplier: 1 }
+        -- 'medium' -> { areaSize: 40, speedMultiplier: 1.5 }
+        -- 'hard' -> { areaSize: 25, speedMultiplier: 1.75 }
+        -- You can also use your own type:
+        -- Example: {areaSize = 60, speedMultiplier = 1}
+
+        ['1'] = 'easy', -- 'easy', 'medium', 'hard'
+        ['2'] = 'easy', -- 'easy', 'medium', 'hard'
+        ['3'] = {areaSize = 60, speedMultiplier = 1}, -- 'easy', 'medium', 'hard'
+        ['4'] = 'easy', -- 'easy', 'medium', 'hard'
+    }
 }
 
 Config.Animation = {
-    InsideOutsideAnimation = true, -- Set to false if you want same Animation for inside and outside
-    generalAnimation = 'WORLD_HUMAN_WELDING',
-    
-    insideVehicle = { -- Animation inside Vehicle
+    lockpick = { -- Animation for lockpicking
         dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
         anim = 'machinic_loop_mechandplayer'
+    },  
+    searchKey = { -- Animation for search key
+        dict = 'veh@plane@velum@front@ds@base',
+        anim = 'hotwire',
+        time = 8, -- in seconds // How long does it take to search for the key
+        enableProgressbar = true
     },
-
-    outsideVehicle = { -- Animation outside Vehicle
-        dict = 'anim@amb@clubhouse@tutorial@bkr_tut_ig3@',
-        anim = 'machinic_loop_mechandplayer'
+    hotwire = { -- Animation for hotwire
+        dict = 'veh@forklift@base',
+        anim = 'hotwire',
+        action = 'skillbar', -- Set to 'skillbar' or 'progressbar'
+        time = 30, -- in seconds // How long does it take to hotwire the vehicle // Only for 'progressbar'
     }
 }

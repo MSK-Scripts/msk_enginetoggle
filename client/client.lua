@@ -2,7 +2,7 @@ if Config.Framework == 'ESX' then
 	ESX = exports["es_extended"]:getSharedObject()
 elseif Config.Framework == 'QBCore' then
 	QBCore = exports['qb-core']:GetCoreObject()
-elseif Config.Framework == 'Standalone' then
+else
 	-- Add your own code here
 end
 
@@ -118,7 +118,15 @@ CreateThread(function()
 			if DoesEntityExist(vehicle) and not GetVehicleDamaged(vehicle) and IsVehicleSeatFree(vehicle, -1) and (not IsPedInAnyVehicle(playerPed, false) or (IsPedInAnyVehicle(playerPed, false) and vehicle ~= GetVehiclePedIsIn(playerPed, false))) then
 				local vehicleModel = GetEntityModel(vehicle)
 
-				if (IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel)) then
+				if IsThisModelACar(vehicleModel) then
+					local steeringAngle = GetSteeringAngle(vehicle)
+
+					if steeringAngle and steeringAngle ~= GetVehicleSteeringAngle(vehicle) then
+						SetSteeringAngle(vehicle, steeringAngle)
+					end
+				end
+
+				if IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel) then
 					if GetEngineState(vehicle) then
 						SetEngineState(vehicle, true, true)
 						SetHeliBladesFullSpeed(vehicle)
@@ -162,7 +170,7 @@ CreateThread(function()
 				currentVehicle.isEngineOn = GetEngineState(currentVehicle.vehicle)
 				currentVehicle.isDamaged = GetVehicleDamaged(currentVehicle.vehicle)
 				TriggerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.vehicle, currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn, currentVehicle.isDamaged)
-                TriggerServerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.plate, currentVehicle.seat, currentVehicle.netId,currentVehicle.isEngineOn, currentVehicle.isDamaged)
+                TriggerServerEvent('msk_enginetoggle:enteredVehicle', currentVehicle.plate, currentVehicle.seat, currentVehicle.netId, currentVehicle.isEngineOn, currentVehicle.isDamaged)
 			end
 		elseif isInVehicle then
 			if not IsPedInAnyVehicle(playerPed, false) or IsPlayerDead(PlayerId()) then
@@ -187,6 +195,10 @@ SetEngineState = function(vehicle, state, engine)
 	SetVehicleUndriveable(vehicle, not state)
 	SetVehicleKeepEngineOnWhenAbandoned(vehicle, state)
 
+	if state then
+		SetSteeringAngle(vehicle, 0.0)
+	end
+
 	if not engine then return end
 	SetVehicleEngineOn(vehicle, state, false, true)
 end
@@ -207,7 +219,6 @@ exports('getEngineState', GetEngineState) -- Support for old versions
 
 SetVehicleDamaged = function(vehicle, state)
 	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetVehicleDamaged')
-	logging('SetVehicleDamaged', vehicle, state)
 
 	currentVehicle.isDamaged = state
 	Entity(vehicle).state:set('isDamaged', state, true)
@@ -241,7 +252,7 @@ exports('getVehicleDamaged', GetVehicleDamaged) -- Support for old versions
 
 GetPedVehicleSeat = function(playerPed, vehicle)
 	if not playerPed then playerPed = PlayerPedId() end
-	if not vehicle then vehicle = GetVehiclePedIsIn(playerPed) end
+	if not vehicle then vehicle = currentVehicle and currentVehicle.vehicle or GetVehiclePedIsIn(playerPed) end
 	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetPedVehicleSeat')
 
     for i = -1, 16 do

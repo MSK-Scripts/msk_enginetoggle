@@ -1,9 +1,61 @@
 if Config.Framework == 'ESX' then
 	ESX = exports["es_extended"]:getSharedObject()
+
+	VEHICLE_TABLE_NAME = "owned_vehicles"
+	OWNER_COLUMN_NAME = "owner"
 elseif Config.Framework == 'QBCore' then
 	QBCore = exports['qb-core']:GetCoreObject()
-elseif Config.Framework == 'Standalone' then
+
+	VEHICLE_TABLE_NAME = "player_vehicles"
+	OWNER_COLUMN_NAME = "citizenid"
+else
 	-- Add your own code here
+end
+
+trim = function(str)
+	return tostring(str):gsub("^%s*(.-)%s*$", "%1")
+end
+
+GetPlayerFromId = function(playerId)
+	local Player = nil
+
+	if Config.Framework == 'ESX' then
+        Player = ESX.GetPlayerFromId(playerId)
+    elseif Config.Framework == 'QBCore' then
+        Player = QBCore.Functions.GetPlayer(playerId)
+    else
+        -- Add your own code here
+    end
+
+	return Player
+end
+
+GetPlayerFromIdentifier = function(identifier)
+	local Player = nil
+
+	if Config.Framework == 'ESX' then
+        Player = ESX.GetPlayerFromIdentifier(identifier)
+    elseif Config.Framework == 'QBCore' then
+        Player = QBCore.Functions.GetPlayerByCitizenId(identifier)
+    else
+        -- Add your own code here
+    end
+
+	return Player
+end
+
+GetPlayerJob = function(Player)
+    local job = 'unemployed'
+
+    if Config.Framework == 'ESX' then
+        job = Player.job.name
+    elseif Config.Framework == 'QBCore' then
+        job = Player.PlayerData.job.name
+    else
+        -- Add your own code here
+    end
+
+    return job
 end
 
 if Config.AdminCommand.enable then
@@ -34,6 +86,7 @@ end
 RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
 	if not Config.VehicleKeys.enable then return end
 	local playerId = source
+	plate = tostring(plate)
 
 	if Config.VehicleKeys.script == 'VehicleKeyChain' then
 		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
@@ -44,8 +97,31 @@ RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
 	else
 		-- Add your own code here
 	end
+end)
 
-	Config.Notification(source, Translation[Config.Locale]['hotwiring_foundkey'], 'info')
+RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId, isEngineOn, isDamaged)
+	local src = source
+	local Player = GetPlayerFromId(src)
+	local identifier = nil
+
+	if Config.Framework == 'ESX' then
+        identifier = Player.identifier
+    elseif Config.Framework == 'QBCore' then
+        identifier = Player.PlayerData.citizenid 
+    else
+        -- Add your own code here
+    end
+
+	local result = MySQL.query.await(('SELECT * FROM %s WHERE %s = @owner AND plate = @plate'):format(VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
+		['@owner'] = identifier,
+		['@plate'] = trim(plate)
+	})
+
+	if result and result[1] then
+		if result[1][OWNER_COLUMN_NAME] == identifier then
+			TriggerClientEvent('msk_enginetoggle:deleteVehicleBlip', src, netId)
+		end
+	end
 end)
 
 GithubUpdater = function()

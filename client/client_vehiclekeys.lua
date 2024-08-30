@@ -1,25 +1,35 @@
+getInventory = function()
+    if (GetResourceState("ox_inventory") == "started") then
+        return 'ox_inventory'
+    elseif (GetResourceState("qs-inventory") == "started") then
+        return 'qs-inventory'
+    elseif (GetResourceState("core_inventory") == "started") then
+        return 'core_inventory'
+    end
+end
+
 trim = function(str)
     return tostring(str):gsub("%s+", "")
 end
 
 getKeyFromInventory = function(plate)
-    if Config.VehicleKeys.inventory == 'ox_inventory' then
+    if getInventory() == 'ox_inventory' then
         local inventory = exports.ox_inventory:GetPlayerItems()
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == InventoryItem and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
                 return true
             end
         end
-    elseif Config.VehicleKeys.inventory == 'qs-inventory' then
+    elseif getInventory() == 'qs-inventory' then
         local inventory = exports['qs-inventory']:getUserInventory()
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and trim(v.info[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == InventoryItem and trim(v.info[Config.VehicleKeys.plate]) == trim(plate) then
                 return true
             end
         end
-    elseif Config.VehicleKeys.inventory == 'core_inventory' then
+    elseif getInventory() == 'core_inventory' then
         local p = promise.new()
 
         if Config.Framework == 'ESX' then
@@ -37,7 +47,7 @@ getKeyFromInventory = function(plate)
         local inventory = Citizen.Await(p)
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == InventoryItem and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
                 return true
             end
         end
@@ -55,14 +65,16 @@ getIsKeyOwner = function(vehicle)
     local plate = GetVehicleNumberPlateText(vehicle)
     local canToggleEngine = true
 
-    if Config.VehicleKeys.script == 'VehicleKeyChain' and (GetResourceState("VehicleKeyChain") == "started") then
-        isKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(vehicle)
-    elseif Config.VehicleKeys.script == 'vehicle_keys' and (GetResourceState("vehicle_keys") == "started") then
-        isKeyOwner = exports["vehicle_keys"]:doesPlayerOwnPlate(plate)
-    elseif Config.VehicleKeys.script == 'okokGarage' and (GetResourceState("okokGarage") == "started") then
-        isKeyOwner = getKeyFromInventory(plate)
+    if not Config.VehicleKeys.uniqueItems then
+        if Config.VehicleKeys.script == 'VehicleKeyChain' and (GetResourceState("VehicleKeyChain") == "started") then
+            isKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(vehicle)
+        elseif Config.VehicleKeys.script == 'vehicle_keys' and (GetResourceState("vehicle_keys") == "started") then
+            isKeyOwner = exports["vehicle_keys"]:doesPlayerOwnPlate(plate)
+        else
+            -- Add your own code here
+        end
     else
-        -- Add your own code here
+        isKeyOwner = getKeyFromInventory(plate)
     end
 
     for k, v in pairs(Config.Whitelist.vehicles) do 
