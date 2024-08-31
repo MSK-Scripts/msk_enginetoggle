@@ -1,6 +1,7 @@
 # License
 
 Copyright (C) since 2024 Musiker15 - MSK Scripts <https://www.msk-scripts.de>
+
 Contact for business enquiries: info@msk-scripts.de
 
 This software is a resource for the "FiveM" modification for the game "Grand Theft Auto V" and is comprised of the files this license is attached to. It is only meant to function inside of this environment.
