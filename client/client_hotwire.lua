@@ -43,7 +43,7 @@ toggleLockpick = function()
 
 	if IsPedInAnyVehicle(playerPed, false) then return end	
 	if not IsAnyVehicleNearPoint(coords.x, coords.y, coords.z, 5.0) then return end
-
+	
 	local vehicle = GetClosestVehicle(coords.x, coords.y, coords.z, 3.0, 0, 71)
 	if not DoesEntityExist(vehicle) then return end
 	local plate = GetVehicleNumberPlateText(vehicle)
@@ -57,10 +57,14 @@ toggleLockpick = function()
 	elseif Config.Framework == 'QBCore' then
 		QBCore.Functions.TriggerCallback('msk_enginetoggle:getAlarmStage', function(owner, alarmStage)
             p:resolve({owner, alarmStage})
-        end)
+        end, plate)
 	else
 		-- Add your own code here
 	end
+
+	SetTimeout(5000, function()
+		p:resolve({nil, 'stage_1'})
+	end)
 
 	local cbResult = Citizen.Await(p)
 	local owner, stage = table.unpack(cbResult)
@@ -71,7 +75,7 @@ toggleLockpick = function()
 		StartVehicleAlarm(vehicle)
 	end
 
-	if alarmStage.ownerAlert then
+	if alarmStage.ownerAlert and owner then
 		TriggerServerEvent('msk_enginetoggle:ownerAlert', GetEntityCoords(vehicle), owner)
 	end
 
@@ -79,7 +83,7 @@ toggleLockpick = function()
 		TriggerServerEvent('msk_enginetoggle:policeAlert', GetEntityCoords(vehicle))
 	end
 
-	if alarmStage.liveCoords then
+	if alarmStage.liveCoords and owner then
 		TriggerServerEvent('msk_enginetoggle:liveCoords', owner, NetworkGetNetworkIdFromEntity(vehicle), GetEntityCoords(vehicle))
 	end
 
@@ -169,6 +173,7 @@ toggleLockpick = function()
 			if Config.VehicleKeys.enable and GetResourceState(Config.VehicleKeys.script) == "started" then
 				TriggerServerEvent('msk_enginetoggle:addTempKey', plate)
 			end
+			needToHotwire = false
 			Config.Notification(nil, Translation[Config.Locale]['hotwiring_foundkey'], 'success')
 		else
 			Config.Notification(nil, Translation[Config.Locale]['hotwiring_notfoundkey'], 'error')

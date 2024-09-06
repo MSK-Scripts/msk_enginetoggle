@@ -40,14 +40,16 @@ Config.EngineOnAtEnter = false -- Set to true to toggle the engine automatically
 Config.EngineFromSecondSeat = false
 ----------------------------------------------------------------
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
--- VehicleKeyChain: https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563
+
+-- msk_vehiclekeys: https://forum.cfx.re/t/esx-qbcore-msk-vehiclekeys-unique-items/5264475
 -- vehicle_keys: https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274
+-- VehicleKeyChain: https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563
 
 Config.VehicleKeys = {
-    enable = false, -- Set true to enable this feature
+    enable = true, -- Set true to enable this feature
 
-    -- Supported Scripts: 'VehicleKeyChain', 'vehicle_keys', 'okokGarage'
-    script = 'VehicleKeyChain',
+    -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicle_keys', 'okokGarage'
+    script = 'msk_vehiclekeys',
 
     -- This is for inventories with metadata like ox_inventory
     -- Supported Inventories: ox_inventory, qs-inventory, core_inventory
@@ -64,12 +66,10 @@ Config.SaveAngleOnExit = 75 -- default: F - 75 (Exit Vehicle)
 -- either exact plates or just a string that should be in the vehicles plate e.g. "ESX" will ignore te plate "ESX1234" too
 Config.Whitelist = {
     vehicles = {
-        -- "nero2",
-        -- "zentorno",
+        "caddy", "caddy2",
     },
     plates = {
-        -- "ESX",
-        -- "MSK",
+        "ESX", "MSK",
     },
 }
 ----------------------------------------------------------------
@@ -176,7 +176,7 @@ Config.Animation = {
     hotwire = { -- Animation for hotwire
         dict = 'veh@forklift@base',
         anim = 'hotwire',
-        action = 'skillbar', -- Set to 'skillbar' or 'progressbar'
-        time = 30, -- in seconds // How long does it take to hotwire the vehicle // Only for 'progressbar'
+        action = 'progressbar', -- Set to 'skillbar' or 'progressbar' // skillbar might cause the player to get out of the vehicle...
+        time = 15, -- in seconds // How long does it take to hotwire the vehicle // Only for 'progressbar'
     }
 }

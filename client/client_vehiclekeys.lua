@@ -17,7 +17,7 @@ getKeyFromInventory = function(plate)
         local inventory = exports.ox_inventory:GetPlayerItems()
 
         for k, v in pairs(inventory) do
-            if v.name == InventoryItem and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == Config.VehicleKeys.item and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
                 return true
             end
         end
@@ -25,7 +25,7 @@ getKeyFromInventory = function(plate)
         local inventory = exports['qs-inventory']:getUserInventory()
 
         for k, v in pairs(inventory) do
-            if v.name == InventoryItem and trim(v.info[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == Config.VehicleKeys.item and trim(v.info[Config.VehicleKeys.plate]) == trim(plate) then
                 return true
             end
         end
@@ -47,7 +47,7 @@ getKeyFromInventory = function(plate)
         local inventory = Citizen.Await(p)
 
         for k, v in pairs(inventory) do
-            if v.name == InventoryItem and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == Config.VehicleKeys.item and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
                 return true
             end
         end
@@ -70,6 +70,8 @@ getIsKeyOwner = function(vehicle)
             isKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(vehicle)
         elseif Config.VehicleKeys.script == 'vehicle_keys' and (GetResourceState("vehicle_keys") == "started") then
             isKeyOwner = exports["vehicle_keys"]:doesPlayerOwnPlate(plate)
+        elseif Config.VehicleKeys.script == 'msk_vehiclekeys' and (GetResourceState("msk_vehiclekeys") == "started") then
+            isKeyOwner = exports["msk_vehiclekeys"]:HasPlayerKeyOrIsVehicleOwner(vehicle)
         else
             -- Add your own code here
         end
