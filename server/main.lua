@@ -1,19 +1,17 @@
-if Config.Framework == 'ESX' then
+if Config.Framework == 'AUTO' then
+	if GetResourceState('es_extended') ~= 'missing' then
+        ESX = exports["es_extended"]:getSharedObject()
+		Config.Framework = 'ESX'
+    elseif GetResourceState('qb-core') ~= 'missing' then
+        QBCore = exports['qb-core']:GetCoreObject()
+		Config.Framework = 'QBCore'
+    end
+elseif Config.Framework == 'ESX' then
 	ESX = exports["es_extended"]:getSharedObject()
-
-	VEHICLE_TABLE_NAME = "owned_vehicles"
-	OWNER_COLUMN_NAME = "owner"
 elseif Config.Framework == 'QBCore' then
 	QBCore = exports['qb-core']:GetCoreObject()
-
-	VEHICLE_TABLE_NAME = "player_vehicles"
-	OWNER_COLUMN_NAME = "citizenid"
 else
 	-- Add your own code here
-end
-
-trim = function(str)
-	return tostring(str):gsub("^%s*(.-)%s*$", "%1")
 end
 
 GetPlayerFromId = function(playerId)
@@ -105,6 +103,7 @@ RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId,
 	local src = source
 	local Player = GetPlayerFromId(src)
 	local identifier = nil
+	plate = MSK.Trim(plate, true)
 
 	if Config.Framework == 'ESX' then
         identifier = Player.identifier
@@ -116,7 +115,7 @@ RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId,
 
 	local result = MySQL.query.await(('SELECT * FROM %s WHERE %s = @owner AND plate = @plate'):format(VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
 		['@owner'] = identifier,
-		['@plate'] = trim(plate)
+		['@plate'] = plate
 	})
 
 	if result and result[1] then
@@ -126,36 +125,19 @@ RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId,
 	end
 end)
 
-GithubUpdater = function()
-	local GetCurrentVersion = function()
-		return GetResourceMetadata( GetCurrentResourceName(), "version" )
-	end
+MSK.Register('msk_enginetoggle:getInventory', function(source, inv)
+	if inv ~= 'core_inventory' then return {} end
+	local Player = GetPlayerFromId(src)
+	local identifier = nil
 
-	local CurrentVersion = GetCurrentVersion()
-	local resourceName = "^0[^2"..GetCurrentResourceName().."^0]"
-	local VehicleScript = ("^3[%s]^0"):format(Config.VehicleKeys.script)
+	if Config.Framework == 'ESX' then
+        identifier = Player.identifier
+    elseif Config.Framework == 'QBCore' then
+        identifier = Player.PlayerData.citizenid 
+    else
+        -- Add your own code here
+    end
 
-	if Config.VersionChecker then
-		PerformHttpRequest('https://raw.githubusercontent.com/Musiker15/msk_enginetoggle/main/VERSION', function(Error, NewestVersion, Header)
-			if CurrentVersion == NewestVersion then
-				print(resourceName .. '^2 ✓ Resource is Up to Date^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0')
-			elseif CurrentVersion ~= NewestVersion then
-				print(resourceName .. '^1 ✗ Resource Outdated. Please Update!^0 - ^5Current Version: ^1' .. CurrentVersion .. '^0')
-				print('^5Newest Version: ^2' .. NewestVersion .. '^0 - ^6Download here: ^9https://github.com/Musiker15/msk_enginetoggle/releases/tag/v'.. NewestVersion .. '^0')
-			end
-
-			if Config.VehicleKeys.enable then
-				if (GetResourceState(Config.VehicleKeys.script) == "started") then
-					print(("Script %s was found and is running!"):format(VehicleScript))
-				elseif (GetResourceState(Config.VehicleKeys.script) == "stopped") then
-					print(("Script %s was found but is stopped, please start the Script!"):format(VehicleScript))
-				elseif (GetResourceState(Config.VehicleKeys.script) == "missing") then
-					print(("Script %s was not found, please make sure that the Script is started!"):format(VehicleScript))
-				end
-			end
-		end)
-	else
-		print(resourceName .. '^2 ✓ Resource loaded^0 - ^5Current Version: ^2' .. CurrentVersion .. '^0')
-	end
-end
-GithubUpdater()
+	local invName = ('content-%s'):format(identifier):gsub(':', '')
+	return exports['core_inventory']:getInventory(invName)
+end)

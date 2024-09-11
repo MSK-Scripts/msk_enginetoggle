@@ -4,15 +4,15 @@ Config.Locale = 'de'
 Config.Debug = true
 Config.VersionChecker = true
 ----------------------------------------------------------------
--- Supported Frameworks: 'ESX', 'QBCore'
-Config.Framework = 'ESX'
+-- Supported Frameworks: AUTO, ESX, QBCore
+Config.Framework = 'AUTO'
 ----------------------------------------------------------------
 -- !!! This function is clientside AND serverside !!!
 Config.Notification = function(source, message, typ)
     if IsDuplicityVersion() then -- serverside
-        exports.msk_core:Notification(source, 'Engine', message, typ)
+        MSK.Notification(source, 'Engine', message, typ)
     else -- clientside
-        exports.msk_core:Notification('Engine', message, typ)
+        MSK.Notification('Engine', message, typ)
     end
 end
 ----------------------------------------------------------------
@@ -48,7 +48,7 @@ Config.EngineFromSecondSeat = false
 Config.VehicleKeys = {
     enable = true, -- Set true to enable this feature
 
-    -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicle_keys', 'okokGarage'
+    -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicle_keys', 'okokGarage', 'wasabi_carlock'
     script = 'msk_vehiclekeys',
 
     -- This is for inventories with metadata like ox_inventory
@@ -56,7 +56,6 @@ Config.VehicleKeys = {
     -- For okokGarage you have to set this to true!
     uniqueItems = false, -- If set to true, it will search for the item in the inventory
     item = 'keys', -- Item in your inventory for vehicle keys
-    plate = 'plate' -- Metadata Keyname for "plate" in your inventory
 }
 ----------------------------------------------------------------
 Config.SaveSteeringAngle = true
@@ -66,17 +65,18 @@ Config.SaveAngleOnExit = 75 -- default: F - 75 (Exit Vehicle)
 -- either exact plates or just a string that should be in the vehicles plate e.g. "ESX" will ignore te plate "ESX1234" too
 Config.Whitelist = {
     vehicles = {
-        "caddy", "caddy2",
+        -- Please use `` and NOT '' or ""
+        `caddy`, `caddy2`, `caddy3`, `airtug`, `docktug`, `forklift`, `mower`, `tractor2`, 
     },
     plates = {
-        "ESX", "MSK",
+        "ESX", "MSK", "Test"
     },
 }
 ----------------------------------------------------------------
 Config.EnableLockpick = true -- Set false if you want to deactivate this feature
 
 Config.progressBar = function(time, message)
-    exports.msk_core:ProgressStart(time, message)
+    MSK.Progressbar(time, message)
 end
 
 Config.LockpickHotkey = {
@@ -176,7 +176,7 @@ Config.Animation = {
     hotwire = { -- Animation for hotwire
         dict = 'veh@forklift@base',
         anim = 'hotwire',
-        action = 'progressbar', -- Set to 'skillbar' or 'progressbar' // skillbar might cause the player to get out of the vehicle...
+        action = 'skillbar', -- Set to 'skillbar' or 'progressbar'
         time = 15, -- in seconds // How long does it take to hotwire the vehicle // Only for 'progressbar'
     }
 }

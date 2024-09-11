@@ -8,16 +8,14 @@ getInventory = function()
     end
 end
 
-trim = function(str)
-    return tostring(str):gsub("%s+", "")
-end
-
 getKeyFromInventory = function(plate)
+    plate = MSK.Trim(plate)
+
     if getInventory() == 'ox_inventory' then
         local inventory = exports.ox_inventory:GetPlayerItems()
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == Config.VehicleKeys.item and MSK.Trim(v.metadata.plate or v.metadata.Plate or '') == plate then
                 return true
             end
         end
@@ -25,29 +23,15 @@ getKeyFromInventory = function(plate)
         local inventory = exports['qs-inventory']:getUserInventory()
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and trim(v.info[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == Config.VehicleKeys.item and MSK.Trim(v.info.plate or v.info.Plate or '') == plate then
                 return true
             end
         end
     elseif getInventory() == 'core_inventory' then
-        local p = promise.new()
-
-        if Config.Framework == 'ESX' then
-            ESX.TriggerServerCallback('core_inventory:server:getInventory', function(inventory)
-                p:resolve(inventory)
-            end)
-        elseif Config.Framework == 'QBCore' then
-            QBCore.Functions.TriggerCallback('core_inventory:server:getInventory', function(inventory)
-                p:resolve(inventory)
-            end)
-        elseif Config.Framework == 'Standalone' then
-            -- Add your own code here
-        end
-
-        local inventory = Citizen.Await(p)
+        local inventory = MSK.Trigger('msk_enginetoggle:getInventory', 'core_inventory')
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and trim(v.metadata[Config.VehicleKeys.plate]) == trim(plate) then
+            if v.name == Config.VehicleKeys.item and MSK.Trim(v.metadata.plate or v.metadata.Plate or '') == plate then
                 return true
             end
         end
@@ -66,12 +50,14 @@ getIsKeyOwner = function(vehicle)
     local canToggleEngine = true
 
     if not Config.VehicleKeys.uniqueItems then
-        if Config.VehicleKeys.script == 'VehicleKeyChain' and (GetResourceState("VehicleKeyChain") == "started") then
+        if Config.VehicleKeys.script == 'msk_vehiclekeys' and (GetResourceState("msk_vehiclekeys") == "started") then
+            isKeyOwner = exports["msk_vehiclekeys"]:HasPlayerKeyOrIsVehicleOwner(vehicle)
+        elseif Config.VehicleKeys.script == 'VehicleKeyChain' and (GetResourceState("VehicleKeyChain") == "started") then
             isKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(vehicle)
         elseif Config.VehicleKeys.script == 'vehicle_keys' and (GetResourceState("vehicle_keys") == "started") then
             isKeyOwner = exports["vehicle_keys"]:doesPlayerOwnPlate(plate)
-        elseif Config.VehicleKeys.script == 'msk_vehiclekeys' and (GetResourceState("msk_vehiclekeys") == "started") then
-            isKeyOwner = exports["msk_vehiclekeys"]:HasPlayerKeyOrIsVehicleOwner(vehicle)
+        elseif Config.VehicleKeys.script == 'wasabi_carlock' and (GetResourceState("wasabi_carlock") == "started") then
+            isKeyOwner = exports.wasabi_carlock:HasKey(plate)
         else
             -- Add your own code here
         end
@@ -80,14 +66,14 @@ getIsKeyOwner = function(vehicle)
     end
 
     for k, v in pairs(Config.Whitelist.vehicles) do 
-        if GetHashKey(v) == GetEntityModel(vehicle) then
+        if GetEntityModel(vehicle) == IsModelValid(v) and v or GetHashKey(v) then
             ignoreVehicle = true
             break
         end
     end
 
     for k, v in pairs(Config.Whitelist.plates) do 
-        if string.find(trim(plate), trim(v)) then 
+        if string.find(MSK.Trim(plate), MSK.Trim(v)) then 
             ignorePlate = true
             break
         end

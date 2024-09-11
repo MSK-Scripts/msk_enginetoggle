@@ -4,11 +4,12 @@ games { 'gta5' }
 author 'Musiker15 - MSK Scripts'
 name 'msk_enginetoggle'
 description 'EngineToggle for Vehicles'
-version '4.2.1'
+version '4.2.2'
 
 lua54 'yes'
 
 shared_script {
+	'@msk_core/import.lua',
 	'@ox_lib/init.lua',
     'config.lua',
 	'translation.lua'
@@ -26,4 +27,5 @@ server_scripts {
 dependencies {
 	'oxmysql',
 	'ox_lib',
+	'msk_core',
 }

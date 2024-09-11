@@ -1,4 +1,10 @@
-if Config.Framework == 'ESX' then
+if Config.Framework == 'AUTO' then
+	if GetResourceState('es_extended') ~= 'missing' then
+        ESX = exports["es_extended"]:getSharedObject()
+    elseif GetResourceState('qb-core') ~= 'missing' then
+        QBCore = exports['qb-core']:GetCoreObject()
+    end
+elseif Config.Framework == 'ESX' then
 	ESX = exports["es_extended"]:getSharedObject()
 elseif Config.Framework == 'QBCore' then
 	QBCore = exports['qb-core']:GetCoreObject()
@@ -63,7 +69,7 @@ exports('toggleEngine', toggleEngine)
 RegisterNetEvent('msk_enginetoggle:toggleEngine', toggleEngine)
 
 AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	logging('enteringVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
+	logging('debug', 'enteringVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
 
@@ -79,7 +85,7 @@ AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, sea
 end)
 
 AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	logging('enteredVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
+	logging('debug', 'enteredVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
 
@@ -97,7 +103,8 @@ AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat
 end)
 
 AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	logging('exitedVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
+	logging('debug', 'exitedVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
+	if not vehicle or not DoesEntityExist(vehicle) then return end
 	local playerPed = PlayerPedId()
 	local vehicleModel = GetEntityModel(vehicle)
 
@@ -187,7 +194,7 @@ end)
 
 SetEngineState = function(vehicle, state, engine)
 	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetEngineState')
-	logging('SetEngineState', vehicle, state)
+	logging('debug', 'SetEngineState', vehicle, state)
 
 	currentVehicle.isEngineOn = state
 	Entity(vehicle).state:set('isEngineOn', state, true)
@@ -253,7 +260,7 @@ exports('getVehicleDamaged', GetVehicleDamaged) -- Support for old versions
 GetPedVehicleSeat = function(playerPed, vehicle)
 	if not playerPed then playerPed = PlayerPedId() end
 	if not vehicle then vehicle = currentVehicle and currentVehicle.vehicle or GetVehiclePedIsIn(playerPed) end
-	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetPedVehicleSeat')
+	if not vehicle or not DoesEntityExist(vehicle) then return end
 
     for i = -1, 16 do
         if (GetPedInVehicleSeat(vehicle, i) == playerPed) then 
@@ -273,7 +280,7 @@ disableDrive = function()
 		DisableControlAction(0, 71, true) -- W (accelerate)
 		DisableControlAction(0, 72, true) -- S (brake/reverse)
 
-		if currentVehicle then 
+		if currentVehicle.vehicle and DoesEntityExist(currentVehicle.vehicle) then 
 			SetVehicleUndriveable(currentVehicle.vehicle, true) 
 		end
 
@@ -283,7 +290,7 @@ disableDrive = function()
 	disabledDrive = false
 end
 
-logging = function(...)
+logging = function(code, ...)
 	if not Config.Debug then return end
-	print('[^3DEBUG^0]', ...)
+	MSK.Logging(code, ...)
 end

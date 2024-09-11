@@ -1,3 +1,24 @@
+if Config.Framework == 'ESX' or Config.Framework == 'AUTO' and GetResourceState('es_extended') ~= 'missing' then
+    if not ESX then 
+        ESX = exports["es_extended"]:getSharedObject() 
+        Config.Framework = 'ESX'
+    end
+
+	VEHICLE_TABLE_NAME = "owned_vehicles"
+	OWNER_COLUMN_NAME = "owner"
+elseif Config.Framework == 'QBCore' or Config.Framework == 'AUTO' and GetResourceState('qb-core') ~= 'missing' then
+    if not QBCore then 
+        QBCore = exports['qb-core']:GetCoreObject() 
+        Config.Framework = 'QBCore'
+    end
+
+	VEHICLE_TABLE_NAME = "player_vehicles"
+	OWNER_COLUMN_NAME = "citizenid"
+else
+    VEHICLE_TABLE_NAME = ""
+	OWNER_COLUMN_NAME = ""
+end
+
 if Config.EnableLockpick then
     alterDatabase = function()        
         MySQL.query.await(("ALTER TABLE %s ADD COLUMN IF NOT EXISTS `alarmStage` varchar(50) NOT NULL DEFAULT 'stage_1';"):format(VEHICLE_TABLE_NAME))
@@ -14,24 +35,6 @@ if Config.EnableLockpick then
                 TriggerClientEvent('msk_enginetoggle:installAlarmStage', source, stage)
             end)
         end
-
-        ESX.RegisterServerCallback('msk_enginetoggle:hasItem', function(source, cb, item)
-            local src = source
-            local xPlayer = ESX.GetPlayerFromId(src)
-            local hasItem = xPlayer.hasItem(item)
-
-            cb(hasItem and hasItem.count > 0)
-        end)
-
-        ESX.RegisterServerCallback('msk_enginetoggle:getAlarmStage', function(source, cb, plate)
-            local result = MySQL.query.await('SELECT * FROM owned_vehicles WHERE plate = @plate', {
-                ['@plate'] = trim(plate)
-            })
-
-            if result and result[1] then
-                cb(result[1].owner, result[1].alarmStage)
-            end
-        end)
     elseif Config.Framework == 'QBCore' then
         QBCore.Functions.CreateUseableItem(Config.LockpickSettings.item, function(source)
             TriggerClientEvent('msk_enginetoggle:toggleLockpick', source)
@@ -42,24 +45,6 @@ if Config.EnableLockpick then
                 TriggerClientEvent('msk_enginetoggle:installAlarmStage', source, stage)
             end)
         end
-
-        QBCore.Functions.CreateCallback('msk_enginetoggle:hasItem', function(source, cb, item)
-            local src = source
-            local Player = QBCore.Functions.GetPlayer(src)
-            local hasItem = Player.Functions.GetItemByName(item)
-
-            cb(hasItem and hasItem.amount > 0)
-        end)
-
-        QBCore.Functions.CreateCallback('msk_enginetoggle:getAlarmStage', function(source, cb, plate)
-            local result = MySQL.query.await('SELECT * FROM player_vehicles WHERE plate = @plate', {
-                ['@plate'] = trim(plate)
-            })
-
-            if result and result[1] then
-                cb(result[1].citizenid, result[1].alarmStage)
-            end
-        end)
     else
         -- Add your own code here
     end
@@ -73,6 +58,17 @@ HasPlayerJob = function(Player)
     end
     return false
 end
+
+MSK.Register('msk_enginetoggle:getAlarmStage', function(source, plate)
+    local result = MySQL.query.await(('SELECT * FROM %s WHERE plate = @plate'):format(VEHICLE_TABLE_NAME), {
+        ['@plate'] = MSK.Trim(plate, true)
+    })
+
+    if result and result[1] then
+        return result[1][OWNER_COLUMN_NAME], result[1].alarmStage
+    end
+    return nil, 'stage_1'
+end)
 
 RegisterNetEvent('msk_enginetoggle:removeLockpickItem', function()
     if not Config.LockpickSettings.removeItem then return end

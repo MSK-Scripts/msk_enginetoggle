@@ -1,40 +1,14 @@
 if Config.EnableLockpick and Config.LockpickHotkey.enable then
 	RegisterCommand(Config.LockpickHotkey.command, function(source, args, rawCommand)
-        if Config.Framework == 'ESX' then
-            ESX = exports["es_extended"]:getSharedObject()
+		local hasItem = MSK.HasItem(Config.LockpickSettings.item)
 
-            ESX.TriggerServerCallback('msk_enginetoggle:hasItem', function(hasItem)
-                if not hasItem then
-                    return Config.Notification(nil, Translation[Config.Locale]['hasno_lockpick'], 'error')
-                end
+		if not hasItem then 
+			return Config.Notification(nil, Translation[Config.Locale]['hasno_lockpick'], 'error')
+		end
 
-                toggleLockpick()
-            end, Config.LockpickSettings.item)
-        elseif Config.Framework == 'QBCore' then
-            QBCore = exports['qb-core']:GetCoreObject()
-
-            QBCore.Functions.TriggerCallback('msk_enginetoggle:hasItem', function(hasItem)
-                if not hasItem then
-                    return Config.Notification(nil, Translation[Config.Locale]['hasno_lockpick'], 'error')
-                end
-
-                toggleLockpick()
-            end, Config.LockpickSettings.item)
-        else
-            -- Add your own code here
-        end
+		toggleLockpick()
 	end)
 	RegisterKeyMapping(Config.LockpickHotkey.command, 'Lockpick Vehicle', 'keyboard', Config.LockpickHotkey.key)
-end
-
-loadAnimDict = function(dict)
-    if not HasAnimDictLoaded(dict) then
-        RequestAnimDict(dict)
-
-        while not HasAnimDictLoaded(dict) do
-            Wait(1)
-        end
-    end
 end
 
 toggleLockpick = function()
@@ -46,28 +20,11 @@ toggleLockpick = function()
 	
 	local vehicle = GetClosestVehicle(coords.x, coords.y, coords.z, 3.0, 0, 71)
 	if not DoesEntityExist(vehicle) then return end
+
 	local plate = GetVehicleNumberPlateText(vehicle)
 	local animation = {dict = Config.Animation.lockpick.dict, anim = Config.Animation.lockpick.anim}
-
-	local p = promise.new()
-	if Config.Framework == 'ESX' then
-		ESX.TriggerServerCallback('msk_enginetoggle:getAlarmStage', function(owner, alarmStage)
-			p:resolve({owner, alarmStage})
-		end, plate)
-	elseif Config.Framework == 'QBCore' then
-		QBCore.Functions.TriggerCallback('msk_enginetoggle:getAlarmStage', function(owner, alarmStage)
-            p:resolve({owner, alarmStage})
-        end, plate)
-	else
-		-- Add your own code here
-	end
-
-	SetTimeout(5000, function()
-		p:resolve({nil, 'stage_1'})
-	end)
-
-	local cbResult = Citizen.Await(p)
-	local owner, stage = table.unpack(cbResult)
+	
+	local owner, stage = MSK.Trigger('msk_enginetoggle:getAlarmStage', plate)
 	local alarmStage = Config.SafetyStages[stage]
 
 	if alarmStage.alarm then
@@ -87,7 +44,7 @@ toggleLockpick = function()
 		TriggerServerEvent('msk_enginetoggle:liveCoords', owner, NetworkGetNetworkIdFromEntity(vehicle), GetEntityCoords(vehicle))
 	end
 
-	loadAnimDict(animation.dict)
+	MSK.LoadAnimDict(animation.dict)
 	TaskPlayAnim(playerPed, animation.dict, animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 	FreezeEntityPosition(playerPed, true)
 
@@ -128,18 +85,18 @@ toggleLockpick = function()
 
 	if success then
 		if GetResourceState('msk_vehiclekeys') == "started" then
-			exports.msk_vehiclekeys:SetVehicleLockState(vehicle, false)
+			exports.msk_vehiclekeys:SetVehicleLockState(vehicle, false, true) -- vehicle, state, force
 		else
 			SetVehicleDoorsLocked(vehicle, 1)
 			SetVehicleDoorsLockedForAllPlayers(vehicle, false)
 		end
 		FreezeEntityPosition(playerPed, false)
-		ClearPedTasksImmediately(playerPed)
+		ClearPedTasks(playerPed)
 		Config.Notification(nil, Translation[Config.Locale]['vehicle_unlocked'], 'success')
 	elseif not success then
 		TriggerServerEvent('msk_enginetoggle:removeLockpickItem')
 		FreezeEntityPosition(playerPed, false)
-		ClearPedTasksImmediately(playerPed)
+		ClearPedTasks(playerPed)
 		Config.Notification(nil, Translation[Config.Locale]['hotwiring_failed'], 'error')
 		return
 	end
@@ -162,7 +119,7 @@ toggleLockpick = function()
 		local anim = Config.Animation.searchKey.anim
 		local time = Config.Animation.searchKey.time * 1000
 
-		loadAnimDict(dict)
+		MSK.LoadAnimDict(dict)
 		TaskPlayAnim(playerPed, dict, anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 		if Config.Animation.searchKey.enableProgressbar then
 			Config.progressBar(time, Translation[Config.Locale]['search_key'])
@@ -179,7 +136,7 @@ toggleLockpick = function()
 			Config.Notification(nil, Translation[Config.Locale]['hotwiring_notfoundkey'], 'error')
 		end
 
-		ClearPedTasksImmediately(playerPed)
+		ClearPedTasks(playerPed)
 		RemoveAnimDict(dict)
 	end
 
@@ -188,7 +145,7 @@ toggleLockpick = function()
 		local anim = Config.Animation.hotwire.anim
 		local action = Config.Animation.hotwire.action
 		local time = Config.Animation.hotwire.time * 1000
-		loadAnimDict(dict)
+		MSK.LoadAnimDict(dict)
 		TaskPlayAnim(playerPed, dict, anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 
 		local success = false
@@ -219,7 +176,7 @@ toggleLockpick = function()
 			end
 		end
 
-		ClearPedTasksImmediately(playerPed)
+		ClearPedTasks(playerPed)
 		RemoveAnimDict(dict)
 
 		if success and Config.LockpickSettings.startEngine then
