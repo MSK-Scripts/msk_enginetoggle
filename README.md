@@ -30,8 +30,9 @@ Resmon with near vehicles and engines on
 * [ESX Legacy](https://github.com/esx-framework/esx_core) or [QBCore](https://github.com/qbcore-framework/qb-core)
 * [oxmysql](https://github.com/overextended/oxmysql)
 * [ox_lib](https://github.com/overextended/ox_lib)
+* [msk_core](https://github.com/MSK-Scripts/msk_core)
 ### Optional
-* [MSK Core](https://github.com/MSK-Scripts/msk_core)
+* [MSK VehicleKeys](https://forum.cfx.re/t/esx-qbcore-msk-vehiclekeys-unique-items/5264475)
 * [VehicleKeyChain](https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563)
 * [vehicle_keys](https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274)
 
@@ -84,7 +85,7 @@ end
 * [[ESX/QBCore] MSK Radio - Channels with password](https://forum.cfx.re/t/esx-msk-radio/5237033)
 * [[ESX/QBCore] MSK Simcard - Change your phonenumber](https://forum.cfx.re/t/release-esx-qbcore-usable-simcard/4847008)
 * [[ESX] MSK Storage](https://forum.cfx.re/t/esx-msk-storage/5252155)
-* [[ESX] MSK WeaponAmmo - Clips, Components & Tints](https://forum.cfx.re/t/release-esx-weapon-ammunition-with-clips-components-tints/4793783)
+* [[ESX/QBCore] MSK VehicleKeys - Unique Items Support](https://forum.cfx.re/t/esx-qbcore-msk-vehiclekeys-unique-items/5264475)
 
 ### Free
 * [MSK Scripts Repositories](https://github.com/MSK-Scripts)
