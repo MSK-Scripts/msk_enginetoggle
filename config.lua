@@ -48,7 +48,7 @@ Config.EngineFromSecondSeat = false
 Config.VehicleKeys = {
     enable = true, -- Set true to enable this feature
 
-    -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicle_keys', 'okokGarage', 'wasabi_carlock'
+    -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicle_keys', 'okokGarage', 'wasabi_carlock', 'qs-vehiclekeys'
     script = 'msk_vehiclekeys',
 
     -- This is for inventories with metadata like ox_inventory

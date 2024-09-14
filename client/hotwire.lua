@@ -235,6 +235,7 @@ local activeBlips = {}
 deleteVehicleBlip = function(netId)
 	if not activeBlips[netId] then return end
 	RemoveBlip(activeBlips[netId].blip)
+	activeBlips[netId] = nil
 end
 RegisterNetEvent('msk_enginetoggle:deleteVehicleBlip', deleteVehicleBlip)
 
@@ -265,22 +266,28 @@ showVehicleBlip = function(netId, coords)
 		activeBlips[netId].isActive = false
 		ShowHeadingIndicatorOnBlip(activeBlips[netId].blip, false)
 		SetBlipCoords(activeBlips[netId].blip, coords.x, coords.y, coords.z)
-	elseif OneSync and not activeBlips[netId].isActive then
+	elseif OneSync and activeBlips[netId] and not activeBlips[netId].isActive then
 		CreateThread(function()
 			activeBlips[netId].isActive = true
 
-			while activeBlips[netId] and activeBlips[netId].isActive and DoesEntityExist(OneSync.vehicle) do
-				local vehicleCoords = GetEntityCoords(OneSync.vehicle)
-				local heading = math.ceil(GetEntityHeading(OneSync.vehicle))
+			while activeBlips[netId] and activeBlips[netId].isActive do
+				if DoesEntityExist(OneSync.vehicle) then
+					local vehicleCoords = GetEntityCoords(OneSync.vehicle)
+					local heading = math.ceil(GetEntityHeading(OneSync.vehicle))
 
-				SetBlipCoords(activeBlips[netId].blip, vehicleCoords.x, vehicleCoords.y, vehicleCoords.z)
-				ShowHeadingIndicatorOnBlip(activeBlips[netId].blip, true)
-				SetBlipRotation(activeBlips[netId].blip, heading)
+					SetBlipCoords(activeBlips[netId].blip, vehicleCoords.x, vehicleCoords.y, vehicleCoords.z)
+					ShowHeadingIndicatorOnBlip(activeBlips[netId].blip, true)
+					SetBlipRotation(activeBlips[netId].blip, heading)
+				else
+					deleteVehicleBlip(netId)
+					break
+				end
 			end
 		end)
 	end
 
 	SetTimeout(2500, function()
+		if not activeBlips[netId] then return end
 		showVehicleBlip(netId, coords)
 	end)
 end

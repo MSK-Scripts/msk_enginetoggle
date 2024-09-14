@@ -141,3 +141,8 @@ MSK.Register('msk_enginetoggle:getInventory', function(source, inv)
 	local invName = ('content-%s'):format(identifier):gsub(':', '')
 	return exports['core_inventory']:getInventory(invName)
 end)
+
+logging = function(code, ...)
+    if code == 'debug' and not Config.Debug then return end
+    MSK.Logging(code, ...)
+end

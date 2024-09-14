@@ -99,14 +99,14 @@ RegisterNetEvent('msk_enginetoggle:saveAlarmStage', function(plate, stage)
 
     local result = MySQL.query.await(('SELECT * FROM %s WHERE %s = @owner AND plate = @plate'):format(VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
 		['@owner'] = identifier,
-		['@plate'] = trim(plate)
+		['@plate'] = MSK.Trim(plate, true)
 	})
 
 	if result and result[1] and result[1][OWNER_COLUMN_NAME] == identifier then
 		MySQL.update(('UPDATE %s SET alarmStage = @alarmStage WHERE %s = @owner AND plate = @plate'):format(VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
             ['@alarmStage'] = stage,
             ['@owner'] = identifier,
-            ['@plate'] = trim(plate),
+            ['@plate'] = MSK.Trim(plate, true),
         })
     else
         Config.Notification(playerId, Translation[Config.Locale]['not_vehicle_owner'], 'error')

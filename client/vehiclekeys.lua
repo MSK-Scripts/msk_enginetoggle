@@ -58,6 +58,8 @@ getIsKeyOwner = function(vehicle)
             isKeyOwner = exports["vehicle_keys"]:doesPlayerOwnPlate(plate)
         elseif Config.VehicleKeys.script == 'wasabi_carlock' and (GetResourceState("wasabi_carlock") == "started") then
             isKeyOwner = exports.wasabi_carlock:HasKey(plate)
+        elseif Config.VehicleKeys.script == 'qs-vehiclekeys' and (GetResourceState("qs-vehiclekeys") == "started") then
+            isKeyOwner = exports['qs-vehiclekeys']:GetKey(plate)
         else
             -- Add your own code here
         end
