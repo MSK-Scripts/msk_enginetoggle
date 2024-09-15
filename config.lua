@@ -94,9 +94,9 @@ Config.SafetyStages = {
     ['stage_1'] = {
         item = 'vehicle_alarm_1', -- Usable Item to set the stage to the vehicle
         alarm = true, -- Acustic alarm
-        ownerAlert = true, -- Notify Owner
-        policeAlert = true, -- Notify Police
-        liveCoords = true, -- Owner gets live coords (Blip)
+        ownerAlert = false, -- Notify Owner
+        policeAlert = false, -- Notify Police
+        liveCoords = false, -- Owner gets live coords (Blip)
     },
     ['stage_2'] = {
         item = 'vehicle_alarm_2', -- Usable Item to set the stage to the vehicle
