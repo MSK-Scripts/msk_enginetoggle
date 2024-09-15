@@ -47,15 +47,14 @@ getIsKeyOwner = function(vehicle)
     if not Config.VehicleKeys.enable then return true end
     local isKeyOwner, ignoreVehicle, ignorePlate = false, false, false
     local plate = GetVehicleNumberPlateText(vehicle)
-    local canToggleEngine = true
 
     if not Config.VehicleKeys.uniqueItems then
         if Config.VehicleKeys.script == 'msk_vehiclekeys' and (GetResourceState("msk_vehiclekeys") == "started") then
             isKeyOwner = exports["msk_vehiclekeys"]:HasPlayerKeyOrIsVehicleOwner(vehicle)
         elseif Config.VehicleKeys.script == 'VehicleKeyChain' and (GetResourceState("VehicleKeyChain") == "started") then
             isKeyOwner = exports["VehicleKeyChain"]:IsVehicleOrKeyOwner(vehicle)
-        elseif Config.VehicleKeys.script == 'vehicle_keys' and (GetResourceState("vehicle_keys") == "started") then
-            isKeyOwner = exports["vehicle_keys"]:doesPlayerOwnPlate(plate)
+        elseif Config.VehicleKeys.script == 'vehicles_keys' and (GetResourceState("vehicles_keys") == "started") then
+            isKeyOwner = exports["vehicles_keys"]:doesPlayerOwnPlate(plate)
         elseif Config.VehicleKeys.script == 'wasabi_carlock' and (GetResourceState("wasabi_carlock") == "started") then
             isKeyOwner = exports.wasabi_carlock:HasKey(plate)
         elseif Config.VehicleKeys.script == 'qs-vehiclekeys' and (GetResourceState("qs-vehiclekeys") == "started") then
@@ -81,10 +80,6 @@ getIsKeyOwner = function(vehicle)
         end
     end
 
-    if not isKeyOwner and not ignoreVehicle and not ignorePlate then
-        canToggleEngine = false
-    end
-
-    return canToggleEngine
+    return isKeyOwner or ignoreVehicle or ignorePlate
 end
 exports('getIsKeyOwner', getIsKeyOwner)

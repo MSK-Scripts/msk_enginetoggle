@@ -103,7 +103,6 @@ RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId,
 	local src = source
 	local Player = GetPlayerFromId(src)
 	local identifier = nil
-	plate = MSK.Trim(plate, true)
 
 	if Config.Framework == 'ESX' then
         identifier = Player.identifier
@@ -115,7 +114,7 @@ RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId,
 
 	local result = MySQL.query.await(('SELECT * FROM %s WHERE %s = @owner AND plate = @plate'):format(VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
 		['@owner'] = identifier,
-		['@plate'] = plate
+		['@plate'] = MSK.Trim(plate, true)
 	})
 
 	if result and result[1] then

@@ -41,9 +41,12 @@ toggleLockpick = function()
 	end
 
 	if alarmStage.liveCoords and owner then
-		TriggerServerEvent('msk_enginetoggle:liveCoords', owner, NetworkGetNetworkIdFromEntity(vehicle), GetEntityCoords(vehicle))
+		TriggerServerEvent('msk_enginetoggle:liveCoords', owner, VehToNet(vehicle), GetEntityCoords(vehicle))
 	end
 
+	local debug = false
+	if not debug then return end
+	
 	MSK.LoadAnimDict(animation.dict)
 	TaskPlayAnim(playerPed, animation.dict, animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 	FreezeEntityPosition(playerPed, true)
@@ -226,7 +229,9 @@ end)
 inOneSync = function(netId)
     local vehicle = NetworkDoesNetworkIdExist(netId) and NetworkGetEntityFromNetworkId(netId)
 
-    if DoesEntityExist(vehicle) then return {vehicle = vehicle} end
+    if DoesEntityExist(vehicle) then 
+		return {vehicle = vehicle}
+	end
     return false
 end
 
@@ -239,51 +244,46 @@ deleteVehicleBlip = function(netId)
 end
 RegisterNetEvent('msk_enginetoggle:deleteVehicleBlip', deleteVehicleBlip)
 
+addVehicleBlip = function(netId, coords)
+	local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+
+	SetBlipSprite(blip, 326)
+	SetBlipDisplay(blip, 2)
+	SetBlipColour(blip, 1)
+	SetBlipScale(blip, 1.0)
+	SetBlipFlashes(blip, true)
+	SetBlipAsShortRange(blip, false)
+
+	BeginTextCommandSetBlipName('STRING') 
+    AddTextComponentString(Translation[Config.Locale]['blip_stolen_vehicle'])
+    EndTextCommandSetBlipName(blip)
+
+	activeBlips[netId] = {isActive = false, blip = blip}
+end
+
 showVehicleBlip = function(netId, coords)
+	if not activeBlips[netId] then addVehicleBlip(netId, coords) end
 	local OneSync = inOneSync(netId)
 
-	if not activeBlips[netId] then
-		local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
-
-		SetBlipSprite(blip, 326)
-		SetBlipDisplay(blip, 2)
-		SetBlipColour(blip, 1)
-		SetBlipScale(blip, 1.0)
-		SetBlipFlashes(blip, true)
-		SetBlipAsShortRange(blip, false)
-
-		BeginTextCommandSetBlipName('STRING') 
-        AddTextComponentString(Translation[Config.Locale]['blip_stolen_vehicle'])
-        EndTextCommandSetBlipName(blip)
-
-		activeBlips[netId] = {
-			isActive = false,
-			blip = blip
-		}
-	end
-
-	if not OneSync and activeBlips[netId] then
-		activeBlips[netId].isActive = false
-		ShowHeadingIndicatorOnBlip(activeBlips[netId].blip, false)
-		SetBlipCoords(activeBlips[netId].blip, coords.x, coords.y, coords.z)
-	elseif OneSync and activeBlips[netId] and not activeBlips[netId].isActive then
+	if OneSync and activeBlips[netId] and not activeBlips[netId].isActive then
 		CreateThread(function()
 			activeBlips[netId].isActive = true
 
-			while activeBlips[netId] and activeBlips[netId].isActive do
-				if DoesEntityExist(OneSync.vehicle) then
-					local vehicleCoords = GetEntityCoords(OneSync.vehicle)
-					local heading = math.ceil(GetEntityHeading(OneSync.vehicle))
+			while activeBlips[netId] and activeBlips[netId].isActive and DoesEntityExist(OneSync.vehicle) do
+				local vehicleCoords = GetEntityCoords(OneSync.vehicle)
+				local heading = math.ceil(GetEntityHeading(OneSync.vehicle))
 
-					SetBlipCoords(activeBlips[netId].blip, vehicleCoords.x, vehicleCoords.y, vehicleCoords.z)
-					ShowHeadingIndicatorOnBlip(activeBlips[netId].blip, true)
-					SetBlipRotation(activeBlips[netId].blip, heading)
-				else
-					deleteVehicleBlip(netId)
-					break
-				end
+				SetBlipCoords(activeBlips[netId].blip, vehicleCoords.x, vehicleCoords.y, vehicleCoords.z)
+				ShowHeadingIndicatorOnBlip(activeBlips[netId].blip, true)
+				SetBlipRotation(activeBlips[netId].blip, heading)
+
+				Wait(0)
 			end
 		end)
+	elseif not OneSync and activeBlips[netId] then
+		activeBlips[netId].isActive = false
+		SetBlipCoords(activeBlips[netId].blip, coords.x, coords.y, coords.z)
+		ShowHeadingIndicatorOnBlip(activeBlips[netId].blip, false)
 	end
 
 	SetTimeout(2500, function()

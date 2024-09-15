@@ -42,13 +42,13 @@ Config.EngineFromSecondSeat = false
 -- Vehicle Key System - set true then only the Owner of the Vehicle or someone with a Key can start the Engine
 
 -- msk_vehiclekeys: https://forum.cfx.re/t/esx-qbcore-msk-vehiclekeys-unique-items/5264475
--- vehicle_keys: https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274
+-- vehicles_keys: https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274
 -- VehicleKeyChain: https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563
 
 Config.VehicleKeys = {
     enable = true, -- Set true to enable this feature
 
-    -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicle_keys', 'okokGarage', 'wasabi_carlock', 'qs-vehiclekeys'
+    -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicles_keys', 'okokGarage', 'wasabi_carlock', 'qs-vehiclekeys'
     script = 'msk_vehiclekeys',
 
     -- This is for inventories with metadata like ox_inventory

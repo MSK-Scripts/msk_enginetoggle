@@ -156,10 +156,10 @@ RegisterNetEvent('msk_enginetoggle:policeAlert', function(coords)
 end)
 
 RegisterNetEvent('msk_enginetoggle:liveCoords', function(owner, netId, coords)
-    local playerId = nil
     local Player = GetPlayerFromIdentifier(owner)
     if not Player then return end
-
+    local playerId = nil
+    
     if Config.Framework == 'ESX' then
         playerId = Player.source
     elseif Config.Framework == 'QBCore' then
