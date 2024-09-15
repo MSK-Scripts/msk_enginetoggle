@@ -43,9 +43,6 @@ toggleLockpick = function()
 	if alarmStage.liveCoords and owner then
 		TriggerServerEvent('msk_enginetoggle:liveCoords', owner, VehToNet(vehicle), GetEntityCoords(vehicle))
 	end
-
-	local debug = false
-	if not debug then return end
 	
 	MSK.LoadAnimDict(animation.dict)
 	TaskPlayAnim(playerPed, animation.dict, animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
