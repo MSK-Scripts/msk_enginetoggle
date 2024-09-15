@@ -1,7 +1,7 @@
 # MSK EngineToggle
-Vehicle Engine Toggle On/Off
+[ESX/QBCore] Vehicle EngineToggle On/Off
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/Musiker15/msk_enginetoggle?color=gree&label=Update)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/MSK-Scripts/msk_enginetoggle?color=gree&label=Update)
 
 **Forum:** https://forum.cfx.re/t/msk-enginetoggle-toggle-engine-on-off/4793840
 
@@ -78,7 +78,6 @@ end
 
 ## My other Scripts
 ### Paid
-* [[ESX] MSK Armor - Multiple Armor Vests](https://forum.cfx.re/t/release-esx-armor-script-usable-armor-vests-status-will-be-saved-in-database-and-restore-after-relog/4812243)
 * [[ESX] MSK Banking - Advanced Banking  with NativeUI](https://forum.cfx.re/t/esx-msk-bankingsystem-with-nativeui/4859560)
 * [[ESX] MSK Garage - Garage & Impounds](https://forum.cfx.re/t/esx-msk-garage-and-impound/5122014)
 * [[ESX] MSK Handcuffs - Realistic Handcuffs](https://forum.cfx.re/t/esx-msk-handcuffs-realistic-handcuffs/4885324)
