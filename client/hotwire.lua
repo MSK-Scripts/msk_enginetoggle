@@ -25,7 +25,7 @@ toggleLockpick = function()
 	local animation = {dict = Config.Animation.lockpick.dict, anim = Config.Animation.lockpick.anim}
 	
 	local owner, stage = MSK.Trigger('msk_enginetoggle:getAlarmStage', plate)
-	local alarmStage = Config.SafetyStages[stage]
+	local alarmStage = Config.SafetyStages[stage] or Config.SafetyStages['stage_1']
 
 	if alarmStage.alarm then
 		SetVehicleAlarm(vehicle, true)

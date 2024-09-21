@@ -59,7 +59,7 @@ HasPlayerJob = function(Player)
     return false
 end
 
-MSK.Register('msk_enginetoggle:getAlarmStage', function(source, plate)
+getAlarmStage = function(source, plate)
     local result = MySQL.query.await(('SELECT * FROM %s WHERE plate = @plate'):format(VEHICLE_TABLE_NAME), {
         ['@plate'] = MSK.Trim(plate, true)
     })
@@ -68,7 +68,8 @@ MSK.Register('msk_enginetoggle:getAlarmStage', function(source, plate)
         return result[1][OWNER_COLUMN_NAME], result[1].alarmStage
     end
     return nil, 'stage_1'
-end)
+end
+MSK.Register('msk_enginetoggle:getAlarmStage', getAlarmStage)
 
 RegisterNetEvent('msk_enginetoggle:removeLockpickItem', function()
     if not Config.LockpickSettings.removeItem then return end

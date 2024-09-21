@@ -1,7 +1,7 @@
 Translation = {
     ['de'] = {
-        ['engine_start'] = 'Der Motor wurde ~g~gestartet',
-        ['engine_stop'] = 'Der Motor wurde ~r~gestoppt',
+        ['engine_start'] = 'Der Motor wurde ~g~gestartet~s~',
+        ['engine_stop'] = 'Der Motor wurde ~r~gestoppt~s~',
         ['key_nokey'] = 'Du besitzt ~r~keinen~s~ Schlüssel für dieses Fahrzeug',
         ['veh_is_damaged'] = 'Das Fahrzeug kann nicht gestartet werden da es beschädigt ist',
 
@@ -22,8 +22,8 @@ Translation = {
         ['blip_stolen_vehicle'] = 'Dein Gestohlenes Fahrzeug',
     },
     ['en'] = {
-        ['engine_start'] = 'The Engine ~g~started',
-        ['engine_stop'] = 'The Engine ~r~stopped',
+        ['engine_start'] = 'The Engine ~g~started~s~',
+        ['engine_stop'] = 'The Engine ~r~stopped~s~',
         ['key_nokey'] = 'You do ~r~not~s~ have a Key for this Vehicle',
         ['veh_is_damaged'] = 'The vehicle cannot be started because it is damaged',
 

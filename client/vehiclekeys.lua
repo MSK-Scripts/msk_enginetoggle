@@ -80,6 +80,11 @@ getIsKeyOwner = function(vehicle)
         end
     end
 
-    return isKeyOwner or ignoreVehicle or ignorePlate
+    local canToggleEngine = false
+    if isKeyOwner or ignoreVehicle or ignorePlate then
+        canToggleEngine = true
+    end
+
+    return (isKeyOwner or ignoreVehicle or ignorePlate)
 end
 exports('getIsKeyOwner', getIsKeyOwner)
