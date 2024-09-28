@@ -57,23 +57,20 @@ GetPlayerJob = function(Player)
 end
 
 if Config.AdminCommand.enable then
-	for k, group in pairs(Config.AdminCommand.groups) do
-        ExecuteCommand(('add_ace group.%s command.%s allow'):format(group, Config.AdminCommand.command))
-    end
+	local allowedGroups = Config.AdminCommand.groups
 
-	local isAceAllowed = function(source)
-        for k, group in pairs(Config.AdminCommand.groups) do
-            if IsPlayerAceAllowed(source, ('command.%s'):format(group)) then
-                return true
-            end
-        end
-        return false
+	for i = 1, #allowedGroups do
+		ExecuteCommand(('add_ace group.%s command.%s allow'):format(allowedGroups[i], Config.AdminCommand.command))
+	end
+
+	local isAceAllowed = function(playerId, command)
+        return IsPlayerAceAllowed(playerId, ('command.%s'):format(command))
     end
 
 	RegisterCommand(Config.AdminCommand.command, function(source, args, rawCommand)
 		local src = source
 
-		if not isAceAllowed(src) then 
+		if not isAceAllowed(src, Config.AdminCommand.command) then 
 			return Config.Notification(src, 'You don\'t have permission to do that!', 'error')
 		end
 
@@ -86,12 +83,12 @@ RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
 	local playerId = source
 	plate = tostring(plate)
 
-	if Config.VehicleKeys.script == 'VehicleKeyChain' then
-		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
-	elseif Config.VehicleKeys.script == 'vehicle_keys' then
-		exports["vehicle_keys"]:giveVehicleKeysToPlayerId(playerId, plate, 'temporary')
-	elseif Config.VehicleKeys.script == 'msk_vehiclekeys' then
+	if Config.VehicleKeys.script == 'msk_vehiclekeys' then
 		exports["msk_vehiclekeys"]:AddKey({source = playerId}, plate, 'temporary')
+	elseif Config.VehicleKeys.script == 'VehicleKeyChain' then
+		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
+	elseif Config.VehicleKeys.script == 'vehicles_keys' then
+		exports["vehicles_keys"]:giveVehicleKeysToPlayerId(playerId, plate, 'temporary')
 	elseif Config.VehicleKeys.script == 'okokGarage' then
 		TriggerEvent("okokGarage:GiveKeys", plate, playerId)
 	else
@@ -114,7 +111,7 @@ RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId,
 
 	local result = MySQL.query.await(('SELECT * FROM %s WHERE %s = @owner AND plate = @plate'):format(VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
 		['@owner'] = identifier,
-		['@plate'] = MSK.Trim(plate, true)
+		['@plate'] = MSK.String.Trim(plate)
 	})
 
 	if result and result[1] then

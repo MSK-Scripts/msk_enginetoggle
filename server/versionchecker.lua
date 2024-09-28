@@ -22,18 +22,6 @@ local CheckResourceName = function()
     end
 end
 
-local Split = function(str, delimiter)
-    assert(str and type(str) == 'string', 'Parameter "str" has to be a string on function MSK.Split')
-    assert(delimiter and type(delimiter) == 'string', 'Parameter "delimiter" has to be a string on function MSK.Split')
-    local result = {}
-    
-    for match in str:gmatch("([^"..delimiter.."]+)") do
-		result[#result + 1] = match
-	end
-
-    return result 
-end
-
 local PrintKeyScripts = function()
     local VehicleScript = ("^3[%s]^0"):format(Config.VehicleKeys.script)
 
@@ -66,8 +54,8 @@ local CheckVersionCallback = function(status, response, headers)
         return 
     end
 
-    local current = Split(currentVersion, '.')
-	local latest = Split(latestVersion, '.')
+    local current = MSK.String.Split(currentVersion, '.')
+	local latest = MSK.String.Split(latestVersion, '.')
 
     for i = 1, #current do
         if current[i] > latest[i] then

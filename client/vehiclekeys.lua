@@ -9,13 +9,13 @@ getInventory = function()
 end
 
 getKeyFromInventory = function(plate)
-    plate = MSK.Trim(plate)
+    plate = MSK.String.Trim(plate, true)
 
     if getInventory() == 'ox_inventory' then
         local inventory = exports.ox_inventory:GetPlayerItems()
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and MSK.Trim(v.metadata.plate or v.metadata.Plate or '') == plate then
+            if v.name == Config.VehicleKeys.item and MSK.String.Trim(v.metadata.plate or v.metadata.Plate or '', true) == plate then
                 return true
             end
         end
@@ -23,7 +23,7 @@ getKeyFromInventory = function(plate)
         local inventory = exports['qs-inventory']:getUserInventory()
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and MSK.Trim(v.info.plate or v.info.Plate or '') == plate then
+            if v.name == Config.VehicleKeys.item and MSK.String.Trim(v.info.plate or v.info.Plate or '', true) == plate then
                 return true
             end
         end
@@ -31,7 +31,7 @@ getKeyFromInventory = function(plate)
         local inventory = MSK.Trigger('msk_enginetoggle:getInventory', 'core_inventory')
 
         for k, v in pairs(inventory) do
-            if v.name == Config.VehicleKeys.item and MSK.Trim(v.metadata.plate or v.metadata.Plate or '') == plate then
+            if v.name == Config.VehicleKeys.item and MSK.String.Trim(v.metadata.plate or v.metadata.Plate or '', true) == plate then
                 return true
             end
         end
@@ -66,8 +66,10 @@ getIsKeyOwner = function(vehicle)
         isKeyOwner = getKeyFromInventory(plate)
     end
 
-    for k, v in pairs(Config.Whitelist.vehicles) do 
-        if GetEntityModel(vehicle) == IsModelValid(v) and v or GetHashKey(v) then
+    for k, v in pairs(Config.Whitelist.vehicles) do
+        local modelHash = type(v) == 'number' and v or GetHashKey(v)
+
+        if GetEntityModel(vehicle) == modelHash then
             ignoreVehicle = true
             break
         end
@@ -78,11 +80,6 @@ getIsKeyOwner = function(vehicle)
             ignorePlate = true
             break
         end
-    end
-
-    local canToggleEngine = false
-    if isKeyOwner or ignoreVehicle or ignorePlate then
-        canToggleEngine = true
     end
 
     return (isKeyOwner or ignoreVehicle or ignorePlate)
