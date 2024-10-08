@@ -47,7 +47,17 @@ toggleEngine = function(bypass)
 	end
 	
 	if not bypass then
-		canToggleEngine = getIsKeyOwner(vehicle)
+		local isBlacklisted = IsVehicleBlacklisted(vehicle)
+
+		if isBlacklisted then
+			return -- Just return without any info
+		end
+
+		local isWhitelisted = IsVehicleWhitelisted(vehicle)
+
+		if not isWhitelisted then
+			canToggleEngine = getIsKeyOwner(vehicle)
+		end
 	end
 	
 	if not canToggleEngine then 
@@ -64,6 +74,9 @@ toggleEngine = function(bypass)
 		disabledDrive = false
 		Config.Notification(nil, Translation[Config.Locale]['engine_start'], 'success')
 	end
+
+	TriggerEvent('msk_enginetoggle:toggledEngine', vehicle, not isEngineOn)
+	TriggerServerEvent('msk_enginetoggle:toggledEngine', VehToNet(vehicle), not isEngineOn)
 end
 exports('toggleEngine', toggleEngine)
 RegisterNetEvent('msk_enginetoggle:toggleEngine', toggleEngine)
@@ -257,19 +270,6 @@ end
 exports('GetVehicleDamaged', GetVehicleDamaged)
 exports('getVehicleDamaged', GetVehicleDamaged) -- Support for old versions
 
-GetPedVehicleSeat = function(playerPed, vehicle)
-	if not playerPed then playerPed = PlayerPedId() end
-	if not vehicle then vehicle = currentVehicle and currentVehicle.vehicle or GetVehiclePedIsIn(playerPed) end
-	if not vehicle or not DoesEntityExist(vehicle) then return end
-
-    for i = -1, 16 do
-        if (GetPedInVehicleSeat(vehicle, i) == playerPed) then 
-			return i 
-		end
-    end	
-    return -1
-end
-
 disableDrive = function()
 	if disabledDrive then return end
 	disabledDrive = true
@@ -291,6 +291,6 @@ disableDrive = function()
 end
 
 logging = function(code, ...)
-    if code == 'debug' and not Config.Debug then return end
+    if not Config.Debug then return end
     MSK.Logging(code, ...)
 end

@@ -139,6 +139,6 @@ MSK.Register('msk_enginetoggle:getInventory', function(source, inv)
 end)
 
 logging = function(code, ...)
-    if code == 'debug' and not Config.Debug then return end
+    if not Config.Debug then return end
     MSK.Logging(code, ...)
 end

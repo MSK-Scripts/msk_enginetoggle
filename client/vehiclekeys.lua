@@ -66,22 +66,6 @@ getIsKeyOwner = function(vehicle)
         isKeyOwner = getKeyFromInventory(plate)
     end
 
-    for k, v in pairs(Config.Whitelist.vehicles) do
-        local modelHash = type(v) == 'number' and v or GetHashKey(v)
-
-        if GetEntityModel(vehicle) == modelHash then
-            ignoreVehicle = true
-            break
-        end
-    end
-
-    for k, v in pairs(Config.Whitelist.plates) do 
-        if string.find(MSK.Trim(plate), MSK.Trim(v)) then 
-            ignorePlate = true
-            break
-        end
-    end
-
-    return (isKeyOwner or ignoreVehicle or ignorePlate)
+    return isKeyOwner
 end
 exports('getIsKeyOwner', getIsKeyOwner)

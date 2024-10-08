@@ -53,7 +53,8 @@ Config.VehicleKeys = {
 
     -- This is for inventories with metadata like ox_inventory
     -- Supported Inventories: ox_inventory, qs-inventory, core_inventory
-    -- For okokGarage you have to set this to true!
+    -- For okokGarage you have to set this to true
+    -- For msk_vehiclekeys you have to set this to false
     uniqueItems = false, -- If set to true, it will search for the item in the inventory
     item = 'keys', -- Item in your inventory for vehicle keys
 }
@@ -64,12 +65,28 @@ Config.SaveAngleOnExit = 75 -- default: F - 75 (Exit Vehicle)
 -- With this feature you can set vehicles and plates for which you don't need a key to start the engine
 -- either exact plates or just a string that should be in the vehicles plate e.g. "ESX" will ignore te plate "ESX1234" too
 Config.Whitelist = {
+    classes = {
+
+    },
     vehicles = {
         -- Please use `` and NOT '' or ""
         `caddy`, `caddy2`, `caddy3`, `airtug`, `docktug`, `forklift`, `mower`, `tractor2`, 
     },
     plates = {
-        "ESX", "MSK", "Test"
+        "ESX", "MSK", "Test", 
+    },
+}
+
+Config.Blacklist = {
+    classes = {
+        13, 21, 
+    },
+    vehicles = {
+        -- Please use `` and NOT '' or ""
+        `bmx`, `cruiser`, `fixter`, `scorcher`, `tribike`, `tribike2`, `tribike3`, 
+    },
+    plates = {
+        "ESX2", "MSK2", "Test2", 
     },
 }
 ----------------------------------------------------------------
@@ -180,3 +197,7 @@ Config.Animation = {
         time = 15, -- in seconds // How long does it take to hotwire the vehicle // Only for 'progressbar'
     }
 }
+----------------------------------------------------------------
+exports('Config', function()
+    return Config
+end)
