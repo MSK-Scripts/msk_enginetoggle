@@ -78,13 +78,13 @@ if Config.AdminCommand.enable then
 	end)
 end
 
-RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
+RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate, model)
 	if not Config.VehicleKeys.enable then return end
 	local playerId = source
 	plate = tostring(plate)
 
 	if Config.VehicleKeys.script == 'msk_vehiclekeys' then
-		exports.msk_vehiclekeys:AddTempKey({source = playerId}, {plate = plate})
+		exports.msk_vehiclekeys:AddTempKey({source = playerId}, {plate = plate, model = model})
 	elseif Config.VehicleKeys.script == 'VehicleKeyChain' then
 		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
 	elseif Config.VehicleKeys.script == 'vehicles_keys' then

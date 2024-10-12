@@ -44,7 +44,7 @@ toggleLockpick = function()
 		TriggerServerEvent('msk_enginetoggle:liveCoords', owner, VehToNet(vehicle), GetEntityCoords(vehicle))
 	end
 	
-	MSK.LoadAnimDict(animation.dict)
+	MSK.Request.AnimDict(animation.dict)
 	TaskPlayAnim(playerPed, animation.dict, animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 	FreezeEntityPosition(playerPed, true)
 
@@ -119,7 +119,7 @@ toggleLockpick = function()
 		local anim = Config.Animation.searchKey.anim
 		local time = Config.Animation.searchKey.time * 1000
 
-		MSK.LoadAnimDict(dict)
+		MSK.Request.AnimDict(dict)
 		TaskPlayAnim(playerPed, dict, anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 		if Config.Animation.searchKey.enableProgressbar then
 			Config.progressBar(time, Translation[Config.Locale]['search_key'])
@@ -128,7 +128,7 @@ toggleLockpick = function()
 
 		if math.random(100) <= Config.LockpickSettings.searchKey then
 			if Config.VehicleKeys.enable and GetResourceState(Config.VehicleKeys.script) == "started" then
-				TriggerServerEvent('msk_enginetoggle:addTempKey', plate)
+				TriggerServerEvent('msk_enginetoggle:addTempKey', plate, GetEntityModel(vehicle))
 			end
 			needToHotwire = false
 			Config.Notification(nil, Translation[Config.Locale]['hotwiring_foundkey'], 'success')
@@ -145,7 +145,7 @@ toggleLockpick = function()
 		local anim = Config.Animation.hotwire.anim
 		local action = Config.Animation.hotwire.action
 		local time = Config.Animation.hotwire.time * 1000
-		MSK.LoadAnimDict(dict)
+		MSK.Request.AnimDict(dict)
 		TaskPlayAnim(playerPed, dict, anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 
 		local success = false
