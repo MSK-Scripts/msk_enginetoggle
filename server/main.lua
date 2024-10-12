@@ -84,7 +84,7 @@ RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate)
 	plate = tostring(plate)
 
 	if Config.VehicleKeys.script == 'msk_vehiclekeys' then
-		exports["msk_vehiclekeys"]:AddKey({source = playerId}, plate, 'temporary')
+		exports.msk_vehiclekeys:AddTempKey({source = playerId}, {plate = plate})
 	elseif Config.VehicleKeys.script == 'VehicleKeyChain' then
 		exports["VehicleKeyChain"]:AddTempKey(playerId, plate)
 	elseif Config.VehicleKeys.script == 'vehicles_keys' then
