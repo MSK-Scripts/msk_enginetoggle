@@ -1,13 +1,18 @@
 GetPedVehicleSeat = function(playerPed, vehicle)
-	if not playerPed then playerPed = PlayerPedId() end
-	if not vehicle then vehicle = currentVehicle and currentVehicle.vehicle or GetVehiclePedIsIn(playerPed) end
+	if not playerPed then playerPed = MSK.Player.ped end
+	if not vehicle then vehicle = currentVehicle and currentVehicle.vehicle or MSK.Player.vehicle or GetVehiclePedIsIn(playerPed, false) end
 	if not vehicle or not DoesEntityExist(vehicle) then return end
+
+    if vehicle == MSK.Player.vehicle then
+        return MSK.Player.seat
+    end
 
     for i = -1, 16 do
         if (GetPedInVehicleSeat(vehicle, i) == playerPed) then 
 			return i 
 		end
     end	
+    
     return -1
 end
 
@@ -65,4 +70,12 @@ IsVehicleBlacklisted = function(vehicle)
             return true
         end
     end
+end
+
+IsAnyWheelClamped = function(vehicle)
+    if not Config.VehicleClamp or GetResourceState('VehicleClamp') ~= 'started' then 
+        return false 
+    end
+
+    return exports["VehicleClamp"]:IsAnyWheelClamped(vehicle)
 end

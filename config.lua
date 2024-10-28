@@ -51,13 +51,11 @@ Config.VehicleKeys = {
     -- Supported Scripts: 'msk_vehiclekeys', 'VehicleKeyChain', 'vehicles_keys', 'okokGarage', 'wasabi_carlock', 'qs-vehiclekeys'
     script = 'msk_vehiclekeys',
 
-    -- This is for inventories with metadata like ox_inventory
-    -- Supported Inventories: ox_inventory, qs-inventory, core_inventory
-    -- For okokGarage you have to set this to true
-    -- For msk_vehiclekeys you have to set this to false
-    uniqueItems = false, -- If set to true, it will search for the item in the inventory
+    -- For uniqueItems in ox_inventory, qs-inventory or core_inventory
     item = 'keys', -- Item in your inventory for vehicle keys
 }
+----------------------------------------------------------------
+Config.VehicleClamp = GetResourceState('VehicleClamp') ~= 'missing'
 ----------------------------------------------------------------
 Config.SaveSteeringAngle = true
 Config.SaveAngleOnExit = 75 -- default: F - 75 (Exit Vehicle)
@@ -93,7 +91,7 @@ Config.Blacklist = {
 Config.EnableLockpick = true -- Set false if you want to deactivate this feature
 
 Config.progressBar = function(time, message)
-    MSK.Progressbar(time, message)
+    MSK.Progress.Start(time, message)
 end
 
 Config.LockpickHotkey = {

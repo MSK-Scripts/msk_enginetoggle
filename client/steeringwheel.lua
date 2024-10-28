@@ -2,13 +2,12 @@ if Config.SaveSteeringAngle then
 	CreateThread(function()
 		while true do
 			local sleep = 500
-			local playerPed = PlayerPedId()
 
-			if isInVehicle and GetPedVehicleSeat(playerPed) == -1 then 
+			if isInVehicle and MSK.Player.seat == -1 then
 				sleep = 1
 
 				if IsControlJustPressed(0, Config.SaveAngleOnExit) then
-					local vehicle = currentVehicle and currentVehicle.vehicle or GetVehiclePedIsIn(playerPed)
+					local vehicle = currentVehicle and currentVehicle.vehicle or MSK.Player.vehicle
 					local steeringAngle = GetVehicleSteeringAngle(vehicle)
 
 					while not IsControlJustReleased(0, Config.SaveAngleOnExit) do
@@ -35,7 +34,7 @@ end
 exports('SetSteeringAngle', SetSteeringAngle)
 
 GetSteeringAngle = function(vehicle)
-	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
+	if not vehicle then vehicle = MSK.Player.vehicle end
 	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetSteeringAngle')
 
 	if Entity(vehicle).state.SteeringAngle == nil then

@@ -12,8 +12,8 @@ if Config.EnableLockpick and Config.LockpickHotkey.enable then
 end
 
 toggleLockpick = function()
-	local playerPed = PlayerPedId()
-	local coords = GetEntityCoords(playerPed)
+	local playerPed = MSK.Player.ped
+	local coords = MSK.Player.coords
 
 	if IsPedInAnyVehicle(playerPed, false) then return end	
 	if not IsAnyVehicleNearPoint(coords.x, coords.y, coords.z, 5.0) then return end
@@ -110,8 +110,8 @@ toggleLockpick = function()
 	TaskEnterVehicle(playerPed, vehicle, 10.0, -1, 1.0, 1, 0)
 	Wait(5000)
 		
-	local playerPed = PlayerPedId()
-	local vehicle = GetVehiclePedIsIn(playerPed)
+	local playerPed = MSK.Player.ped
+	local vehicle = MSK.Player.vehicle
 	local plate = GetVehicleNumberPlateText(vehicle)
 
 	if Config.VehicleKeys.enable or Config.LockpickSettings.enableSearchKey then
@@ -193,14 +193,11 @@ exports('toggleHotwire', toggleLockpick) -- Support for old Versions
 RegisterNetEvent('msk_enginetoggle:toggleLockpick', toggleLockpick)
 
 RegisterNetEvent('msk_enginetoggle:installAlarmStage', function(stage)
-	local playerPed = PlayerPedId()
-
-	if not IsPedInAnyVehicle(playerPed, false) then 
-		Config.Notification(nil, Translation[Config.Locale]['sit_in_vehicle'], 'error')
-		return 
+	if not IsPedInAnyVehicle(MSK.Player.ped, false) then 
+		return Config.Notification(nil, Translation[Config.Locale]['sit_in_vehicle'], 'error') 
 	end
 
-	local vehicle = GetVehiclePedIsIn(playerPed)
+	local vehicle = MSK.Player.vehicle
 	local plate = GetVehicleNumberPlateText(vehicle)
 
 	Config.progressBar(1000 * 15, Translation[Config.Locale]['install_alarm'])

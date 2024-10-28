@@ -4,6 +4,7 @@ Translation = {
         ['engine_stop'] = 'Der Motor wurde ~r~gestoppt~s~',
         ['key_nokey'] = 'Du besitzt ~r~keinen~s~ Schlüssel für dieses Fahrzeug',
         ['veh_is_damaged'] = 'Das Fahrzeug kann nicht gestartet werden da es beschädigt ist',
+        ['vehicle_wheel_clamped'] = 'Ein Reifen wurde gesperrt, du kannst so nicht fahren!',
 
         ['sit_in_vehicle'] = 'Du musst dafür in einem Fahrzeug sitzen',
         ['install_alarm'] = 'Installiere Alarmsystem',
@@ -26,6 +27,7 @@ Translation = {
         ['engine_stop'] = 'The Engine ~r~stopped~s~',
         ['key_nokey'] = 'You do ~r~not~s~ have a Key for this Vehicle',
         ['veh_is_damaged'] = 'The vehicle cannot be started because it is damaged',
+        ['vehicle_wheel_clamped'] = 'One wheel has been locked, you cannot drive like this!',
 
         ['sit_in_vehicle'] = 'You must sit in a vehicle',
         ['install_alarm'] = 'Install Alarmsystem',

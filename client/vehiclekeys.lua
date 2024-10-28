@@ -6,12 +6,15 @@ getInventory = function()
     elseif (GetResourceState("core_inventory") == "started") then
         return 'core_inventory'
     end
+
+    return false
 end
 
 getKeyFromInventory = function(plate)
     plate = MSK.String.Trim(plate, true)
+    local inv = getInventory()
 
-    if getInventory() == 'ox_inventory' then
+    if inv == 'ox_inventory' then
         local inventory = exports.ox_inventory:GetPlayerItems()
 
         for k, v in pairs(inventory) do
@@ -19,7 +22,7 @@ getKeyFromInventory = function(plate)
                 return true
             end
         end
-    elseif getInventory() == 'qs-inventory' then
+    elseif inv == 'qs-inventory' then
         local inventory = exports['qs-inventory']:getUserInventory()
 
         for k, v in pairs(inventory) do
@@ -27,7 +30,7 @@ getKeyFromInventory = function(plate)
                 return true
             end
         end
-    elseif getInventory() == 'core_inventory' then
+    elseif inv == 'core_inventory' then
         local inventory = MSK.Trigger('msk_enginetoggle:getInventory', 'core_inventory')
 
         for k, v in pairs(inventory) do
@@ -45,10 +48,10 @@ exports('getKeyFromInventory', getKeyFromInventory)
 
 getIsKeyOwner = function(vehicle)
     if not Config.VehicleKeys.enable then return true end
-    local isKeyOwner, ignoreVehicle, ignorePlate = false, false, false
     local plate = GetVehicleNumberPlateText(vehicle)
+    local isKeyOwner = getKeyFromInventory(plate)
 
-    if not Config.VehicleKeys.uniqueItems then
+    if not isKeyOwner then
         if Config.VehicleKeys.script == 'msk_vehiclekeys' and (GetResourceState("msk_vehiclekeys") == "started") then
             isKeyOwner = exports["msk_vehiclekeys"]:HasPlayerKeyOrIsVehicleOwner(vehicle)
         elseif Config.VehicleKeys.script == 'VehicleKeyChain' and (GetResourceState("VehicleKeyChain") == "started") then
@@ -62,8 +65,6 @@ getIsKeyOwner = function(vehicle)
         else
             -- Add your own code here
         end
-    else
-        isKeyOwner = getKeyFromInventory(plate)
     end
 
     return isKeyOwner

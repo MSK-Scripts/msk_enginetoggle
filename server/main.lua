@@ -57,25 +57,13 @@ GetPlayerJob = function(Player)
 end
 
 if Config.AdminCommand.enable then
-	local allowedGroups = Config.AdminCommand.groups
-
-	for i = 1, #allowedGroups do
-		ExecuteCommand(('add_ace group.%s command.%s allow'):format(allowedGroups[i], Config.AdminCommand.command))
-	end
-
-	local isAceAllowed = function(playerId, command)
-        return IsPlayerAceAllowed(playerId, ('command.%s'):format(command))
-    end
-
-	RegisterCommand(Config.AdminCommand.command, function(source, args, rawCommand)
-		local src = source
-
-		if not isAceAllowed(src, Config.AdminCommand.command) then 
-			return Config.Notification(src, 'You don\'t have permission to do that!', 'error')
-		end
-
-		TriggerClientEvent('msk_enginetoggle:toggleEngine', src, true)
-	end)
+	MSK.RegisterCommand(Config.AdminCommand.command, function(source, args, raw)    
+		TriggerClientEvent('msk_enginetoggle:toggleEngine', source, true)
+	end, {
+		allowConsole = false,
+		restricted = Config.AdminCommand.groups,
+		help = 'Toggle Engine as an Admin',
+	})
 end
 
 RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate, model)

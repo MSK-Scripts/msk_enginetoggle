@@ -26,25 +26,37 @@ if Config.Command.enable then
 end
 
 toggleEngine = function(bypass)
-	local playerPed = PlayerPedId()
+	local playerPed = MSK.Player.ped
 	local canToggleEngine = true
 
 	if not IsPedInAnyVehicle(playerPed) then return end
-	local vehicle = GetVehiclePedIsIn(playerPed)
+	local vehicle = MSK.Player.vehicle
 
 	if not Config.EngineFromSecondSeat and GetPedInVehicleSeat(vehicle, -1) ~= playerPed then return end
 
 	if Config.EngineFromSecondSeat then
+		if IsVehicleSeatFree(vehicle, -1) then return end
+
 		if playerPed ~= GetPedInVehicleSeat(vehicle, -1) and playerPed ~= GetPedInVehicleSeat(vehicle, 0) then
 			return
 		end
-
-		if IsVehicleSeatFree(vehicle, -1) then return end
 	end
 
 	if GetVehicleDamaged(vehicle) then 
 		return Config.Notification(nil, Translation[Config.Locale]['veh_is_damaged'], 'error')
 	end
+
+	if IsAnyWheelClamped(vehicle) then
+		return Config.Notification(nil, Translation[Config.Locale]['vehicle_wheel_clamped'], 'error')
+	end
+
+	-- Cheat protection, remove this if you don't care
+	if bypass then
+		if not MSK.IsAceAllowed(Config.AdminCommand.command) then 
+			return Config.Notification(nil, 'You don\'t have permission to bypass the engine start/stop!', 'error')
+		end
+	end
+	-- Cheat protection, remove this if you don't care
 	
 	if not bypass then
 		local isBlacklisted = IsVehicleBlacklisted(vehicle)
@@ -83,7 +95,7 @@ RegisterNetEvent('msk_enginetoggle:toggleEngine', toggleEngine)
 
 AddEventHandler('msk_enginetoggle:enteringVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	logging('debug', 'enteringVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	local playerPed = PlayerPedId()
+	local playerPed = MSK.Player.ped
 	local vehicleModel = GetEntityModel(vehicle)
 
 	if seat == -1 and not isEngineOn then
@@ -99,7 +111,7 @@ end)
 
 AddEventHandler('msk_enginetoggle:enteredVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	logging('debug', 'enteredVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
-	local playerPed = PlayerPedId()
+	local playerPed = MSK.Player.ped
 	local vehicleModel = GetEntityModel(vehicle)
 
 	if seat == -1 and not isEngineOn then
@@ -118,7 +130,7 @@ end)
 AddEventHandler('msk_enginetoggle:exitedVehicle', function(vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	logging('debug', 'exitedVehicle', vehicle, plate, seat, netId, isEngineOn, isDamaged)
 	if not vehicle or not DoesEntityExist(vehicle) then return end
-	local playerPed = PlayerPedId()
+	local playerPed = MSK.Player.ped
 	local vehicleModel = GetEntityModel(vehicle)
 
 	if seat == -1 and not isEngineOn then
@@ -129,7 +141,7 @@ end)
 CreateThread(function()
 	while true do
 		local sleep = 500
-		local playerPed = PlayerPedId()
+		local playerPed = MSK.Player.ped
 		local vehiclePool = GetGamePool('CVehicle')
 
 		for i = 1, #vehiclePool do
@@ -163,7 +175,7 @@ end)
 CreateThread(function()
 	while true do
 		local sleep = 200
-		local playerPed = PlayerPedId()
+		local playerPed = MSK.Player.ped
 
 		if not isInVehicle and not IsPlayerDead(PlayerId()) then
 			if DoesEntityExist(GetVehiclePedIsTryingToEnter(playerPed)) and not isEnteringVehicle then
@@ -183,7 +195,7 @@ CreateThread(function()
 			elseif IsPedInAnyVehicle(playerPed, false) then
 				isEnteringVehicle = false
                 isInVehicle = true
-				currentVehicle.vehicle = GetVehiclePedIsIn(playerPed)
+				currentVehicle.vehicle = GetVehiclePedIsIn(playerPed, false)
 				currentVehicle.plate = GetVehicleNumberPlateText(currentVehicle.vehicle)
 				currentVehicle.seat = GetPedVehicleSeat(playerPed, currentVehicle.vehicle)
 				currentVehicle.netId = VehToNet(currentVehicle.vehicle)
@@ -226,7 +238,7 @@ exports('SetEngineState', SetEngineState) -- Do not use this Export if you don't
 RegisterNetEvent('msk_enginetoggle:setEngineState', SetEngineState) -- Do not use this Event if you don't know what you are doing!!!
 
 GetEngineState = function(vehicle)
-	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
+	if not vehicle then vehicle = MSK.Player.vehicle end
 	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetEngineState')
 
 	if Entity(vehicle).state.isEngineOn == nil then
@@ -235,7 +247,6 @@ GetEngineState = function(vehicle)
 	return Entity(vehicle).state.isEngineOn
 end
 exports('GetEngineState', GetEngineState)
-exports('getEngineState', GetEngineState) -- Support for old versions
 
 SetVehicleDamaged = function(vehicle, state)
 	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetVehicleDamaged')
@@ -246,20 +257,18 @@ SetVehicleDamaged = function(vehicle, state)
 	if state then 
 		SetEngineState(vehicle, false, true) 
 
-		local playerPed = PlayerPedId()
-		if IsPedInAnyVehicle(playerPed) then
-			if vehicle == GetVehiclePedIsIn(playerPed) then
+		if IsPedInAnyVehicle(MSK.Player.ped) then
+			if vehicle == MSK.Player.vehicle then
 				CreateThread(disableDrive)
 			end
 		end
 	end
 end
 exports('SetVehicleDamaged', SetVehicleDamaged)
-exports('setVehicleDamaged', SetVehicleDamaged) -- Support for old versions
 RegisterNetEvent('msk_enginetoggle:setVehicleDamaged', SetVehicleDamaged)
 
 GetVehicleDamaged = function(vehicle)
-	if not vehicle then vehicle = GetVehiclePedIsIn(PlayerPedId()) end
+	if not vehicle then vehicle = MSK.Player.vehicle end
 	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetVehicleDamaged')
 
 	if Entity(vehicle).state.isDamaged == nil then
@@ -268,13 +277,12 @@ GetVehicleDamaged = function(vehicle)
 	return Entity(vehicle).state.isDamaged
 end
 exports('GetVehicleDamaged', GetVehicleDamaged)
-exports('getVehicleDamaged', GetVehicleDamaged) -- Support for old versions
 
 disableDrive = function()
 	if disabledDrive then return end
 	disabledDrive = true
 
-	while isInVehicle and disabledDrive and GetPedVehicleSeat() == -1 and not currentVehicle.isEngineOn do
+	while isInVehicle and disabledDrive and MSK.Player.seat == -1 and not currentVehicle.isEngineOn do
 		local sleep = 1
 
 		DisableControlAction(0, 71, true) -- W (accelerate)
