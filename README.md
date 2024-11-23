@@ -25,7 +25,6 @@ Resmon without any near vehicles
 Resmon with near vehicles and engines on
 ![Screenshot_16](https://github.com/user-attachments/assets/e5fe6e23-a90d-4dfc-9f6f-34792f9d9c29)
 
-
 ## Requirements
 * [ESX Legacy](https://github.com/esx-framework/esx_core) or [QBCore](https://github.com/qbcore-framework/qb-core)
 * [oxmysql](https://github.com/overextended/oxmysql)
@@ -34,7 +33,10 @@ Resmon with near vehicles and engines on
 ### Optional
 * [MSK VehicleKeys](https://forum.cfx.re/t/esx-qbcore-msk-vehiclekeys-unique-items/5264475)
 * [VehicleKeyChain](https://forum.cfx.re/t/release-vehicle-key-chain-v4-1-4-esx-qb/3319563)
+* [VehicleClamp](https://docs.kiminaze.de/scripts/vehicleclamp-pre-release)
 * [vehicle_keys](https://forum.cfx.re/t/esx-qbcore-vehicles-keys-vehicles-lock-remote-control-ui-and-much-more/4857274)
+* [wasabi_carlock](https://forum.cfx.re/t/esx-qbcore-wasabis-car-lock-system/4982151)
+* [qs-vehiclekeys](https://www.quasar-store.com/de/package/5269147)
 
 ## Exports
 All exports are CLIENTSIDE. Look at the [Documentation](https://docu.msk-scripts.de/enginetoggle) for more information.
