@@ -47,7 +47,7 @@ end
 IsVehicleBlacklisted = function(vehicle)
     local vehicleClass = GetVehicleClass(vehicle)
 
-    for k, class in pairs(Config.Whitelist.classes) do
+    for k, class in pairs(Config.Blacklist.classes) do
         if vehicleClass == class then
             return true
         end
@@ -55,7 +55,7 @@ IsVehicleBlacklisted = function(vehicle)
 
     local vehicleModel = GetEntityModel(vehicle)
 
-    for k, model in pairs(Config.Whitelist.vehicles) do
+    for k, model in pairs(Config.Blacklist.vehicles) do
         local modelHash = type(model) == 'number' and model or GetHashKey(model)
 
         if vehicleModel == modelHash then
@@ -65,7 +65,7 @@ IsVehicleBlacklisted = function(vehicle)
 
     local vehiclePlate = GetVehicleNumberPlateText(vehicle)
 
-    for k, plate in pairs(Config.Whitelist.plates) do 
+    for k, plate in pairs(Config.Blacklist.plates) do 
         if string.find(MSK.String.Trim(vehiclePlate, true), MSK.String.Trim(plate, true)) then 
             return true
         end

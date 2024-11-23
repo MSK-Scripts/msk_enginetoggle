@@ -16,7 +16,7 @@ currentVehicle = {}
 isInVehicle, isEnteringVehicle, disabledDrive = false, false, false
 
 if Config.Command.enable then
-	RegisterCommand(Config.Command.command, function(source, args, rawCommand)
+	RegisterCommand(Config.Command.command, function(source, args, raw)
 		toggleEngine()
 	end)
 
