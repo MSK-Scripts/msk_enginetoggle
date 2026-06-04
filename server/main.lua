@@ -111,7 +111,7 @@ end)
 
 MSK.Register('msk_enginetoggle:getInventory', function(source, inv)
 	if inv ~= 'core_inventory' then return {} end
-	local Player = GetPlayerFromId(src)
+	local Player = GetPlayerFromId(source)
 	local identifier = nil
 
 	if Config.Framework == 'ESX' then

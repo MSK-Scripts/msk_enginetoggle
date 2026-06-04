@@ -1,8 +1,10 @@
 if Config.Framework == 'AUTO' then
 	if GetResourceState('es_extended') ~= 'missing' then
         ESX = exports["es_extended"]:getSharedObject()
+		Config.Framework = 'ESX'
     elseif GetResourceState('qb-core') ~= 'missing' then
         QBCore = exports['qb-core']:GetCoreObject()
+		Config.Framework = 'QBCore'
     end
 elseif Config.Framework == 'ESX' then
 	ESX = exports["es_extended"]:getSharedObject()
@@ -142,21 +144,14 @@ CreateThread(function()
 	while true do
 		local sleep = 500
 		local playerPed = MSK.Player.ped
+		local playerVehicle = IsPedInAnyVehicle(playerPed, false) and GetVehiclePedIsIn(playerPed, false) or nil
 		local vehiclePool = GetGamePool('CVehicle')
 
 		for i = 1, #vehiclePool do
 			local vehicle = vehiclePool[i]
 
-			if DoesEntityExist(vehicle) and not GetVehicleDamaged(vehicle) and IsVehicleSeatFree(vehicle, -1) and (not IsPedInAnyVehicle(playerPed, false) or (IsPedInAnyVehicle(playerPed, false) and vehicle ~= GetVehiclePedIsIn(playerPed, false))) then
+			if DoesEntityExist(vehicle) and vehicle ~= playerVehicle and not GetVehicleDamaged(vehicle) and IsVehicleSeatFree(vehicle, -1) then
 				local vehicleModel = GetEntityModel(vehicle)
-
-				if IsThisModelACar(vehicleModel) then
-					local steeringAngle = GetSteeringAngle(vehicle)
-
-					if steeringAngle and steeringAngle ~= GetVehicleSteeringAngle(vehicle) then
-						SetSteeringAngle(vehicle, steeringAngle)
-					end
-				end
 
 				if IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel) then
 					if GetEngineState(vehicle) then
