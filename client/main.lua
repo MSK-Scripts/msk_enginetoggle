@@ -154,8 +154,9 @@ CreateThread(function()
 				local vehicleModel = GetEntityModel(vehicle)
 
 				if IsThisModelAHeli(vehicleModel) or IsThisModelAPlane(vehicleModel) then
-					if GetEngineState(vehicle) then
-						SetEngineState(vehicle, true, true)
+					-- Nur ein reiner Lese-Check, kein SetEngineState im Loop (das würde für jedes
+					-- Heli/Plane im Pool alle 500ms einen replizierten Statebag schreiben)
+					if GetIsVehicleEngineRunning(vehicle) then
 						SetHeliBladesFullSpeed(vehicle)
 					end
 				end
@@ -213,7 +214,7 @@ CreateThread(function()
 end)
 
 SetEngineState = function(vehicle, state, engine)
-	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetEngineState')
+	if not vehicle or not DoesEntityExist(vehicle) then return end
 	logging('debug', 'SetEngineState', vehicle, state)
 
 	currentVehicle.isEngineOn = state
@@ -234,7 +235,7 @@ RegisterNetEvent('msk_enginetoggle:setEngineState', SetEngineState) -- Do not us
 
 GetEngineState = function(vehicle)
 	if not vehicle then vehicle = MSK.Player.vehicle end
-	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetEngineState')
+	if not vehicle or not DoesEntityExist(vehicle) then return false end
 
 	if Entity(vehicle).state.isEngineOn == nil then
 		SetEngineState(vehicle, GetIsVehicleEngineRunning(vehicle), false)
@@ -244,7 +245,7 @@ end
 exports('GetEngineState', GetEngineState)
 
 SetVehicleDamaged = function(vehicle, state)
-	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetVehicleDamaged')
+	if not vehicle or not DoesEntityExist(vehicle) then return end
 
 	currentVehicle.isDamaged = state
 	Entity(vehicle).state:set('isDamaged', state, true)
@@ -264,7 +265,7 @@ RegisterNetEvent('msk_enginetoggle:setVehicleDamaged', SetVehicleDamaged)
 
 GetVehicleDamaged = function(vehicle)
 	if not vehicle then vehicle = MSK.Player.vehicle end
-	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetVehicleDamaged')
+	if not vehicle or not DoesEntityExist(vehicle) then return false end
 
 	if Entity(vehicle).state.isDamaged == nil then
 		SetVehicleDamaged(vehicle, false)

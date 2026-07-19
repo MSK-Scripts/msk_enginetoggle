@@ -59,8 +59,46 @@ HasPlayerJob = function(Player)
     return false
 end
 
-getAlarmStage = function(source, plate)
-    local result = MySQL.query.await(('SELECT * FROM %s WHERE plate = @plate'):format(VEHICLE_TABLE_NAME), {
+-- Als gestohlen markierte Fahrzeuge (plate -> true). Wird nur bei aktivem LiveCoords-Blip gesetzt
+-- und dient dazu, die DB-Query in enteredVehicle auf die wenigen relevanten Fälle zu beschränken.
+StolenVehicles = {}
+
+-- Anti-Spam Cooldowns pro Spieler und Aktion
+local cooldowns = {}
+
+isOnCooldown = function(src, key, ms)
+    local now = GetGameTimer()
+    cooldowns[src] = cooldowns[src] or {}
+
+    if cooldowns[src][key] and now < cooldowns[src][key] then
+        return true
+    end
+
+    cooldowns[src][key] = now + ms
+    return false
+end
+
+AddEventHandler('playerDropped', function()
+    cooldowns[source] = nil
+end)
+
+-- Prüft serverseitig, ob der Spieler wirklich in der Nähe der Entity ist. Verhindert Remote-Aufrufe
+-- (z.B. Keys/Alarme für Fahrzeuge am anderen Ende der Map).
+isPlayerNearEntity = function(src, entity, maxDist)
+    if not entity or entity == 0 or not DoesEntityExist(entity) then return false end
+    local ped = GetPlayerPed(src)
+    if not ped or ped == 0 then return false end
+
+    local pedCoords = GetEntityCoords(ped)
+    local entityCoords = GetEntityCoords(entity)
+    return #(pedCoords - entityCoords) <= (maxDist or 10.0)
+end
+
+-- Serverinterne Ermittlung von Owner + Stage. Der Owner-Identifier verlässt damit nie den Client.
+getAlarmData = function(plate)
+    if VEHICLE_TABLE_NAME == '' or OWNER_COLUMN_NAME == '' then return nil, 'stage_1' end
+
+    local result = MySQL.query.await(('SELECT %s, alarmStage FROM %s WHERE plate = @plate'):format(OWNER_COLUMN_NAME, VEHICLE_TABLE_NAME), {
         ['@plate'] = MSK.String.Trim(plate)
     })
 
@@ -69,7 +107,12 @@ getAlarmStage = function(source, plate)
     end
     return nil, 'stage_1'
 end
-MSK.Register('msk_enginetoggle:getAlarmStage', getAlarmStage)
+
+-- Der Client-Callback gibt ausschließlich die Stage zurück (für den akustischen Alarm), niemals den Owner.
+MSK.Register('msk_enginetoggle:getAlarmStage', function(source, plate)
+    local _, stage = getAlarmData(plate)
+    return stage
+end)
 
 RegisterNetEvent('msk_enginetoggle:removeLockpickItem', function()
     if not Config.LockpickSettings.removeItem then return end
@@ -87,7 +130,12 @@ end)
 
 RegisterNetEvent('msk_enginetoggle:saveAlarmStage', function(plate, stage)
     local playerId = source
+
+    -- Stage gegen die Config validieren, sonst könnte ein Client eine beliebige Zeichenkette in die DB schreiben
+    if not Config.SafetyStages[stage] then return end
+
     local Player = GetPlayerFromId(playerId)
+    if not Player then return end
 	local identifier = nil
 
 	if Config.Framework == 'ESX' then
@@ -114,10 +162,12 @@ RegisterNetEvent('msk_enginetoggle:saveAlarmStage', function(plate, stage)
 	end
 end)
 
-RegisterNetEvent('msk_enginetoggle:ownerAlert', function(coords, owner)
-    local playerId = nil
+-- Interne Alert-Funktionen (keine offenen NetEvents mehr!). Owner und Koordinaten werden
+-- ausschließlich serverseitig aus triggerAlarm ermittelt und sind damit nicht mehr spoofbar.
+notifyOwner = function(owner, coords)
     local Player = GetPlayerFromIdentifier(owner)
     if not Player then return end
+    local playerId = nil
 
     if Config.Framework == 'ESX' then
         playerId = Player.source
@@ -130,9 +180,9 @@ RegisterNetEvent('msk_enginetoggle:ownerAlert', function(coords, owner)
     if not playerId then return end
     Config.Notification(playerId, Translation[Config.Locale]['stole_vehicle'])
     TriggerClientEvent('msk_enginetoggle:showBlipCoords', playerId, coords)
-end)
+end
 
-RegisterNetEvent('msk_enginetoggle:policeAlert', function(coords)
+notifyPolice = function(coords)
     if Config.Framework == 'ESX' then
         local xPlayers = ESX.GetExtendedPlayers()
 
@@ -154,13 +204,13 @@ RegisterNetEvent('msk_enginetoggle:policeAlert', function(coords)
     else
         -- Add your own code here
     end
-end)
+end
 
-RegisterNetEvent('msk_enginetoggle:liveCoords', function(owner, netId, coords)
+sendLiveCoords = function(owner, netId, coords)
     local Player = GetPlayerFromIdentifier(owner)
     if not Player then return end
     local playerId = nil
-    
+
     if Config.Framework == 'ESX' then
         playerId = Player.source
     elseif Config.Framework == 'QBCore' then
@@ -171,4 +221,54 @@ RegisterNetEvent('msk_enginetoggle:liveCoords', function(owner, netId, coords)
 
     if not playerId then return end
     TriggerClientEvent('msk_enginetoggle:showVehicleBlip', playerId, netId, coords)
+end
+
+-- Zentrale, serverseitig validierte Alarm-Auslösung. Der Client sendet nur die netId; Plate, Owner,
+-- Stage und Koordinaten ermittelt der Server selbst aus der Entity. Nähe- und Cooldown-Check gegen Spam.
+RegisterNetEvent('msk_enginetoggle:triggerAlarm', function(netId)
+    local src = source
+    local entity = netId and NetworkGetEntityFromNetworkId(netId)
+
+    if not isPlayerNearEntity(src, entity, 10.0) then return end
+    if isOnCooldown(src, 'triggerAlarm', 5000) then return end
+
+    local plate = GetVehicleNumberPlateText(entity)
+    local owner, stage = getAlarmData(plate)
+    local alarmStage = Config.SafetyStages[stage] or Config.SafetyStages['stage_1']
+    local coords = GetEntityCoords(entity)
+
+    if alarmStage.ownerAlert and owner then
+        notifyOwner(owner, coords)
+    end
+
+    if alarmStage.policeAlert then
+        notifyPolice(coords)
+    end
+
+    if alarmStage.liveCoords and owner then
+        StolenVehicles[MSK.String.Trim(plate)] = true
+        sendLiveCoords(owner, netId, coords)
+    end
+end)
+
+-- Serverseitig validierte Schlüsselsuche: prüft Nähe + Cooldown, würfelt den Fund selbst und vergibt
+-- den TempKey. Ersetzt das alte clientseitige math.random und den offenen addTempKey-Event.
+MSK.Register('msk_enginetoggle:searchKey', function(source, netId)
+    local src = source
+    local entity = netId and NetworkGetEntityFromNetworkId(netId)
+
+    if not isPlayerNearEntity(src, entity, 10.0) then return false end
+    if isOnCooldown(src, 'searchKey', 3000) then return false end
+
+    if math.random(100) > Config.LockpickSettings.searchKey then
+        return false
+    end
+
+    if Config.VehicleKeys.enable and GetResourceState(Config.VehicleKeys.script) == 'started' then
+        local plate = GetVehicleNumberPlateText(entity)
+        local model = GetEntityModel(entity)
+        giveTempKey(src, plate, model)
+    end
+
+    return true
 end)

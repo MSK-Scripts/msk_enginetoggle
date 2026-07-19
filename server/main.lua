@@ -66,9 +66,12 @@ if Config.AdminCommand.enable then
 	})
 end
 
-RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate, model)
+-- Interne Funktion (KEIN offener NetEvent mehr!). Wird ausschließlich serverseitig aus dem
+-- validierten searchKey-Callback aufgerufen, nachdem Nähe und Fund-Wahrscheinlichkeit geprüft wurden.
+-- Vorher konnte jeder Client diesen Event mit beliebiger Plate spammen und sich Keys für jedes
+-- Fahrzeug geben.
+giveTempKey = function(playerId, plate, model)
 	if not Config.VehicleKeys.enable then return end
-	local playerId = source
 	plate = tostring(plate)
 
 	if Config.VehicleKeys.script == 'msk_vehiclekeys' then
@@ -82,30 +85,50 @@ RegisterNetEvent('msk_enginetoggle:addTempKey', function(plate, model)
 	else
 		-- Add your own code here
 	end
+end
+
+-- Server-Hook: andere Ressourcen können serverseitig auf Motor-Toggles reagieren via
+--   AddEventHandler('msk_enginetoggle:engineToggled', function(src, netId, state) ... end)
+-- Der eingehende Client-Trigger wird zuvor validiert (Nähe-Check), damit nicht jeder Client
+-- beliebige Toggle-Meldungen für fremde Fahrzeuge einspeisen kann.
+RegisterNetEvent('msk_enginetoggle:toggledEngine', function(netId, state)
+	local src = source
+	local entity = netId and NetworkGetEntityFromNetworkId(netId)
+
+	if not isPlayerNearEntity(src, entity, 10.0) then return end
+
+	TriggerEvent('msk_enginetoggle:engineToggled', src, netId, state)
 end)
 
 RegisterNetEvent('msk_enginetoggle:enteredVehicle', function(plate, seat, netId, isEngineOn, isDamaged)
 	local src = source
+	local tPlate = MSK.String.Trim(tostring(plate))
+
+	-- Nur wenn das Fahrzeug tatsächlich als gestohlen markiert wurde (LiveCoords-Blip aktiv), gehen
+	-- wir in die DB. Vorher lief bei JEDEM Einstieg jedes Spielers eine DB-Query, nur um evtl. einen
+	-- Blip zu löschen der in 99% der Fälle gar nicht existiert.
+	if not StolenVehicles[tPlate] then return end
+
 	local Player = GetPlayerFromId(src)
+	if not Player then return end
 	local identifier = nil
 
 	if Config.Framework == 'ESX' then
         identifier = Player.identifier
     elseif Config.Framework == 'QBCore' then
-        identifier = Player.PlayerData.citizenid 
+        identifier = Player.PlayerData.citizenid
     else
         -- Add your own code here
     end
 
-	local result = MySQL.query.await(('SELECT * FROM %s WHERE %s = @owner AND plate = @plate'):format(VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
+	local result = MySQL.query.await(('SELECT %s FROM %s WHERE %s = @owner AND plate = @plate'):format(OWNER_COLUMN_NAME, VEHICLE_TABLE_NAME, OWNER_COLUMN_NAME), {
 		['@owner'] = identifier,
-		['@plate'] = MSK.String.Trim(plate)
+		['@plate'] = tPlate
 	})
 
-	if result and result[1] then
-		if result[1][OWNER_COLUMN_NAME] == identifier then
-			TriggerClientEvent('msk_enginetoggle:deleteVehicleBlip', src, netId)
-		end
+	if result and result[1] and result[1][OWNER_COLUMN_NAME] == identifier then
+		StolenVehicles[tPlate] = nil
+		TriggerClientEvent('msk_enginetoggle:deleteVehicleBlip', src, netId)
 	end
 end)
 

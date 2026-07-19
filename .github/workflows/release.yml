@@ -1,0 +1,96 @@
+name: Release
+
+# Erstellt automatisch ein GitHub-Release, sobald die Version in fxmanifest.lua auf main erhöht
+# wird. Ablauf: Version auslesen -> prüfen ob es dafür schon ein Release gibt -> Changelog-Abschnitt
+# extrahieren -> ZIP bauen -> Release mit Tag v<version> anlegen.
+#
+# Kein Release passiert, solange die Version unverändert bleibt (der Tag existiert dann bereits).
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'fxmanifest.lua'
+      - 'CHANGELOG.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Version aus fxmanifest.lua lesen
+        id: version
+        run: |
+          VERSION=$(grep -oP "^\s*version\s+'\K[^']+" fxmanifest.lua | head -1)
+          if [ -z "$VERSION" ]; then
+            echo "::error::Keine Version in fxmanifest.lua gefunden."
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Gefundene Version: $VERSION"
+
+      - name: Prüfen ob Release bereits existiert
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Release ${{ steps.version.outputs.tag }} existiert bereits. Wird übersprungen."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Neues Release ${{ steps.version.outputs.tag }} wird erstellt."
+          fi
+
+      - name: Changelog-Abschnitt extrahieren
+        if: steps.check.outputs.exists == 'false'
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          BODY=$(awk -v ver="$VERSION" '
+            BEGIN { start = "## [" ver "]" }
+            index($0, start) == 1 { flag = 1; next }
+            flag && (index($0, "## [") == 1 || $0 == "---") { exit }
+            flag { print }
+          ' CHANGELOG.md | sed '/./,$!d')
+
+          if [ -z "$(printf '%s' "$BODY" | tr -d '[:space:]')" ]; then
+            BODY="Release v${VERSION}. Details siehe CHANGELOG.md."
+          fi
+
+          {
+            echo "body<<CHANGELOG_EOF"
+            printf '%s\n' "$BODY"
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Release-ZIP bauen
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          git archive --format=zip --prefix=msk_enginetoggle/ -o msk_enginetoggle.zip HEAD
+          echo "Inhalt des ZIPs:"
+          unzip -l msk_enginetoggle.zip
+
+      - name: GitHub-Release erstellen
+        if: steps.check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          body: ${{ steps.changelog.outputs.body }}
+          files: msk_enginetoggle-${{ steps.version.outputs.tag }}.zip
+          make_latest: true

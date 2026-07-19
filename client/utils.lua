@@ -37,11 +37,13 @@ IsVehicleWhitelisted = function(vehicle)
 
     local vehiclePlate = GetVehicleNumberPlateText(vehicle)
 
-    for k, plate in pairs(Config.Whitelist.plates) do 
-        if string.find(MSK.String.Trim(vehiclePlate, true), MSK.String.Trim(plate, true)) then 
+    for k, plate in pairs(Config.Whitelist.plates) do
+        if string.find(MSK.String.Trim(vehiclePlate, true), MSK.String.Trim(plate, true)) then
             return true
         end
     end
+
+    return false
 end
 
 IsVehicleBlacklisted = function(vehicle)
@@ -65,11 +67,13 @@ IsVehicleBlacklisted = function(vehicle)
 
     local vehiclePlate = GetVehicleNumberPlateText(vehicle)
 
-    for k, plate in pairs(Config.Blacklist.plates) do 
-        if string.find(MSK.String.Trim(vehiclePlate, true), MSK.String.Trim(plate, true)) then 
+    for k, plate in pairs(Config.Blacklist.plates) do
+        if string.find(MSK.String.Trim(vehiclePlate, true), MSK.String.Trim(plate, true)) then
             return true
         end
     end
+
+    return false
 end
 
 IsAnyWheelClamped = function(vehicle)

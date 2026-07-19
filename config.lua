@@ -1,7 +1,7 @@
 Config = {}
 ----------------------------------------------------------------
 Config.Locale = 'de'
-Config.Debug = true
+Config.Debug = false
 Config.VersionChecker = true
 ----------------------------------------------------------------
 -- Supported Frameworks: AUTO, ESX, QBCore

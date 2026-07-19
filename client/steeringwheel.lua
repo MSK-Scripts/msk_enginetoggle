@@ -10,10 +10,7 @@ if Config.SaveSteeringAngle then
 					local vehicle = currentVehicle and currentVehicle.vehicle or MSK.Player.vehicle
 					local steeringAngle = GetVehicleSteeringAngle(vehicle)
 
-					while not IsControlJustReleased(0, Config.SaveAngleOnExit) do
-						SetSteeringAngle(vehicle, steeringAngle)
-						break
-					end
+					SetSteeringAngle(vehicle, steeringAngle)
 				end
 			end
 
@@ -23,7 +20,7 @@ if Config.SaveSteeringAngle then
 end
 
 SetSteeringAngle = function(vehicle, angle)
-	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function SetSteeringAngle')
+	if not vehicle or not DoesEntityExist(vehicle) then return end
 
 	Entity(vehicle).state:set('SteeringAngle', angle, true)
 
@@ -35,7 +32,7 @@ exports('SetSteeringAngle', SetSteeringAngle)
 
 GetSteeringAngle = function(vehicle)
 	if not vehicle then vehicle = MSK.Player.vehicle end
-	assert(vehicle and DoesEntityExist(vehicle), 'Parameter "vehicle" is nil or the Vehicle does not exist on function GetSteeringAngle')
+	if not vehicle or not DoesEntityExist(vehicle) then return end
 
 	if Entity(vehicle).state.SteeringAngle == nil then
 		SetSteeringAngle(vehicle, GetVehicleSteeringAngle(vehicle))

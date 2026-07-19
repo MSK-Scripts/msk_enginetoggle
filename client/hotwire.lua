@@ -24,7 +24,9 @@ toggleLockpick = function()
 	local plate = GetVehicleNumberPlateText(vehicle)
 	local animation = {dict = Config.Animation.lockpick.dict, anim = Config.Animation.lockpick.anim}
 	
-	local owner, stage = MSK.Trigger('msk_enginetoggle:getAlarmStage', plate)
+	-- Der Client erhält nur noch die Stage (kein Owner-Identifier mehr), damit dieser nicht geleakt
+	-- und für spoofbare Alerts missbraucht werden kann. Der akustische Alarm bleibt rein clientseitig.
+	local stage = MSK.Trigger('msk_enginetoggle:getAlarmStage', plate)
 	local alarmStage = Config.SafetyStages[stage] or Config.SafetyStages['stage_1']
 
 	if alarmStage.alarm then
@@ -32,18 +34,11 @@ toggleLockpick = function()
 		StartVehicleAlarm(vehicle)
 	end
 
-	if alarmStage.ownerAlert and owner then
-		TriggerServerEvent('msk_enginetoggle:ownerAlert', GetEntityCoords(vehicle), owner)
-	end
+	-- Owner-, Polizei- und LiveCoords-Alerts werden komplett serverseitig ausgewertet und ausgelöst.
+	-- Der Server ermittelt Owner, Stage, Plate und Koordinaten selbst aus der Entity, nichts davon
+	-- ist mehr vom Client spoofbar.
+	TriggerServerEvent('msk_enginetoggle:triggerAlarm', VehToNet(vehicle))
 
-	if alarmStage.policeAlert then
-		TriggerServerEvent('msk_enginetoggle:policeAlert', GetEntityCoords(vehicle))
-	end
-
-	if alarmStage.liveCoords and owner then
-		TriggerServerEvent('msk_enginetoggle:liveCoords', owner, VehToNet(vehicle), GetEntityCoords(vehicle))
-	end
-	
 	MSK.Request.AnimDict(animation.dict)
 	TaskPlayAnim(playerPed, animation.dict, animation.anim, 8.0, 1.0, -1, 49, 0, false, false, false)
 	FreezeEntityPosition(playerPed, true)
@@ -126,10 +121,11 @@ toggleLockpick = function()
 		end
 		Wait(time)
 
-		if math.random(100) <= Config.LockpickSettings.searchKey then
-			if Config.VehicleKeys.enable and GetResourceState(Config.VehicleKeys.script) == "started" then
-				TriggerServerEvent('msk_enginetoggle:addTempKey', plate, GetEntityModel(vehicle))
-			end
+		-- Der Server würfelt den Fund und vergibt ggf. den TempKey. Der Client entscheidet das nicht
+		-- mehr selbst (kein clientseitiges math.random, kein offener addTempKey-Event).
+		local foundKey = MSK.Trigger('msk_enginetoggle:searchKey', VehToNet(vehicle))
+
+		if foundKey then
 			needToHotwire = false
 			Config.Notification(nil, Translation[Config.Locale]['hotwiring_foundkey'], 'success')
 		else
