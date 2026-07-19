@@ -81,9 +81,10 @@ jobs:
       - name: Release-ZIP bauen
         if: steps.check.outputs.exists == 'false'
         run: |
-          git archive --format=zip --prefix=msk_enginetoggle/ -o msk_enginetoggle.zip HEAD
+          ZIP="msk_enginetoggle-${{ steps.version.outputs.tag }}.zip"
+          git archive --format=zip --prefix=msk_enginetoggle/ -o "$ZIP" HEAD
           echo "Inhalt des ZIPs:"
-          unzip -l msk_enginetoggle.zip
+          unzip -l "$ZIP"
 
       - name: GitHub-Release erstellen
         if: steps.check.outputs.exists == 'false'
