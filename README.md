@@ -1,4 +1,4 @@
-<img width="1920" height="1080" alt="MSK_-_EngineToggle" src="https://github.com/user-attachments/assets/03c926c5-90fa-4dca-94d7-0bfb3b7cc5db" />
+![MSK EngineToggle](.assets/msk_enginetoggle-banner.png)
 
 [ESX/QBCore] Vehicle EngineToggle On/Off
 
