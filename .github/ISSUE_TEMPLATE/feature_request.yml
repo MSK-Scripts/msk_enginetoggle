@@ -1,0 +1,41 @@
+name: Feature Request
+description: Suggest a new feature or improvement for MSK EngineToggle
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an idea. Please describe what you would like to see and why.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you start
+      options:
+        - label: I searched existing issues and this has not been requested yet
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or motivation
+      description: What problem does this feature solve? Is your request related to a limitation you hit?
+      placeholder: "I'm always frustrated when ..."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the feature or the config option you would like. Example usage or export signatures are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any alternative solutions or workarounds you have thought about.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else, such as which framework or vehicle key script this should support.

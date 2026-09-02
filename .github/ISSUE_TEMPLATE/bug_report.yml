@@ -1,0 +1,99 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in MSK EngineToggle
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill out the fields below so we can reproduce and fix it quickly.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you start
+      options:
+        - label: I am running the latest release of msk_enginetoggle
+          required: true
+        - label: I searched existing issues and this has not been reported yet
+          required: true
+        - label: oxmysql, ox_lib and msk_core are installed and started before this resource
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug.
+      placeholder: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce the behavior?
+      placeholder: |
+        1. Enter a vehicle '...'
+        2. Use the command or hotkey '...'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output / errors
+      description: Paste any relevant server or client console output. This will be rendered as code, no backticks needed.
+      render: shell
+  - type: textarea
+    id: config
+    attributes:
+      label: Relevant config
+      description: The parts of your config.lua that relate to the problem, for example Config.VehicleKeys or Config.Hotkey.
+      render: lua
+  - type: input
+    id: version
+    attributes:
+      label: msk_enginetoggle version
+      placeholder: "4.5.0"
+    validations:
+      required: true
+  - type: input
+    id: coreversion
+    attributes:
+      label: msk_core version
+      placeholder: "3.3.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      options:
+        - ESX
+        - QBCore
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: vehiclekeys
+    attributes:
+      label: Vehicle key script
+      options:
+        - None
+        - MSK VehicleKeys
+        - VehicleKeyChain
+        - vehicle_keys (Jaksam)
+        - wasabi_carlock
+        - qs-vehiclekeys
+        - Other
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that might help, such as other resources involved or your artifact version.

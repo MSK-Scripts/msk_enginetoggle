@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: MSK Scripts Discord
+    url: https://discord.gg/5hHSBRHvJE
+    about: Questions, support, and general discussion. Please use Discord instead of opening an issue for support requests.
+  - name: Documentation
+    url: https://docu.msk-scripts.de/docs/msk_enginetoggle/
+    about: Read the documentation on config options and exports before opening an issue.
+  - name: Cfx.re Forum Thread
+    url: https://forum.cfx.re/t/msk-enginetoggle-toggle-engine-on-off/4793840
+    about: The release thread with the latest announcements.
